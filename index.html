@@ -101,66 +101,20 @@
     <h2>GALERÍA</h2>
 
     <div class="gallery-grid">
-
-        <img src="images/mosco1.jpeg" class="zoomable" alt="Foto">
-
-<div id="modal" class="modal">
-  <span class="close">&times;</span>
-  <img id="modal-img">
+    <img src="images/mosco1.jpeg" class="zoomable" alt="Foto">
+    <img src="images/casau1.jpeg" class="zoomable" alt="Foto">
+    <img src="images/gordito 1.jpeg" class="zoomable" alt="Foto">
+    <img src="images/mosco2.jpeg" class="zoomable" alt="Foto">
+    <img src="images/gordito casau.jpeg" class="zoomable" alt="Foto">
+    <img src="images/gordito 2.jpeg" class="zoomable" alt="Foto">
+    <img src="images/gordito 3.jpeg" class="zoomable" alt="Foto">
+    <img src="images/gordito 4.jpeg" class="zoomable" alt="Foto">
+    <img src="images/gordito 5.jpeg" class="zoomable" alt="Foto">
+    <img src="images/gordito 6.jpeg" class="zoomable" alt="Foto">
 </div>
-        <img src="images/casau1.jpeg" class="zoomable" alt="Foto">
-
-<div id="modal" class="modal">
-  <span class="close">&times;</span>
-  <img id="modal-img">
-</div>
-        <img src="images/gordito 1.jpeg" class="zoomable" alt="Foto">
-
-<div id="modal" class="modal">
-  <span class="close">&times;</span>
-  <img id="modal-img">
-</div>
-         <img src="images/mosco2.jpeg" class="zoomable" alt="Foto">
-
-<div id="modal" class="modal">
-  <span class="close">&times;</span>
-  <img id="modal-img">
-</div>
-        <img src="images/gordito casau.jpeg" class="zoomable" alt="Foto">
-
-<div id="modal" class="modal">
-  <span class="close">&times;</span>
-  <img id="modal-img">
-</div>
-        <img src="images/gordito 2.jpeg" class="zoomable" alt="Foto">
-
-<div id="modal" class="modal">
-  <span class="close">&times;</span>
-  <img id="modal-img">
-</div>
-        <img src="images/gordito 3.jpeg" class="zoomable" alt="Foto">
-
-<div id="modal" class="modal">
-  <span class="close">&times;</span>
-  <img id="modal-img">
-</div>
-        <img src="images/gordito 4.jpeg" class="zoomable" alt="Foto">
-
-<div id="modal" class="modal">
-  <span class="close">&times;</span>
-  <img id="modal-img">
-</div>
-        <img src="images/gordito 5.jpeg" class="zoomable" alt="Foto">
-
-<div id="modal" class="modal">
-  <span class="close">&times;</span>
-  <img id="modal-img">
-</div>
-        <img src="images/gordito 6.jpeg" class="zoomable" alt="Foto">
-
-<div id="modal" class="modal">
-  <span class="close">&times;</span>
-  <img id="modal-img">
+    <div id="modal" class="modal">
+    <span class="close">&times;</span>
+    <img id="modal-img" alt="Imagen ampliada">
 </div>
 
 </section>
@@ -188,6 +142,31 @@
     <p>🪖 Mosco Events © 2026</p>
 
 </footer>
+    </body>
+    <script>
+const modal = document.getElementById("modal");
+const modalImg = document.getElementById("modal-img");
+const close = document.querySelector(".close");
+
+document.querySelectorAll(".zoomable").forEach(img => {
+
+    img.addEventListener("click", () => {
+        modal.style.display = "block";
+        modalImg.src = img.src;
+    });
+
+});
+
+close.addEventListener("click", () => {
+    modal.style.display = "none";
+});
+
+modal.addEventListener("click", (e) => {
+    if (e.target !== modalImg) {
+        modal.style.display = "none";
+    }
+});
+</script>
 
 </body>
 </html>
