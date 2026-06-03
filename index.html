@@ -101,16 +101,15 @@
     <h2>GALERÍA</h2>
 
     <div class="gallery-grid">
-       <div id="modal" class="modal">
-
+      <div id="modal" class="modal">
     <span class="close">&times;</span>
-
     <span class="prev">&#10094;</span>
 
     <img id="modal-img" alt="Imagen ampliada">
 
     <span class="next">&#10095;</span>
-
+</div>
+</section>        
 </div>
     <img src="images/mosco1.jpeg" class="zoomable" alt="Foto">
     <img src="images/casau1.jpeg" class="zoomable" alt="Foto">
@@ -149,96 +148,97 @@
     <p>🪖 Mosco Events © 2026</p>
 
 </footer>
- <script>
 <script>
 
-const modal = document.getElementById("modal");
-const modalImg = document.getElementById("modal-img");
+window.onload = function () {
 
-const closeBtn = document.querySelector(".close");
-const nextBtn = document.querySelector(".next");
-const prevBtn = document.querySelector(".prev");
+    const modal = document.getElementById("modal");
+    const modalImg = document.getElementById("modal-img");
 
-const images = document.querySelectorAll(".zoomable");
+    const closeBtn = document.querySelector(".close");
+    const nextBtn = document.querySelector(".next");
+    const prevBtn = document.querySelector(".prev");
 
-let currentIndex = 0;
+    const images = document.querySelectorAll(".zoomable");
 
-/* abrir imagen */
-function openImage(index){
-    currentIndex = index;
-    modal.classList.add("active");
-    modalImg.src = images[currentIndex].src;
-}
+    let currentIndex = 0;
 
-/* siguiente */
-function nextImage(){
-    currentIndex++;
-
-    if(currentIndex >= images.length){
-        currentIndex = 0;
+    function openImage(index){
+        currentIndex = index;
+        modal.classList.add("active");
+        modalImg.src = images[currentIndex].src;
     }
 
-    modalImg.src = images[currentIndex].src;
-}
+    function nextImage(){
+        currentIndex++;
 
-/* anterior */
-function prevImage(){
-    currentIndex--;
+        if(currentIndex >= images.length){
+            currentIndex = 0;
+        }
 
-    if(currentIndex < 0){
-        currentIndex = images.length - 1;
+        modalImg.src = images[currentIndex].src;
     }
 
-    modalImg.src = images[currentIndex].src;
-}
+    function prevImage(){
+        currentIndex--;
 
-/* click en imágenes */
-images.forEach((img,index) => {
+        if(currentIndex < 0){
+            currentIndex = images.length - 1;
+        }
 
-    img.addEventListener("click", () => {
-        openImage(index);
+        modalImg.src = images[currentIndex].src;
+    }
+
+    images.forEach((img, index) => {
+
+        img.addEventListener("click", function () {
+            openImage(index);
+        });
+
     });
 
-});
-
-/* botones */
-nextBtn.addEventListener("click", nextImage);
-prevBtn.addEventListener("click", prevImage);
-
-/* cerrar */
-closeBtn.addEventListener("click", () => {
-    modal.classList.remove("active");
-});
-
-/* click fuera */
-modal.addEventListener("click", (e) => {
-
-    if(e.target === modal){
-        modal.classList.remove("active");
-    }
-
-});
-
-/* teclado */
-document.addEventListener("keydown", (e) => {
-
-    if(!modal.classList.contains("active")) return;
-
-    if(e.key === "ArrowRight"){
+    nextBtn.addEventListener("click", function(e){
+        e.stopPropagation();
         nextImage();
-    }
+    });
 
-    if(e.key === "ArrowLeft"){
+    prevBtn.addEventListener("click", function(e){
+        e.stopPropagation();
         prevImage();
-    }
+    });
 
-    if(e.key === "Escape"){
+    closeBtn.addEventListener("click", function(){
         modal.classList.remove("active");
-    }
+    });
 
-});
+    modal.addEventListener("click", function(e){
+
+        if(e.target === modal){
+            modal.classList.remove("active");
+        }
+
+    });
+
+    document.addEventListener("keydown", function(e){
+
+        if(!modal.classList.contains("active")) return;
+
+        if(e.key === "ArrowRight"){
+            nextImage();
+        }
+
+        if(e.key === "ArrowLeft"){
+            prevImage();
+        }
+
+        if(e.key === "Escape"){
+            modal.classList.remove("active");
+        }
+
+    });
+
+};
 
 </script>
-
 </body>
 </html>
