@@ -101,27 +101,31 @@
     <h2>GALERÍA</h2>
 
     <div class="gallery-grid">
-      <div id="modal" class="modal">
-    <span class="close">&times;</span>
-    <span class="prev">&#10094;</span>
 
-    <img id="modal-img" alt="Imagen ampliada">
+        <img src="images/mosco1.jpeg" class="zoomable" alt="Foto">
+        <img src="images/casau1.jpeg" class="zoomable" alt="Foto">
+        <img src="images/gordito 1.jpeg" class="zoomable" alt="Foto">
+        <img src="images/mosco2.jpeg" class="zoomable" alt="Foto">
+        <img src="images/gordito casau.jpeg" class="zoomable" alt="Foto">
+        <img src="images/gordito 2.jpeg" class="zoomable" alt="Foto">
+        <img src="images/gordito 3.jpeg" class="zoomable" alt="Foto">
+        <img src="images/gordito 4.jpeg" class="zoomable" alt="Foto">
+        <img src="images/gordito 5.jpeg" class="zoomable" alt="Foto">
+        <img src="images/gordito 6.jpeg" class="zoomable" alt="Foto">
 
-    <span class="next">&#10095;</span>
-</div>
-</section>        
-</div>
-    <img src="images/mosco1.jpeg" class="zoomable" alt="Foto">
-    <img src="images/casau1.jpeg" class="zoomable" alt="Foto">
-    <img src="images/gordito 1.jpeg" class="zoomable" alt="Foto">
-    <img src="images/mosco2.jpeg" class="zoomable" alt="Foto">
-    <img src="images/gordito casau.jpeg" class="zoomable" alt="Foto">
-    <img src="images/gordito 2.jpeg" class="zoomable" alt="Foto">
-    <img src="images/gordito 3.jpeg" class="zoomable" alt="Foto">
-    <img src="images/gordito 4.jpeg" class="zoomable" alt="Foto">
-    <img src="images/gordito 5.jpeg" class="zoomable" alt="Foto">
-    <img src="images/gordito 6.jpeg" class="zoomable" alt="Foto">
-</div>
+    </div>
+
+    <!-- Modal galería -->
+    <div id="modal" class="modal">
+
+        <span class="close">&times;</span>
+        <span class="prev">&#10094;</span>
+
+        <img id="modal-img" alt="Imagen ampliada">
+
+        <span class="next">&#10095;</span>
+
+    </div>
 
 </section>
 
@@ -150,94 +154,62 @@
 </footer>
 <script>
 
-window.onload = function () {
+const modal = document.getElementById("modal");
+const modalImg = document.getElementById("modal-img");
 
-    const modal = document.getElementById("modal");
-    const modalImg = document.getElementById("modal-img");
+const images = document.querySelectorAll(".zoomable");
 
-    const closeBtn = document.querySelector(".close");
-    const nextBtn = document.querySelector(".next");
-    const prevBtn = document.querySelector(".prev");
+const closeBtn = document.querySelector(".close");
+const prevBtn = document.querySelector(".prev");
+const nextBtn = document.querySelector(".next");
 
-    const images = document.querySelectorAll(".zoomable");
+let currentIndex = 0;
 
-    let currentIndex = 0;
+function showImage(index){
+    currentIndex = index;
+    modalImg.src = images[currentIndex].src;
+    modal.classList.add("active");
+}
 
-    function openImage(index){
-        currentIndex = index;
-        modal.classList.add("active");
-        modalImg.src = images[currentIndex].src;
+images.forEach((img, index) => {
+    img.addEventListener("click", () => {
+        showImage(index);
+    });
+});
+
+nextBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+
+    currentIndex++;
+
+    if(currentIndex >= images.length){
+        currentIndex = 0;
     }
 
-    function nextImage(){
-        currentIndex++;
+    modalImg.src = images[currentIndex].src;
+});
 
-        if(currentIndex >= images.length){
-            currentIndex = 0;
-        }
+prevBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
 
-        modalImg.src = images[currentIndex].src;
+    currentIndex--;
+
+    if(currentIndex < 0){
+        currentIndex = images.length - 1;
     }
 
-    function prevImage(){
-        currentIndex--;
+    modalImg.src = images[currentIndex].src;
+});
 
-        if(currentIndex < 0){
-            currentIndex = images.length - 1;
-        }
+closeBtn.addEventListener("click", () => {
+    modal.classList.remove("active");
+});
 
-        modalImg.src = images[currentIndex].src;
-    }
-
-    images.forEach((img, index) => {
-
-        img.addEventListener("click", function () {
-            openImage(index);
-        });
-
-    });
-
-    nextBtn.addEventListener("click", function(e){
-        e.stopPropagation();
-        nextImage();
-    });
-
-    prevBtn.addEventListener("click", function(e){
-        e.stopPropagation();
-        prevImage();
-    });
-
-    closeBtn.addEventListener("click", function(){
+modal.addEventListener("click", (e) => {
+    if(e.target === modal){
         modal.classList.remove("active");
-    });
-
-    modal.addEventListener("click", function(e){
-
-        if(e.target === modal){
-            modal.classList.remove("active");
-        }
-
-    });
-
-    document.addEventListener("keydown", function(e){
-
-        if(!modal.classList.contains("active")) return;
-
-        if(e.key === "ArrowRight"){
-            nextImage();
-        }
-
-        if(e.key === "ArrowLeft"){
-            prevImage();
-        }
-
-        if(e.key === "Escape"){
-            modal.classList.remove("active");
-        }
-
-    });
-
-};
+    }
+});
 
 </script>
 </body>
