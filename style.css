@@ -337,3 +337,38 @@ footer{
 .whatsapp:hover{
     transform:scale(1.05);
 }
+
+.contact-buttons{
+    display:flex;
+    justify-content:center;
+    gap:20px;
+    flex-wrap:wrap;
+    margin-top:25px;
+}
+
+/* mismo estilo para ambos botones */
+.whatsapp,
+.instagram{
+    display:inline-block;
+
+    margin-top:25px;
+
+    padding:18px 35px;
+
+    background:#8d9a55;
+
+    color:black;
+
+    text-decoration:none;
+
+    font-weight:700;
+
+    border-radius:4px;
+
+    transition:.3s;
+}
+
+.whatsapp:hover,
+.instagram:hover{
+    transform:scale(1.05);
+}
