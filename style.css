@@ -306,3 +306,34 @@ footer{
 .logo img{
     cursor:pointer;
 }
+
+.contact-buttons{
+    display:flex;
+    justify-content:center;
+    gap:20px;
+    flex-wrap:wrap;
+    margin-top:25px;
+}
+
+.instagram{
+    display:inline-block;
+
+    padding:18px 35px;
+
+    background:#8d9a55;
+
+    color:black;
+
+    text-decoration:none;
+
+    font-weight:700;
+
+    border-radius:4px;
+
+    transition:.3s;
+}
+
+.instagram:hover,
+.whatsapp:hover{
+    transform:scale(1.05);
+}
