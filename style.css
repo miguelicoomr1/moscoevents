@@ -298,3 +298,11 @@ footer{
 .zoomable{
     cursor:pointer;
 }
+
+.logo a{
+    display:inline-block;
+}
+
+.logo img{
+    cursor:pointer;
+}
