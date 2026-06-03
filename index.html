@@ -101,6 +101,10 @@
     <h2>GALERÍA</h2>
 
     <div class="gallery-grid">
+        <div id="modal" class="modal">
+    <span class="close">&times;</span>
+    <img id="modal-img" alt="Imagen ampliada">
+</div>
     <img src="images/mosco1.jpeg" class="zoomable" alt="Foto">
     <img src="images/casau1.jpeg" class="zoomable" alt="Foto">
     <img src="images/gordito 1.jpeg" class="zoomable" alt="Foto">
@@ -111,10 +115,6 @@
     <img src="images/gordito 4.jpeg" class="zoomable" alt="Foto">
     <img src="images/gordito 5.jpeg" class="zoomable" alt="Foto">
     <img src="images/gordito 6.jpeg" class="zoomable" alt="Foto">
-</div>
-    <div id="modal" class="modal">
-    <span class="close">&times;</span>
-    <img id="modal-img" alt="Imagen ampliada">
 </div>
 
 </section>
@@ -142,29 +142,32 @@
     <p>🪖 Mosco Events © 2026</p>
 
 </footer>
-    </body>
-    <script>
+ <script>
 const modal = document.getElementById("modal");
 const modalImg = document.getElementById("modal-img");
-const close = document.querySelector(".close");
+const closeBtn = document.querySelector(".close");
 
-document.querySelectorAll(".zoomable").forEach(img => {
+document.querySelectorAll(".zoomable").forEach(image => {
 
-    img.addEventListener("click", () => {
-        modal.style.display = "block";
-        modalImg.src = img.src;
+    image.addEventListener("click", function () {
+
+        modal.classList.add("active");
+        modalImg.src = this.src;
+
     });
 
 });
 
-close.addEventListener("click", () => {
-    modal.style.display = "none";
+closeBtn.addEventListener("click", function () {
+    modal.classList.remove("active");
 });
 
-modal.addEventListener("click", (e) => {
-    if (e.target !== modalImg) {
-        modal.style.display = "none";
+modal.addEventListener("click", function (e) {
+
+    if (e.target === modal) {
+        modal.classList.remove("active");
     }
+
 });
 </script>
 
