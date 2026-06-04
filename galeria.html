@@ -116,8 +116,70 @@
 </section>
 
 <footer>
-    <p>🪖 Mosco Events © 2026</p>
-</footer>
+     <p>🪖 Mosco Events © 2026</p>
 
+</footer>
+<script>
+
+const modal = document.getElementById("modal");
+const modalImg = document.getElementById("modal-img");
+
+const images = document.querySelectorAll(".zoomable");
+
+const closeBtn = document.querySelector(".close");
+const prevBtn = document.querySelector(".prev");
+const nextBtn = document.querySelector(".next");
+
+let currentIndex = 0;
+
+function showImage(index){
+    currentIndex = index;
+    modalImg.src = images[currentIndex].src;
+    modal.classList.add("active");
+}
+
+images.forEach((img, index) => {
+    img.addEventListener("click", () => {
+        showImage(index);
+    });
+});
+
+nextBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+
+    currentIndex++;
+
+    if(currentIndex >= images.length){
+        currentIndex = 0;
+    }
+
+    modalImg.src = images[currentIndex].src;
+});
+
+prevBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+
+    currentIndex--;
+
+    if(currentIndex < 0){
+        currentIndex = images.length - 1;
+    }
+
+    modalImg.src = images[currentIndex].src;
+});
+
+closeBtn.addEventListener("click", () => {
+    modal.classList.remove("active");
+});
+
+modal.addEventListener("click", (e) => {
+    if(e.target === modal){
+        modal.classList.remove("active");
+    }
+});
+
+</script>
+    
+<body id="top">
 </body>
 </html>
