@@ -420,7 +420,6 @@ nav {
     background:#171717;
     padding-top:60px;
 }
-}
 
 .gallery-next{
     text-align:center;
@@ -573,8 +572,11 @@ nav {
 }
 @media (max-width: 768px) {
 
-    .menu-toggle {
-        display: block;
+    @media (max-width:768px){
+    .menu-toggle{
+        display:block;
+    }
+}
     }
 
     nav {
