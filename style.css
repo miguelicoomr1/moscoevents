@@ -332,14 +332,6 @@ footer{
     transform:scale(1.05);
 }
 
-.contact-buttons{
-    display:flex;
-    justify-content:center;
-    gap:20px;
-    flex-wrap:wrap;
-    margin-top:25px;
-}
-
 /* mismo estilo para ambos botones */
 .whatsapp,
 .instagram{
