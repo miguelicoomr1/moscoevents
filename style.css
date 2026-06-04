@@ -1,4 +1,3 @@
-```css
 /* =========================
    RESET
 ========================= */
@@ -30,18 +29,15 @@ header{
     width:100%;
     height:70px;
 
-    nav{
     display:flex;
+    justify-content:space-between;
     align-items:center;
-    gap:15px;
-}
 
-    padding:0 5%;
+    padding:0 20px;
 
     background:rgba(0,0,0,.92);
     backdrop-filter:blur(10px);
 
-    header{
     z-index:99999;
 }
 
@@ -64,11 +60,6 @@ header{
     cursor:pointer;
     padding:10px;
 }
-nav{
-    display:flex;
-    align-items:center;
-    gap:30px;
-}
 
 /* =========================
    NAV
@@ -84,6 +75,11 @@ nav a{
     color:white;
     text-decoration:none;
     font-weight:700;
+    transition:.3s;
+}
+
+nav a:hover{
+    color:#8d9a55;
 }
 
 .dropdown{
@@ -98,6 +94,11 @@ nav a{
     font-size:inherit;
     font-weight:700;
     cursor:pointer;
+    transition:.3s;
+}
+
+.dropbtn:hover{
+    color:#8d9a55;
 }
 
 .dropdown-content{
@@ -109,10 +110,10 @@ nav a{
     min-width:220px;
 
     background:#111;
-
+    border:1px solid #333;
     border-radius:8px;
-    overflow:hidden;
 
+    overflow:hidden;
     z-index:1000;
 }
 
@@ -288,7 +289,6 @@ h2{
     gap:60px;
 
     text-align:center;
-
     background:black;
 }
 
@@ -311,7 +311,6 @@ h2{
 
 .gallery-grid{
     display:grid;
-
     grid-template-columns:
     repeat(auto-fit,minmax(250px,1fr));
 
@@ -320,7 +319,6 @@ h2{
 
 .gallery-grid img{
     width:100%;
-
     aspect-ratio:4/3;
     object-fit:cover;
 
@@ -381,9 +379,7 @@ h2{
 .prev,
 .next{
     position:absolute;
-
     color:white;
-
     cursor:pointer;
     user-select:none;
 }
@@ -412,15 +408,6 @@ h2{
     text-align:center;
 }
 
-.contact-buttons{
-    display:flex;
-    justify-content:center;
-    flex-wrap:wrap;
-    gap:20px;
-
-    margin-top:25px;
-}
-
 .whatsapp,
 .instagram{
     margin-top:25px;
@@ -441,10 +428,6 @@ footer{
 ========================= */
 
 @media (max-width:768px){
-
-    header{
-        padding:0 20px;
-    }
 
     .menu-toggle{
         display:block;
@@ -470,10 +453,6 @@ footer{
 
     nav.active{
         display:flex;
-    }
-
-    nav a{
-        margin:0;
     }
 
     .dropdown-content{
@@ -528,11 +507,4 @@ footer{
         font-size:40px;
         right:20px;
     }
-}
-```
-/* DEBUG */
-
-nav{
-    display:flex !important;
-    background:red !important;
 }
