@@ -457,8 +457,9 @@ nav {
     }
 
 nav a,
-.dropbtn{
-    font-size:15px;
+.gallery-next .btn{
+    padding:25px 80px;
+    font-size:1.3rem;
 }
     .eventos{
     background:#171717;
@@ -469,4 +470,10 @@ nav a,
 .gallery-next{
     text-align:center;
     margin-top:50px;
+}
+.gallery-next .btn{
+    width:400px;
+    padding:20px;
+    font-size:1.2rem;
+    text-align:center;
 }
