@@ -30,8 +30,10 @@ header{
     backdrop-filter:blur(10px);
 }
 
-.logo img{
-    height:70px;
+.logo img {
+    width: 120px;
+    height: auto;
+    display: block;
 }
 
 nav a{
