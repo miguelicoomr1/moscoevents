@@ -550,7 +550,7 @@ nav a,
 
     header{
         height:auto;
-        padding:10px;
+        padding:10px 5px;
         flex-direction:column;
     }
 
@@ -562,18 +562,33 @@ nav a,
         display:flex !important;
         justify-content:center;
         align-items:center;
+        gap:10px;
         flex-wrap:nowrap;
-        gap:12px;
         width:100%;
     }
 
     nav a,
     .dropbtn{
-        font-size:14px;
+        font-size:13px;
         margin:0;
+        white-space:nowrap;
     }
 
     .hero{
-        padding-top:120px;
+        padding-top:140px;
+    }
+
+    .hero h1{
+        font-size:2.2rem;
+    }
+
+    .hero p{
+        font-size:1rem;
+    }
+
+    .btn{
+        width:90%;
+        max-width:320px;
+        padding:18px 20px;
     }
 }
