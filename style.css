@@ -61,6 +61,11 @@ header{
     cursor:pointer;
     padding:10px;
 }
+nav{
+    display:flex;
+    align-items:center;
+    gap:30px;
+}
 
 /* =========================
    NAV
