@@ -546,3 +546,34 @@ nav a,
     margin:30px auto 0;
     text-align:center;
 }
+@media (max-width:768px){
+
+    header{
+        height:auto;
+        padding:10px;
+        flex-direction:column;
+    }
+
+    .logo img{
+        height:45px;
+    }
+
+    nav{
+        display:flex !important;
+        justify-content:center;
+        align-items:center;
+        flex-wrap:nowrap;
+        gap:12px;
+        width:100%;
+    }
+
+    nav a,
+    .dropbtn{
+        font-size:14px;
+        margin:0;
+    }
+
+    .hero{
+        padding-top:120px;
+    }
+}
