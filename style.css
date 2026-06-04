@@ -31,9 +31,8 @@ header{
 }
 
 .logo img {
-    width: 120px;
-    height: auto;
-    display: block;
+    height: 60px;
+    width: auto;
 }
 
 nav a{
