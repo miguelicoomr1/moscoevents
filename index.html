@@ -13,15 +13,13 @@
 
 <body>
 
-<header>
+<header id="top">
 
     <div class="logo">
-    <a href="#top">
-        <img src="images/logo-png.png" alt="Mosco Events">
-    </a>
-</div>
-
-    <header>
+        <a href="index.html">
+            <img src="images/logo-png.png" alt="Mosco Events">
+        </a>
+    </div>
 
     <div class="logo">
         <a href="index.html">
@@ -96,8 +94,6 @@
     </a>
 
 </div>
-
-    </div>
 
 </section>
 
@@ -176,12 +172,11 @@
     CONTACTAR POR WHATSAPP
 </a>
 
-    <a
+<a
     class="instagram"
     href="https://instagram.com/l3m_airsoft"
     target="_blank"
     rel="noopener noreferrer">
->
     CONTACTAR POR INSTAGRAM
 </a>
 
@@ -258,12 +253,13 @@ modal.addEventListener("click", (e) => {
 const menuToggle = document.getElementById("menu-toggle");
 const menu = document.getElementById("menu");
 
-menuToggle.addEventListener("click", () => {
-    menu.classList.toggle("active");
-});
+if(menuToggle && menu){
+    menuToggle.addEventListener("click", () => {
+        menu.classList.toggle("active");
+    });
+}
 
 </script>
-    
-<body id="top">
+
 </body>
 </html>
