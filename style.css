@@ -532,3 +532,17 @@ nav a,
     text-align:center;
     margin-top:30px;
 }
+.card{
+    max-width:700px;
+    margin:auto;
+    padding:40px;
+    border:2px solid #8d9a55;
+    background:#202020;
+    text-align:center;
+}
+
+.boton-galeria{
+    max-width:700px;  /* mismo ancho que la card */
+    margin:30px auto 0;
+    text-align:center;
+}
