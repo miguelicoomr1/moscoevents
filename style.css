@@ -501,3 +501,30 @@ nav a,
 .galeria-btn:hover{
     transform:scale(1.05);
 }
+.boton-galeria{
+    margin-top:20px;
+    text-align:center;
+}
+
+.galeria-btn{
+    display:inline-block;
+
+    width:350px;
+    padding:20px;
+
+    text-align:center;
+
+    background:#8d9a55;
+    color:black;
+
+    text-decoration:none;
+    font-weight:700;
+
+    border-radius:4px;
+
+    transition:.3s;
+}
+
+.galeria-btn:hover{
+    transform:scale(1.05);
+}
