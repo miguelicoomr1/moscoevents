@@ -16,23 +16,26 @@ body{
 
 header{
     position:fixed;
-    width:100%;
     top:0;
-    z-index:1000;
+    left:0;
+    width:100%;
+    height:70px;
 
     display:flex;
     justify-content:space-between;
     align-items:center;
 
-    padding:20px 8%;
+    padding:0 5%;
 
-    background:rgba(0,0,0,.85);
+    background:rgba(0,0,0,.92);
     backdrop-filter:blur(10px);
+
+    z-index:1000;
 }
 
-.logo img {
-    height: 60px;
-    width: auto;
+.logo img{
+    height:50px;
+    width:auto;
 }
 
 nav a{
@@ -45,16 +48,22 @@ nav a{
 .hero{
     min-height:100vh;
 
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    padding-top:70px;
+
     background:
         linear-gradient(
-            rgba(0,0,0,0.85),
-            rgba(0,0,0,0.85)
+            rgba(0,0,0,.85),
+            rgba(0,0,0,.85)
         ),
         url("images/1.jpeg");
 
-    background-size: 80%;
-    background-position: center;
-    background-repeat: no-repeat;
+    background-size:60%;
+    background-position:center;
+    background-repeat:no-repeat;
 }
 
 .overlay{
@@ -70,18 +79,16 @@ nav a{
 
 .hero-content{
     position:relative;
-    text-align:center;
     z-index:2;
+    text-align:center;
+    max-width:900px;
 }
 
 .hero h1{
-    font-size:6rem;
-    letter-spacing:6px;
-
+    font-size:4.5rem;
+    line-height:1.1;
     color:#8d9a55;
-
-    text-shadow:
-    0 0 20px #000;
+    letter-spacing:4px;
 }
 
 .hero p{
@@ -132,17 +139,19 @@ h2{
 }
 
 .card{
-    max-width:700px;
+    max-width:800px;
 
-    margin:auto;
+    margin:0 auto;
 
-    padding:40px;
+    padding:50px;
 
     border:2px solid #8d9a55;
 
-    background:#202020;
+    background:#1b1b1b;
 
     text-align:center;
+
+    border-radius:8px;
 }
 
 .card h3{
@@ -446,4 +455,12 @@ nav {
         margin-left: 0;
         font-size: 16px;
     }
+
+nav a,
+.dropbtn{
+    font-size:15px;
+}
+    .eventos{
+    background:#171717;
+    padding-top:60px;
 }
