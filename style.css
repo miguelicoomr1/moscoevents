@@ -527,3 +527,9 @@ footer{
     }
 }
 ```
+nav{
+    display:flex !important;
+    visibility:visible !important;
+    opacity:1 !important;
+    background:red !important;
+}
