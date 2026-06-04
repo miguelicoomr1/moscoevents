@@ -231,22 +231,6 @@ footer{
     padding:25px;
 }
 
-@media(max-width:768px){
-
-    .hero h1{
-        font-size:3rem;
-    }
-
-    nav{
-        display:none;
-    }
-
-    .stats{
-        flex-direction:column;
-    }
-
-}
-
 /* ===== GALERÍA ZOOM ===== */
 
 .zoomable{
@@ -431,36 +415,7 @@ nav {
     display: block;
 }
 
-@media (max-width: 768px) {
 
-    header {
-        flex-direction: column;
-        padding: 10px;
-        gap: 10px;
-    }
-
-    .logo img {
-        height: 55px;
-    }
-
-    nav {
-        display: flex !important;
-        gap: 15px;
-        flex-wrap: wrap;
-        justify-content: center;
-    }
-
-    nav a,
-    .dropbtn {
-        margin-left: 0;
-        font-size: 16px;
-    }
-
-nav a,
-.gallery-next .btn{
-    padding:25px 80px;
-    font-size:1.3rem;
-}
     .eventos{
     background:#171717;
     padding-top:60px;
@@ -546,58 +501,7 @@ nav a,
     margin:30px auto 0;
     text-align:center;
 }
-@media (max-width:768px){
 
-    header{
-        height:auto;
-        padding:10px 5px;
-        flex-direction:column;
-    }
-
-    .logo img{
-        height:45px;
-    }
-
-    nav{
-        display:flex !important;
-        justify-content:center;
-        align-items:center;
-        gap:10px;
-        flex-wrap:nowrap;
-        width:100%;
-    }
-
-    nav a,
-    .dropbtn{
-        font-size:13px;
-        margin:0;
-        white-space:nowrap;
-    }
-
-    .hero{
-        padding-top:140px;
-    }
-
-    .hero h1{
-        font-size:2.2rem;
-    }
-
-    .hero p{
-        font-size:1rem;
-    }
-
-    .btn{
-        width:90%;
-        max-width:320px;
-        padding:18px 20px;
-    }
-}
-.menu-toggle{
-    display:none;
-    color:white;
-    font-size:32px;
-    cursor:pointer;
-}
 @media (max-width:768px){
 
     header{
