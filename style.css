@@ -420,3 +420,29 @@ nav {
 .dropdown:hover .dropdown-content {
     display: block;
 }
+
+@media (max-width: 768px) {
+
+    header {
+        flex-direction: column;
+        padding: 10px;
+        gap: 10px;
+    }
+
+    .logo img {
+        height: 55px;
+    }
+
+    nav {
+        display: flex !important;
+        gap: 15px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    nav a,
+    .dropbtn {
+        margin-left: 0;
+        font-size: 16px;
+    }
+}
