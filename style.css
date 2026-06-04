@@ -372,3 +372,51 @@ footer{
 .instagram:hover{
     transform:scale(1.05);
 }
+
+nav {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+
+.dropdown {
+    position: relative;
+}
+
+.dropbtn {
+    background: none;
+    border: none;
+    color: white;
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: #111;
+    min-width: 220px;
+    border-radius: 8px;
+    overflow: hidden;
+    z-index: 1000;
+}
+
+.dropdown-content a {
+    display: block;
+    padding: 12px 15px;
+    color: white;
+    text-decoration: none;
+}
+
+.dropdown-content a:hover {
+    background: #ff6b00;
+}
+
+/* Mostrar desplegable */
+.dropdown:hover .dropdown-content {
+    display: block;
+}
