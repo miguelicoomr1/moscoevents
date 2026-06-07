@@ -378,3 +378,39 @@ footer{
     .prev,.next{font-size:40px;}
     .close{font-size:40px;right:20px;}
 }
+/* =========================
+   MULTICAM OVERLAY
+========================= */
+
+body::before{
+    content:"";
+
+    position:fixed;
+    inset:0;
+
+    pointer-events:none;
+
+    z-index:0;
+
+    opacity:.10;
+
+    background:
+
+    radial-gradient(circle at 15% 20%, #c9b68a 0%, transparent 12%),
+    radial-gradient(circle at 80% 15%, #6e7650 0%, transparent 10%),
+    radial-gradient(circle at 30% 60%, #6a5640 0%, transparent 14%),
+    radial-gradient(circle at 75% 70%, #50553c 0%, transparent 12%),
+    radial-gradient(circle at 50% 35%, #b09b6a 0%, transparent 10%),
+    radial-gradient(circle at 20% 85%, #44392c 0%, transparent 13%),
+    radial-gradient(circle at 90% 50%, #6e7650 0%, transparent 11%);
+
+    background-size:cover;
+}
+
+header,
+.hero,
+section,
+footer{
+    position:relative;
+    z-index:1;
+}
