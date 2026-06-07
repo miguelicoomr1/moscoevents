@@ -1,84 +1,147 @@
+```html
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Próximo Evento | Mosco Events</title>
 
+    <meta name="description"
+        content="Información sobre el próximo evento organizado por Mosco Events.">
+
+    <meta name="theme-color" content="#8d9a55">
+
     <link rel="stylesheet" href="style.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 
 <body>
 
-<header>
+<header id="top">
+
     <div class="logo">
         <a href="index.html">
             <img src="images/logo-png.png" alt="Mosco Events">
         </a>
     </div>
 
-     <nav>
-    <a href="index.html">Inicio</a>
+    <button
+        class="menu-toggle"
+        id="menu-toggle"
+        aria-label="Abrir menú">
+        ☰
+    </button>
 
-    <div class="dropdown">
-        <button class="dropbtn">Eventos ▼</button>
+    <nav id="menu">
 
-        <div class="dropdown-content">
-            <a href="operación-verano.html">🔥 Operación Verano</a>
-            <a href="próximo-evento.html">🔫 Próxima partida</a>
+        <a href="index.html">Inicio</a>
+
+        <div class="dropdown">
+
+            <button class="dropbtn">
+                Eventos ▼
+            </button>
+
+            <div class="dropdown-content">
+                <a href="operacion-verano.html">🔥 Operación Verano</a>
+                <a href="proximo-evento.html">🔫 Próxima partida</a>
+            </div>
+
         </div>
-    </div>
 
-    <a href="galeria.html">Galería</a>
-    <a href="#contacto">Contacto</a>
-</nav>
+        <a href="galeria.html">Galería</a>
+        <a href="#contacto">Contacto</a>
+
+    </nav>
+
 </header>
 
-<section class="hero">
+<section class="hero" aria-label="Próximo evento">
 
     <div class="overlay"></div>
 
     <div class="hero-content">
+
         <h1>PRÓXIMAMENTE</h1>
-        <p>Evento oficial de Mosco Events</p>
+
+        <p>
+            Evento oficial de Mosco Events
+        </p>
+
     </div>
 
 </section>
 
-<section class="eventos">
-</section>
+<main>
+
+    <section class="eventos">
+
+        <h2>PRÓXIMO EVENTO</h2>
+
+        <div class="card">
+
+            <p>
+                Estamos preparando una nueva experiencia táctica.
+            </p>
+
+            <p>
+                Muy pronto anunciaremos fecha, ubicación y plazas disponibles.
+            </p>
+
+            <p>
+                Mantente atento a nuestras redes sociales para no perderte ninguna novedad.
+            </p>
+
+        </div>
+
+    </section>
+
     <section id="contacto" class="contacto">
 
-    <h2>CONTACTO</h2>
+        <h2>CONTACTO</h2>
 
-    <p>
-        ¿Preparado para la siguiente partida?
-    </p>
-
-    <div class="contact-buttons">
+        <p>
+            ¿Preparado para la siguiente partida?
+        </p>
 
         <a
             class="whatsapp"
             href="https://wa.me/34698125932"
             target="_blank"
-        >
+            rel="noopener noreferrer">
+
             CONTACTAR POR WHATSAPP
+
         </a>
 
-      <a
-    class="instagram"
-    href="https://instagram.com/l3m_airsoft"
-    target="_blank"
->
-    CONTACTAR POR INSTAGRAM
-</a>
+        <a
+            class="instagram"
+            href="https://instagram.com/l3m_airsoft"
+            target="_blank"
+            rel="noopener noreferrer">
 
-    </div>
-</section>
+            CONTACTAR POR INSTAGRAM
+
+        </a>
+
+    </section>
+
+</main>
 
 <footer>
-    <p>🪖 Mosco Events © 2026</p>
+
+    <p>
+        🪖 Mosco Events © 2026 - Todos los derechos reservados
+    </p>
+
 </footer>
+
+<script src="script.js"></script>
 
 </body>
 </html>
+```
