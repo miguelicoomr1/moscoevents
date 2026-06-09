@@ -77,7 +77,7 @@ if (menuToggle && menu) {
 }
 /* ===== CUENTA ATRÁS OPERACIÓN VERANO ===== */
 
-const fechaEvento = new Date("2026-07-25T09:00:00").getTime();
+const fechaEvento = new Date("2026-08-09T09:00:00").getTime();
 
 function actualizarContador() {
 
