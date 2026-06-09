@@ -378,3 +378,59 @@ footer{
     .prev,.next{font-size:40px;}
     .close{font-size:40px;right:20px;}
 }
+/* ===== COUNTDOWN OPERACIÓN VERANO ===== */
+
+.countdown{
+    margin-top:35px;
+    display:flex;
+    justify-content:center;
+    gap:15px;
+    flex-wrap:wrap;
+}
+
+.time-box{
+    min-width:110px;
+    padding:18px;
+    background:rgba(0,0,0,.45);
+    border:1px solid var(--border);
+    border-radius:10px;
+    backdrop-filter:blur(8px);
+    box-shadow:var(--shadow);
+}
+
+.time-box span{
+    display:block;
+    font-size:2.3rem;
+    font-weight:700;
+    color:var(--mc-sand);
+    line-height:1;
+}
+
+.time-box small{
+    display:block;
+    margin-top:8px;
+    color:var(--text-soft);
+    letter-spacing:2px;
+    font-size:.8rem;
+}
+
+@media (max-width:768px){
+
+    .countdown{
+        gap:10px;
+    }
+
+    .time-box{
+        min-width:80px;
+        padding:12px;
+    }
+
+    .time-box span{
+        font-size:1.6rem;
+    }
+
+    .time-box small{
+        font-size:.65rem;
+    }
+
+}
