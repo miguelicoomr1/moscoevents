@@ -429,3 +429,10 @@ footer{
 .card{
     text-align:left;
 }
+.eventos .card{
+    margin-bottom:30px;
+}
+
+.eventos .card:last-child{
+    margin-bottom:0;
+}
