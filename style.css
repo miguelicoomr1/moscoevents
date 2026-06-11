@@ -413,3 +413,19 @@ footer{
     font-size:.75rem;
     letter-spacing:1px;
 }
+.eventos{
+    display:flex;
+    flex-direction:column;
+    gap:25px;
+}
+
+.card h3{
+    color:var(--mc-sand);
+    margin-bottom:15px;
+    font-size:1.6rem;
+    text-transform:uppercase;
+}
+
+.card{
+    text-align:left;
+}
