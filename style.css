@@ -141,9 +141,8 @@ nav a:hover::after,
     align-items:center;
     padding-top:70px;
 
-    /* Imagen escritorio */
     background:
-        linear-gradient(rgba(0,0,0,.35),rgba(0,0,0,.9)),
+        linear-gradient(rgba(0,0,0,.35),rgba(0,0,0,.75)),
         url("images/1.jpeg");
 
     background-size:cover;
