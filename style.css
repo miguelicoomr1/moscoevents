@@ -151,7 +151,7 @@ nav a:hover::after,
     position:absolute;
     inset:0;
     background:
-    radial-gradient(circle at center,transparent,rgba(0,0,0,.55));
+    radial-gradient(circle at center,transparent,rgba(0,0,0,.25));
 }
 
 .hero-content{
