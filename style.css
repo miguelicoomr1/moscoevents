@@ -140,18 +140,35 @@ nav a:hover::after,
     justify-content:center;
     align-items:center;
     padding-top:70px;
+
+    /* Imagen escritorio */
     background:
-    linear-gradient(rgba(0,0,0,.35),rgba(0,0,0,.9)),
-    url("images/fondo.png");
+        linear-gradient(rgba(0,0,0,.35),rgba(0,0,0,.9)),
+        url("images/1.jpeg");
+
     background-size:cover;
-    background-position:center;
+    background-repeat:no-repeat;
+    background-position:center center;
 }
 
 .overlay{
     position:absolute;
     inset:0;
     background:
-    radial-gradient(circle at center,transparent,rgba(0,0,0,.25));
+        radial-gradient(circle at center,transparent,rgba(0,0,0,.25));
+}
+
+/* Imagen móvil */
+@media (max-width:768px){
+    .hero{
+        background:
+            linear-gradient(rgba(0,0,0,.35),rgba(0,0,0,.9)),
+            url("images/fondo.png");
+
+        background-size:cover;
+        background-repeat:no-repeat;
+        background-position:center center;
+    }
 }
 
 .hero-content{
