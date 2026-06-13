@@ -443,7 +443,7 @@ footer{
     gap:25px;
 }
 
-.card h3{
+.card h2{
     color:var(--mc-sand);
     margin-bottom:15px;
     font-size:1.6rem;
