@@ -1,17 +1,20 @@
 /* =========================
-   MULTICAM PROFESSIONAL THEME
+      MULTICAM PROFESSIONAL THEME
 ========================= */
 
 :root{
-    --mc-sand:#c9b68a;   /* arena */
-    --mc-khaki:#b09b6a;  /* caqui */
-    --mc-olive:#6e7650;  /* verde oliva */
-    --mc-dark:#50553c;   /* verde oscuro */
+    --mc-sand:#c9b68a;
+    --mc-khaki:#b09b6a;
+    --mc-olive:#6e7650;
+    --mc-dark:#50553c;
     --bg:#0b0d0a;
     --bg2:#121510;
     --bg3:#1a1d18;
+    --text:#f2f2f2;
+    --text-soft:#b8b8b8;
+    --border:rgba(201,182,138,.25);
+    --shadow:0 15px 35px rgba(0,0,0,.35);
 }
-
 /* RESET */
 *{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;}
