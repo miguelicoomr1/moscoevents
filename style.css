@@ -3,13 +3,13 @@
 ========================= */
 
 :root{
-    --mc-sand:#d2c29d;
-    --mc-khaki:#b89c6d;
-    --mc-olive:#8a8760;
-    --mc-dark:#5e5b3f;
-    --bg:#0d0d0b;
-    --bg2:#161611;
-    --bg3:#1f1f18;
+    --mc-sand:#c9b68a;   /* arena */
+    --mc-khaki:#b09b6a;  /* caqui */
+    --mc-olive:#6e7650;  /* verde oliva */
+    --mc-dark:#50553c;   /* verde oscuro */
+    --bg:#0b0d0a;
+    --bg2:#121510;
+    --bg3:#1a1d18;
 }
 
 /* RESET */
