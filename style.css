@@ -529,3 +529,63 @@ footer{
 .event a:hover{
     color:var(--mc-sand);
 }
+/* ===== CALENDARIO ===== */
+
+.container{
+    max-width:1400px;
+    margin:120px auto 60px;
+    padding:0 20px;
+}
+
+.calendar-intro{
+    text-align:center;
+    margin-bottom:40px;
+}
+
+.calendar-intro h1{
+    color:var(--mc-sand);
+    font-size:clamp(2rem,5vw,4rem);
+    margin-bottom:15px;
+    text-transform:uppercase;
+}
+
+.calendar-subtitle{
+    color:var(--text-soft);
+    font-size:1.2rem;
+    margin-bottom:30px;
+}
+
+.calendar-cards{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    gap:20px;
+}
+
+.calendar-card{
+    background:var(--bg3);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:25px;
+    text-align:center;
+    box-shadow:var(--shadow);
+}
+
+.calendar-card h3{
+    color:var(--mc-sand);
+    margin-bottom:10px;
+}
+
+.legend{
+    display:flex;
+    justify-content:center;
+    gap:15px;
+    flex-wrap:wrap;
+    margin:30px 0;
+}
+
+.legend span{
+    background:var(--bg3);
+    padding:10px 15px;
+    border-radius:25px;
+    border:1px solid var(--border);
+}
