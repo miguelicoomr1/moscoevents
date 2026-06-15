@@ -1,202 +1,48 @@
 <!DOCTYPE html>
+
 <html lang="es">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Calendario | Mosco Events</title>
+<link rel="icon" type="image/png" href="images/favicon-32x32.png">
+<meta name="description"
+    content="Contacto oficial de Mosco Events.">
 
+<meta name="theme-color" content="#8d9a55">
+
+<link rel="stylesheet" href="style.css">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
 
-<style>
-:root{
-    --mc-sand:#c9b68a;
-    --mc-khaki:#b09b6a;
-    --mc-olive:#6e7650;
-    --mc-dark:#50553c;
-    --bg:#0b0d0a;
-    --bg2:#121510;
-    --bg3:#1a1d18;
-    --text:#f2f2f2;
-}
-
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-}
-
-body{
-    font-family:'Rajdhani',sans-serif;
-    background:linear-gradient(180deg,#080908,#10120f);
-    color:var(--text);
-}
-
-/* HEADER */
-
-header{
-    background:#111;
-    padding:15px 30px;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    position:sticky;
-    top:0;
-    z-index:1000;
-}
-
-.logo img{
-    height:70px;
-}
-
-nav{
-    display:flex;
-    align-items:center;
-    gap:20px;
-}
-
-nav a,
-.dropbtn{
-    color:white;
-    text-decoration:none;
-    background:none;
-    border:none;
-    cursor:pointer;
-    font-size:1rem;
-    font-family:'Rajdhani',sans-serif;
-}
-
-.dropdown{
-    position:relative;
-}
-
-.dropdown-content{
-    display:none;
-    position:absolute;
-    background:#1a1d18;
-    min-width:220px;
-    border-radius:8px;
-    overflow:hidden;
-    top:100%;
-    left:0;
-}
-
-.dropdown-content a{
-    display:block;
-    padding:12px;
-    color:white;
-    text-decoration:none;
-}
-
-.dropdown-content a:hover{
-    background:var(--mc-olive);
-}
-
-.dropdown:hover .dropdown-content{
-    display:block;
-}
-
-.menu-toggle{
-    display:none;
-}
-
-/* CONTENIDO */
-
-.container{
-    max-width:1400px;
-    margin:auto;
-    padding:40px 20px;
-}
-
-.hero{
-    background:var(--bg3);
-    border:1px solid rgba(201,182,138,.25);
-    border-radius:15px;
-    padding:30px;
-    margin-bottom:30px;
-    text-align:center;
-}
-
-.hero h1{
-    color:var(--mc-sand);
-    margin-bottom:10px;
-}
-
-.next-events{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-    gap:20px;
-    margin-top:25px;
-}
-
-.card{
-    background:#141814;
-    padding:20px;
-    border-left:4px solid var(--mc-sand);
-    border-radius:10px;
-}
-
-.card h3{
-    color:var(--mc-sand);
-}
-
-.legend{
-    display:flex;
-    justify-content:center;
-    flex-wrap:wrap;
-    gap:15px;
-    margin-bottom:30px;
-}
-
-.legend span{
-    background:#141814;
-    padding:10px 15px;
-    border-radius:25px;
-}
-
-footer{
-    text-align:center;
-    padding:25px;
-    margin-top:40px;
-    background:#111;
-}
-
-/* MOVIL */
-
-@media(max-width:768px){
-
-    header{
-        flex-direction:column;
-        gap:15px;
-    }
-
-    nav{
-        flex-wrap:wrap;
-        justify-content:center;
-    }
-
-    .logo img{
-        height:60px;
-    }
-
-}
-</style>
 </head>
+
 <body>
 
 <header id="top">
 
-    <div class="logo">
-        <a href="index.html">
-            <img src="images/logo-png.png" alt="Mosco Events">
-        </a>
-    </div>
+<div class="logo">
+    <a href="index.html">
+        <img src="images/logo-png.png" alt="Mosco Events">
+    </a>
+</div>
 
-    <nav>
+<button
+    class="menu-toggle"
+    id="menu-toggle"
+    aria-label="Abrir menú">
+    ☰
+</button>
+
+  <nav id="menu">
 
         <a href="index.html">Inicio</a>
 
         <div class="dropdown">
+
             <button class="dropbtn">
                 Eventos ▼
             </button>
@@ -204,21 +50,23 @@ footer{
             <div class="dropdown-content">
                 <a href="calendario.html">📅 Calendario</a>
                 <a href="operación-verano.html">🔥 Operación Verano</a>
-                <a href="eventos-anteriores.html">🔙 Eventos Anteriores</a>
+              <a href="eventos-anteriores.html">🔙 Eventos Anteriores</a>
             </div>
+
         </div>
 
         <a href="galeria.html">Galería</a>
+       <div class="dropdown">
 
-        <div class="dropdown">
-            <button class="dropbtn">
-                Información ▼
-            </button>
+    <button class="dropbtn">
+        Información ▼
+    </button>
 
-            <div class="dropdown-content">
-                <a href="normas.html">📜 Normas</a>
-                <a href="contacto.html">📞 Contacto</a>
-            </div>
+    <div class="dropdown-content">
+        <a href="normas.html">📜 Normas</a>
+        <a href="contacto.html">📞 Contacto</a>
+    </div>
+
         </div>
 
     </nav>
