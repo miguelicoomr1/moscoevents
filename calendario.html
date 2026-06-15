@@ -70,39 +70,68 @@
 </div>
 </nav>
 
-</header>
-<section aria-label="Portada principal" class="hero" id="inicio">
-<div class="overlay"></div>
-<div class="hero-content">
-<div class="hero-badges">
-</div>
+<section aria-label="Portada Calendario" class="hero" id="inicio">
 
-<h1>CALENDARIO </h1>
-    </nav>
-</header>
+    <div class="overlay"></div>
 
-<main class="container">
+    <div class="hero-content">
 
-   <section class="calendar-intro">
+        <h1>CALENDARIO DE EVENTOS</h1>
 
-    <h1>📅 Calendario de Eventos</h1>
-
-    <p class="calendar-subtitle">
-        Consulta todas las partidas programadas de Mosco Events.
-    </p>
-
-    <div class="calendar-cards">
-
-        <div class="calendar-card">
-            <h3>📆 Calendario de Eventos</h3>
-            <p>Navega entre meses para consultar todas las partidas programadas.</p>
-        </div>
+        <p>
+            Consulta todas las partidas programadas de Mosco Events.
+        </p>
 
     </div>
 
 </section>
 
- <section class="calendar-section">
+<main class="container">
+
+    <section class="calendar-intro">
+
+        <div class="calendar-cards">
+
+            <div class="calendar-card">
+
+                <h3>🔥 Operación Verano</h3>
+
+                <p>
+                    09 Agosto 2026
+                </p>
+
+            </div>
+
+            <div class="calendar-card">
+
+                <h3>📆 Calendario de Eventos</h3>
+
+                <p>
+                    Navega entre meses para consultar todas las partidas programadas.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <div class="legend">
+        <span>🔫 Partida</span>
+        <span>🏆 Evento Especial</span>
+    </div>
+
+    <section class="calendar-section">
+
+        <div class="calendar-header">
+            <button id="prevMonth">◀</button>
+            <h2 id="monthYear"></h2>
+            <button id="nextMonth">▶</button>
+        </div>
+
+        <div id="calendar" class="calendar-grid"></div>
+
+    </section>
 
     <div class="calendar-header">
         <button id="prevMonth">◀</button>
