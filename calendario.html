@@ -286,18 +286,15 @@ footer{
         <span>🏆 Evento Especial</span>
     </div>
 
-    <section class="google-calendar-section">
+ <section class="calendar-section">
 
-    <h2>📆 Calendario Oficial Mosco Events</h2>
+    <div class="calendar-header">
+        <button id="prevMonth">◀</button>
+        <h2 id="monthYear"></h2>
+        <button id="nextMonth">▶</button>
+    </div>
 
-    <iframe
-        src="https://calendar.google.com/calendar/embed?src=3b7b25d6d8d00a5eabf0fb983d6e86ebe48ae652ead2ba941a267b26053baad9%40group.calendar.google.com&ctz=Europe%2FMadrid"
-        width="100%"
-        height="800"
-        frameborder="0"
-        scrolling="no"
-        style="border:0;background:white;border-radius:15px;">
-    </iframe>
+    <div id="calendar" class="calendar-grid"></div>
 
 </section>
 
