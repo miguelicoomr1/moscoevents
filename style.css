@@ -459,13 +459,73 @@ footer{
 .eventos .card:last-child{
     margin-bottom:0;
 }
-.google-calendar-section{
-    width:100%;
-    margin-top:40px;
+.calendar-section{
+    background:var(--bg3);
+    border-radius:15px;
+    padding:25px;
+    border:1px solid rgba(201,182,138,.25);
 }
 
-.google-calendar-section iframe{
-    display:block;
-    width:100%;
-    min-height:800px;
+.calendar-header{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:20px;
+    margin-bottom:20px;
+}
+
+.calendar-header button{
+    background:var(--mc-olive);
+    color:white;
+    border:none;
+    padding:10px 15px;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:18px;
+}
+
+.calendar-grid{
+    display:grid;
+    grid-template-columns:repeat(7,1fr);
+    gap:8px;
+}
+
+.day-name,
+.day{
+    background:#141814;
+    border:1px solid rgba(255,255,255,.08);
+    padding:10px;
+}
+
+.day-name{
+    text-align:center;
+    font-weight:bold;
+}
+
+.day{
+    min-height:100px;
+}
+
+.day-number{
+    font-weight:bold;
+}
+
+.event-day{
+    border:2px solid var(--mc-sand);
+}
+
+.event{
+    margin-top:6px;
+    padding:4px;
+    background:var(--mc-olive);
+    border-radius:5px;
+}
+
+.event a{
+    color:white;
+    text-decoration:none;
+}
+
+.event a:hover{
+    color:var(--mc-sand);
 }
