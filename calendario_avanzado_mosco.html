@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calendario | Mosco Events</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+--mc-sand:#c9b68a;--mc-khaki:#b09b6a;--mc-olive:#6e7650;--mc-dark:#50553c;
+--bg:#0b0d0a;--bg2:#121510;--bg3:#1a1d18;--text:#f2f2f2;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Rajdhani',sans-serif;background:linear-gradient(180deg,#080908,#10120f);color:var(--text)}
+.container{max-width:1400px;margin:100px auto 40px;padding:20px}
+.hero{background:var(--bg3);border:1px solid rgba(201,182,138,.25);padding:25px;border-radius:15px;margin-bottom:20px}
+.hero h1{text-align:center;color:var(--mc-sand);margin-bottom:10px}
+.next-events{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:15px;margin-top:15px}
+.card{background:#141814;padding:15px;border-radius:10px;border-left:4px solid var(--mc-sand)}
+.calendar-header{display:flex;justify-content:center;align-items:center;gap:20px;margin:20px 0}
+.calendar-header button{padding:10px 16px;background:var(--mc-olive);color:white;border:none;border-radius:8px;cursor:pointer}
+#monthYear{font-size:2rem}
+.calendar{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}
+.day-name,.day{background:var(--bg3);border:1px solid rgba(255,255,255,.08);padding:10px}
+.day-name{text-align:center;font-weight:bold}
+.day{min-height:120px;position:relative}
+.day-number{font-weight:bold}
+.event{border:2px solid var(--mc-sand)}
+.event-item{margin-top:6px;padding:4px;background:rgba(110,118,80,.35);border-radius:5px;cursor:pointer}
+.legend{display:flex;gap:10px;flex-wrap:wrap;margin:20px 0}
+.legend span{padding:8px 12px;background:#141814;border-radius:20px}
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);align-items:center;justify-content:center}
+.modal-content{background:#161a15;padding:25px;border-radius:12px;max-width:500px;width:90%}
+.btn{display:inline-block;margin-top:10px;padding:10px 15px;background:var(--mc-sand);color:#111;text-decoration:none;font-weight:bold}
+iframe{width:100%;height:600px;border:none;border-radius:12px;margin-top:25px}
+@media(max-width:768px){.calendar{font-size:.8rem}.day{min-height:90px}}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="hero">
+<h1>📅 Calendario de Eventos</h1>
+<p style="text-align:center">Consulta todas las partidas programadas de Mosco Events.</p>
+
+<div class="next-events">
+<div class="card"><h3>🔥 Operación Verano</h3><p>09 Agosto 2026</p></div>
+<div class="card"><h3>🔫 Próxima Partida</h3><p>20 Septiembre 2026</p></div>
+</div>
+</div>
+
+<div class="legend">
+<span>🔥 Evento Principal</span>
+<span>🔫 Partida</span>
+<span>🏆 Especial</span>
+</div>
+
+<div class="calendar-header">
+<button onclick="changeMonth(-1)">◀</button>
+<h2 id="monthYear"></h2>
+<button onclick="changeMonth(1)">▶</button>
+</div>
+
+<div class="calendar" id="calendar"></div>
+
+<h2 style="margin-top:30px">Google Calendar</h2>
+<iframe src="https://calendar.google.com/calendar/embed?src=TU_ID_DE_CALENDARIO"></iframe>
+</div>
+
+<div class="modal" id="modal">
+<div class="modal-content">
+<h2 id="modalTitle"></h2>
+<p id="modalDate"></p>
+<a class="btn" id="modalLink" href="#">INSCRIBIRSE</a>
+</div>
+</div>
+
+<script>
+const events={
+"2026-08-09":{title:"🔥 Operación Verano",link:"operación-verano.html"},
+"2026-09-20":{title:"🔫 Próxima Partida",link:"próximo-evento.html"}
+};
+
+let currentDate=new Date();
+
+function renderCalendar(){
+const cal=document.getElementById('calendar');
+cal.innerHTML='';
+const m=currentDate.getMonth(), y=currentDate.getFullYear();
+document.getElementById('monthYear').textContent=
+new Date(y,m).toLocaleDateString('es-ES',{month:'long',year:'numeric'});
+
+['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'].forEach(d=>{
+let e=document.createElement('div');e.className='day-name';e.textContent=d;cal.appendChild(e);
+});
+
+let first=new Date(y,m,1).getDay(); first=first===0?6:first-1;
+let days=new Date(y,m+1,0).getDate();
+
+for(let i=0;i<first;i++) cal.appendChild(document.createElement('div'));
+
+for(let d=1; d<=days; d++){
+let cell=document.createElement('div'); cell.className='day';
+let key=`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+cell.innerHTML=`<div class='day-number'>${d}</div>`;
+
+if(events[key]){
+cell.classList.add('event');
+let ev=document.createElement('div');
+ev.className='event-item';
+ev.textContent=events[key].title;
+ev.onclick=()=>showEvent(events[key],key);
+cell.appendChild(ev);
+}
+cal.appendChild(cell);
+}
+}
+function changeMonth(v){currentDate.setMonth(currentDate.getMonth()+v);renderCalendar();}
+function showEvent(ev,date){
+document.getElementById('modalTitle').textContent=ev.title;
+document.getElementById('modalDate').textContent=date;
+document.getElementById('modalLink').href=ev.link;
+document.getElementById('modal').style.display='flex';
+}
+document.getElementById('modal').onclick=e=>{if(e.target.id==='modal')e.target.style.display='none';}
+renderCalendar();
+</script>
+</body>
+</html>
