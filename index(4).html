@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Mosco Events</title>
+
+<link rel="icon" type="image/png" href="images/favicon-32x32.png">
+
+<meta content="Mosco Events organiza eventos tácticos, simulación y airsoft con experiencias inmersivas y plazas limitadas." name="description"/>
+<meta content="#8d9a55" name="theme-color"/>
+<link href="style.css" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&amp;display=swap" rel="stylesheet"/><style>
+.hero-badges{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-bottom:25px}
+.hero-badges span{padding:8px 14px;border:1px solid rgba(255,255,255,.15);background:rgba(0,0,0,.35);backdrop-filter:blur(6px);font-size:.8rem;letter-spacing:2px}
+.hero h1{font-family:'Oswald',sans-serif}
+.hero::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.03),transparent);pointer-events:none}
+.card::before{content:'OPERATION';display:block;color:rgba(255,255,255,.4);letter-spacing:4px;font-size:.75rem;margin-bottom:10px}
+.stats>div{padding:20px;border:1px solid rgba(255,255,255,.08);border-radius:10px;min-width:180px}
+.gallery-grid img{filter:contrast(1.05) saturate(.95)}
+.mission-strip{display:flex;justify-content:center;flex-wrap:wrap;gap:16px;padding:18px;background:#0a0a0a;letter-spacing:2px;font-weight:700}
+.contacto p{margin-bottom:15px}
+</style></head>
+<body>
+<header id="top">
+
+<div class="logo">
+    <a href="index.html">
+        <img src="images/logo-png.png" alt="Mosco Events">
+    </a>
+</div>
+
+<button
+    class="menu-toggle"
+    id="menu-toggle"
+    aria-label="Abrir menú">
+    ☰
+</button>
+
+  <nav id="menu">
+
+        <a href="index.html">Inicio</a>
+
+        <div class="dropdown">
+
+            <button class="dropbtn">
+                Eventos ▼
+            </button>
+
+            <div class="dropdown-content">
+                <a href="operación-verano.html">🔥 Operación Verano</a>
+                <a href="próximo-evento.html">🔫 Próxima partida</a>
+              <a href="eventos-anteriores.html">🔙 Eventos Anteriores</a>
+            </div>
+
+        </div>
+
+        <a href="galeria.html">Galería</a>
+       <div class="dropdown">
+
+    <button class="dropbtn">
+        Información ▼
+    </button>
+
+    <div class="dropdown-content">
+        <a href="normas.html">📜 Normas</a>
+        <a href="contacto.html">📞 Contacto</a>
+    </div>
+
+</div>
+
+    </nav>
+
+</header>
+<section aria-label="Portada principal" class="hero" id="inicio">
+<div class="overlay"></div>
+<div class="hero-content">
+<div class="hero-badges">
+<span>PARTIDAS PRIVADAS LIMITED SLOTS</span>
+</div>
+
+<h1>MOSCO EVENTS</h1>
+<p>
+            TCSIM · SIMULACIÓN · EXPERIENCIAS ÚNICAS
+        </p>
+<a class="btn" href="#eventos">
+            VER PRÓXIMAS PARTIDAS
+        </a>
+</div>
+</section>
+<section class="eventos" id="eventos">
+<h2>PRÓXIMAS PARTIDAS</h2>
+<div class="card">
+<h3>🔥 OPERACIÓN VERANO</h3>
+<p>📍 Laser Counter (Pedrola)</p>
+<p>🎯 50 plazas</p>
+<p>🏆 Premios y sorteos</p>
+<p>📅 9 de Agosto de 2026</p>
+<p>⏱️ 13 horas de evento</p>
+<p>🍔 Precio reducido en el bar</p>
+<p>🚫No se puede entrar con comida🚫</p>
+<a class="btn" href="operación-verano.html" rel="noopener noreferrer" target="_blank">
+        INSCRIBIRSE AHORA
+    </a>
+</div>
+</section>
+<section class="stats">
+<div>
+<span>50</span>
+<p>Participantes</p>
+</div>
+<div>
+<span>+10</span>
+<p>Premios</p>
+</div>
+<div>
+<span>13h</span>
+<p>Acción</p>
+</div>
+</section>
+<section class="galeria" id="galeria">
+<h2>GALERÍA</h2>
+<div class="gallery-grid">
+<img alt="Foto" class="zoomable" src="images/mosco1.jpeg"/>
+<img alt="Foto" class="zoomable" src="images/casau1.jpeg"/>
+<img alt="Foto" class="zoomable" src="images/gordito 1.jpeg"/>
+<img alt="Foto" class="zoomable" src="images/mosco5.jpeg"/>
+<img alt="Foto" class="zoomable" src="images/mosco2.jpeg"/>
+<img alt="Foto" class="zoomable" src="images/gordito casau.jpeg"/>
+<img alt="Foto" class="zoomable" src="images/gordito 2.jpeg"/>
+<img alt="Foto" class="zoomable" src="images/gordito 3.jpeg"/>
+<img alt="Foto" class="zoomable" src="images/mosco4.jpeg"/>
+<img alt="Foto" class="zoomable" src="images/gordito 5.jpeg"/>
+<img alt="Foto" class="zoomable" src="images/mosco6.jpeg"/>
+<img alt="Foto" class="zoomable" src="images/casau2.jpeg"/>
+<img alt="Foto" class="zoomable" src="images/gordito 6.jpeg"/>
+<img alt="Foto" class="zoomable" src="images/mosco7.jpeg"/>
+<img alt="Foto" class="zoomable" src="images/mosco8.jpeg"/>
+<img alt="Foto" class="zoomable" src="images/mosco9.jpeg"/>
+</div>
+<!-- Modal galería -->
+<div class="modal" id="modal">
+<span class="close">×</span>
+<span class="prev">❮</span>
+<img alt="Imagen ampliada" id="modal-img"/>
+<span class="next">❯</span>
+</div>
+</section>
+<section class="contacto" id="contacto">
+<h2>CONTACTO</h2>
+<p>
+        ¿Preparado para la siguiente partida?
+    </p>
+<a class="whatsapp" href="https://wa.me/34698125932?text=Hola,%20me%20interesa%20Mosco%20Events.%20%C2%BFC%C3%B3mo%20puedo%20participar%20en%20los%20pr%C3%B3ximos%20eventos%3F" rel="noopener noreferrer" target="_blank">
+    CONTACTAR POR WHATSAPP
+</a>
+<a class="instagram" href="https://instagram.com/l3m_airsoft" rel="noopener noreferrer" target="_blank">
+    CONTACTAR POR INSTAGRAM
+</a>
+</section>
+
+<section class="mission-strip">
+<div>TACTICAL SIMULATION</div>
+<div>•</div>
+<div>MOSCO EVENTS</div>
+<div>•</div>
+<div>IMMERSIVE EXPERIENCE</div>
+</section>
+<footer>
+<p>🪖 Mosco Events © 2026 - Todos los derechos reservados</p>
+</footer>
+<script src="script.js"></script>
+</body>
+</html>
