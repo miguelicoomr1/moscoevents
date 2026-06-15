@@ -463,3 +463,81 @@ footer{
 
 /* moved from index */
 .hero-badges{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-bottom:25px}.hero-badges span{padding:8px 14px;border:1px solid rgba(255,255,255,.15);background:rgba(0,0,0,.35);backdrop-filter:blur(6px);font-size:.8rem;letter-spacing:2px}.hero::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.03),transparent);pointer-events:none}.mission-strip{display:flex;justify-content:center;flex-wrap:wrap;gap:16px;padding:18px;background:#0a0a0a;letter-spacing:2px;font-weight:700}
+/* =========================
+   CALENDARIO
+========================= */
+
+.calendario{
+    background: var(--bg2);
+}
+
+.calendar-header{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:20px;
+    margin-bottom:30px;
+}
+
+.calendar-header button{
+    background:var(--mc-khaki);
+    border:none;
+    color:#111;
+    padding:10px 15px;
+    border-radius:6px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.calendar-grid{
+    display:grid;
+    grid-template-columns:repeat(7,1fr);
+    gap:10px;
+    max-width:1100px;
+    margin:0 auto;
+}
+
+.day-name{
+    text-align:center;
+    font-weight:700;
+    color:var(--mc-sand);
+    padding:10px;
+}
+
+.day{
+    min-height:80px;
+    border:1px solid var(--border);
+    background:var(--bg3);
+    border-radius:8px;
+    padding:10px;
+    text-align:center;
+}
+
+.empty{
+    background:transparent;
+    border:none;
+}
+
+.event-day{
+    background:var(--mc-olive);
+    color:white;
+    font-weight:bold;
+    border:2px solid var(--mc-sand);
+}
+
+@media (max-width:768px){
+
+    .calendar-grid{
+        gap:5px;
+    }
+
+    .day{
+        min-height:55px;
+        padding:5px;
+        font-size:.9rem;
+    }
+
+    .day-name{
+        font-size:.8rem;
+    }
+}
