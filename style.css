@@ -459,3 +459,13 @@ footer{
 .eventos .card:last-child{
     margin-bottom:0;
 }
+.google-calendar-section{
+    width:100%;
+    margin-top:40px;
+}
+
+.google-calendar-section iframe{
+    display:block;
+    width:100%;
+    min-height:800px;
+}
