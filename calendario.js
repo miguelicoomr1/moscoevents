@@ -1,6 +1,11 @@
 const calendar = document.getElementById("calendar");
 const monthYear = document.getElementById("monthYear");
-
+const eventos = {
+    "2026-08-09": {
+        titulo: "🔥 Operación Verano",
+        enlace: "operación-verano.html"
+    }
+};
 let currentDate = new Date();
 
 const meses = [
@@ -28,7 +33,7 @@ function renderCalendar(){
 
         calendar.appendChild(el);
     });
-
+   
     let firstDay = new Date(year, month, 1).getDay();
     firstDay = firstDay === 0 ? 6 : firstDay - 1;
 
@@ -49,24 +54,22 @@ function renderCalendar(){
         cell.innerHTML =
         `<div class="day-number">${day}</div>`;
 
-        if(window.eventos && eventos[dateKey]){
+     if(eventos[dateKey]){
 
-            cell.classList.add("event-day");
+    cell.classList.add("event-day");
 
-            const ev = document.createElement("div");
+    cell.style.cursor = "pointer";
 
-            ev.className = "event";
+    cell.addEventListener("click", () => {
+        window.location.href = eventos[dateKey].enlace;
+    });
 
-            ev.innerHTML =
-            `<a href="${eventos[dateKey].enlace}">
+    cell.innerHTML = `
+        <div class="day-number">${day}</div>
+        <div class="event">
             ${eventos[dateKey].titulo}
-            </a>`;
-
-            cell.appendChild(ev);
-        }
-
-        calendar.appendChild(cell);
-    }
+        </div>
+    `;
 }
 
 document.getElementById("prevMonth")
