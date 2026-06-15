@@ -1,2 +1,91 @@
-alert("calendario.js cargado");
+const calendar = document.getElementById("calendar");
+const monthYear = document.getElementById("monthYear");
+
+const eventos = {
+"2026-08-09": {
+titulo: "🔥 Operación Verano",
+enlace: "operación-verano.html"
+}
+};
+
+let currentDate = new Date();
+
+const meses = [
+"Enero","Febrero","Marzo","Abril",
+"Mayo","Junio","Julio","Agosto",
+"Septiembre","Octubre","Noviembre","Diciembre"
+];
+
+function renderCalendar() {
+
+
+if (!calendar) return;
+
+calendar.innerHTML = "";
+
+const month = currentDate.getMonth();
+const year = currentDate.getFullYear();
+
+monthYear.textContent = `${meses[month]} ${year}`;
+
+["Lun","Mar","Mié","Jue","Vie","Sáb","Dom"].forEach(dayName => {
+    const el = document.createElement("div");
+    el.className = "day-name";
+    el.textContent = dayName;
+    calendar.appendChild(el);
+});
+
+let firstDay = new Date(year, month, 1).getDay();
+firstDay = firstDay === 0 ? 6 : firstDay - 1;
+
+const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+for (let i = 0; i < firstDay; i++) {
+    calendar.appendChild(document.createElement("div"));
+}
+
+for (let day = 1; day <= daysInMonth; day++) {
+
+    const dateKey =
+        `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+
+    const cell = document.createElement("div");
+
+    if (eventos[dateKey]) {
+
+        cell.className = "day event-day";
+
+        cell.innerHTML = `
+            <a href="${eventos[dateKey].enlace}" class="calendar-event-link">
+                <div class="day-number">${day}</div>
+                <div class="event-title">${eventos[dateKey].titulo}</div>
+            </a>
+        `;
+
+    } else {
+
+        cell.className = "day";
+
+        cell.innerHTML = `
+            <div class="day-number">${day}</div>
+        `;
+    }
+
+    calendar.appendChild(cell);
+}
+
+
+}
+
+document.getElementById("prevMonth")?.addEventListener("click", () => {
+currentDate.setMonth(currentDate.getMonth() - 1);
+renderCalendar();
+});
+
+document.getElementById("nextMonth")?.addEventListener("click", () => {
+currentDate.setMonth(currentDate.getMonth() + 1);
+renderCalendar();
+});
+
+renderCalendar();
 
