@@ -18,6 +18,7 @@ const meses = [
 
 function renderCalendar() {
 
+```
 if (!calendar) return;
 
 calendar.innerHTML = "";
@@ -45,33 +46,34 @@ for (let i = 0; i < firstDay; i++) {
 
 for (let day = 1; day <= daysInMonth; day++) {
 
-    const cell = document.createElement("div");
-    cell.className = "day";
-
     const dateKey =
         `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
 
-    cell.innerHTML = `<div class="day-number">${day}</div>`;
+    const cell = document.createElement("div");
 
     if (eventos[dateKey]) {
 
-        cell.classList.add("event-day");
-        cell.style.cursor = "pointer";
+        cell.className = "day event-day";
 
-        cell.addEventListener("click", () => {
-            window.location.href = eventos[dateKey].enlace;
-        });
+        cell.innerHTML = `
+            <a href="${eventos[dateKey].enlace}" class="calendar-event-link">
+                <div class="day-number">${day}</div>
+                <div class="event-title">${eventos[dateKey].titulo}</div>
+            </a>
+        `;
+
+    } else {
+
+        cell.className = "day";
 
         cell.innerHTML = `
             <div class="day-number">${day}</div>
-            <div class="event">
-                ${eventos[dateKey].titulo}
-            </div>
         `;
     }
 
     calendar.appendChild(cell);
 }
+```
 
 }
 
