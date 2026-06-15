@@ -1,11 +1,13 @@
 const calendar = document.getElementById("calendar");
 const monthYear = document.getElementById("monthYear");
+
 const eventos = {
-    "2026-08-09": {
-        titulo: "🔥 Operación Verano",
-        enlace: "operación-verano.html"
-    }
+"2026-08-09": {
+titulo: "🔥 Operación Verano",
+enlace: "operación-verano.html"
+}
 };
+
 let currentDate = new Date();
 
 const meses = [
@@ -14,82 +16,75 @@ const meses = [
 "Septiembre","Octubre","Noviembre","Diciembre"
 ];
 
-function renderCalendar(){
+function renderCalendar() {
 
-    if(!calendar) return;
+```
+if (!calendar) return;
 
-    calendar.innerHTML = "";
+calendar.innerHTML = "";
 
-    const month = currentDate.getMonth();
-    const year = currentDate.getFullYear();
+const month = currentDate.getMonth();
+const year = currentDate.getFullYear();
 
-    monthYear.textContent = `${meses[month]} ${year}`;
+monthYear.textContent = `${meses[month]} ${year}`;
 
-    ["Lun","Mar","Mié","Jue","Vie","Sáb","Dom"].forEach(day => {
-
-        const el = document.createElement("div");
-        el.className = "day-name";
-        el.textContent = day;
-
-        calendar.appendChild(el);
-    });
-   
-    let firstDay = new Date(year, month, 1).getDay();
-    firstDay = firstDay === 0 ? 6 : firstDay - 1;
-
-    const daysInMonth = new Date(year, month + 1, 0).getDate();
-
-    for(let i=0;i<firstDay;i++){
-        calendar.appendChild(document.createElement("div"));
-    }
-
-    for(let day=1;day<=daysInMonth;day++){
-
-        const cell = document.createElement("div");
-        cell.className = "day";
-
-        const dateKey =
-        `${year}-${String(month+1).padStart(2,"0")}-${String(day).padStart(2,"0")}`;
-
-        cell.innerHTML =
-        `<div class="day-number">${day}</div>`;
-
-     if(eventos[dateKey]){
-
-    cell.classList.add("event-day");
-
-    cell.style.cursor = "pointer";
-
-    cell.addEventListener("click", () => {
-        window.location.href = eventos[dateKey].enlace;
-    });
-
-    cell.innerHTML = `
-        <div class="day-number">${day}</div>
-        <div class="event">
-            ${eventos[dateKey].titulo}
-        </div>
-    `;
-}
-
-document.getElementById("prevMonth")
-?.addEventListener("click", () => {
-
-    currentDate.setMonth(
-        currentDate.getMonth()-1
-    );
-
-    renderCalendar();
+["Lun","Mar","Mié","Jue","Vie","Sáb","Dom"].forEach(dayName => {
+    const el = document.createElement("div");
+    el.className = "day-name";
+    el.textContent = dayName;
+    calendar.appendChild(el);
 });
 
-document.getElementById("nextMonth")
-?.addEventListener("click", () => {
+let firstDay = new Date(year, month, 1).getDay();
+firstDay = firstDay === 0 ? 6 : firstDay - 1;
 
-    currentDate.setMonth(
-        currentDate.getMonth()+1
-    );
+const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-    renderCalendar();
+for (let i = 0; i < firstDay; i++) {
+    calendar.appendChild(document.createElement("div"));
+}
+
+for (let day = 1; day <= daysInMonth; day++) {
+
+    const cell = document.createElement("div");
+    cell.className = "day";
+
+    const dateKey =
+        `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+
+    cell.innerHTML = `<div class="day-number">${day}</div>`;
+
+    if (eventos[dateKey]) {
+
+        cell.classList.add("event-day");
+        cell.style.cursor = "pointer";
+
+        cell.addEventListener("click", () => {
+            window.location.href = eventos[dateKey].enlace;
+        });
+
+        cell.innerHTML = `
+            <div class="day-number">${day}</div>
+            <div class="event">
+                ${eventos[dateKey].titulo}
+            </div>
+        `;
+    }
+
+    calendar.appendChild(cell);
+}
+```
+
+}
+
+document.getElementById("prevMonth")?.addEventListener("click", () => {
+currentDate.setMonth(currentDate.getMonth() - 1);
+renderCalendar();
+});
+
+document.getElementById("nextMonth")?.addEventListener("click", () => {
+currentDate.setMonth(currentDate.getMonth() + 1);
+renderCalendar();
 });
 
 renderCalendar();
