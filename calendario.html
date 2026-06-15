@@ -1,48 +1,44 @@
-<!DOCTYPE html>
 
+<!DOCTYPE html>
 <html lang="es">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Calendario | Mosco Events</title>
-<link rel="icon" type="image/png" href="images/favicon-32x32.png">
-<meta name="description"
-    content="Calendario oficial de Mosco Events.">
+    <title>Calendario | Mosco Events</title>
 
-<meta name="theme-color" content="#8d9a55">
+    <link rel="icon" type="image/png" href="images/favicon-32x32.png">
 
-<link rel="stylesheet" href="style.css">
+    <meta name="description" content="Calendario oficial de Mosco Events">
+    <meta name="theme-color" content="#8d9a55">
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&display=swap" rel="stylesheet">
 </head>
 
 <body class="calendario-page">
 
 <header id="top">
 
-<div class="logo">
-    <a href="index.html">
-        <img src="images/logo-png.png" alt="Mosco Events">
-    </a>
-</div>
+    <div class="logo">
+        <a href="index.html">
+            <img src="images/logo-png.png" alt="Mosco Events">
+        </a>
+    </div>
 
-<button
-    class="menu-toggle"
-    id="menu-toggle"
-    aria-label="Abrir menú">
-    ☰
-</button>
+    <button class="menu-toggle" id="menu-toggle" aria-label="Abrir menú">
+        ☰
+    </button>
 
-  <nav id="menu">
+    <nav id="menu">
 
         <a href="index.html">Inicio</a>
 
         <div class="dropdown">
-
             <button class="dropbtn">
                 Eventos ▼
             </button>
@@ -50,124 +46,111 @@
             <div class="dropdown-content">
                 <a href="calendario.html">📅 Calendario</a>
                 <a href="operación-verano.html">🔥 Operación Verano</a>
-              <a href="eventos-anteriores.html">🔙 Eventos Anteriores</a>
+                <a href="eventos-anteriores.html">🔙 Eventos Anteriores</a>
             </div>
-
         </div>
 
         <a href="galeria.html">Galería</a>
-       <div class="dropdown">
 
-    <button class="dropbtn">
-        Información ▼
-    </button>
+        <div class="dropdown">
+            <button class="dropbtn">
+                Información ▼
+            </button>
 
-    <div class="dropdown-content">
-        <a href="normas.html">📜 Normas</a>
-        <a href="contacto.html">📞 Contacto</a>
-    </div>
+            <div class="dropdown-content">
+                <a href="normas.html">📜 Normas</a>
+                <a href="contacto.html">📞 Contacto</a>
+            </div>
+        </div>
 
-</div>
-</nav>
+    </nav>
+
 </header>
+
 <section aria-label="Portada Calendario" class="hero" id="inicio">
 
     <div class="overlay"></div>
 
-   <section aria-label="Portada Calendario" class="hero" id="inicio">
-
-```
-<div class="overlay"></div>
-
-<div class="hero-content">
-    <h1>CALENDARIO DE EVENTOS</h1>
-    <p>Consulta todas las partidas programadas de Mosco Events.</p>
-</div>
-```
+    <div class="hero-content">
+        <h1>CALENDARIO DE EVENTOS</h1>
+        <p>Consulta todas las partidas programadas de Mosco Events.</p>
+    </div>
 
 </section>
 
 <main class="container">
 
-```
-<section class="calendar-intro">
+    <section class="calendar-intro">
 
-    <div class="calendar-cards">
+        <div class="calendar-cards">
 
-        <div class="calendar-card">
-            <h3>🔥 Operación Verano</h3>
-            <p>09 Agosto 2026</p>
+            <div class="calendar-card">
+                <h3>🔥 Operación Verano</h3>
+                <p>09 Agosto 2026</p>
+            </div>
+
+            <div class="calendar-card">
+                <h3>📆 Calendario de Eventos</h3>
+                <p>Navega entre meses para consultar todas las partidas programadas.</p>
+            </div>
+
         </div>
 
-        <div class="calendar-card">
-            <h3>📆 Calendario de Eventos</h3>
-            <p>Navega entre meses para consultar todas las partidas programadas.</p>
+    </section>
+
+    <section class="calendar-section">
+
+        <div class="calendar-header">
+            <button id="prevMonth">◀</button>
+            <h2 id="monthYear"></h2>
+            <button id="nextMonth">▶</button>
         </div>
 
-    </div>
+        <div id="calendar" class="calendar-grid"></div>
 
-</section>
+    </section>
 
-<section class="calendar-section">
+    <section id="contacto" class="contacto">
 
-    <div class="calendar-header">
-        <button id="prevMonth">◀</button>
-        <h2 id="monthYear"></h2>
-        <button id="nextMonth">▶</button>
-    </div>
+        <h2>CONTACTO</h2>
 
-    <div id="calendar" class="calendar-grid"></div>
+        <p>
+            ¿Preparado para la siguiente partida?
+        </p>
 
-</section>
+        <a class="whatsapp"
+           href="https://wa.me/34698125932?text=Hola,%20me%20interesa%20Mosco%20Events.%20%C2%BFC%C3%B3mo%20puedo%20participar%20en%20los%20pr%C3%B3ximos%20eventos%3F"
+           target="_blank"
+           rel="noopener noreferrer">
+            CONTACTAR POR WHATSAPP
+        </a>
 
-<section id="contacto" class="contacto">
+        <a class="instagram"
+           href="https://instagram.com/l3m_airsoft"
+           target="_blank"
+           rel="noopener noreferrer">
+            CONTACTAR POR INSTAGRAM
+        </a>
 
-    <h2>CONTACTO</h2>
-
-    <p>
-        ¿Preparado para la siguiente partida?
-    </p>
-
-    <a class="whatsapp"
-       href="https://wa.me/34698125932?text=Hola,%20me%20interesa%20Mosco%20Events.%20%C2%BFC%C3%B3mo%20puedo%20participar%20en%20los%20pr%C3%B3ximos%20eventos%3F"
-       target="_blank"
-       rel="noopener noreferrer">
-        CONTACTAR POR WHATSAPP
-    </a>
-
-    <a class="instagram"
-       href="https://instagram.com/l3m_airsoft"
-       target="_blank"
-       rel="noopener noreferrer">
-        CONTACTAR POR INSTAGRAM
-    </a>
-
-</section>
-```
+    </section>
 
 </main>
+
+<section class="mission-strip">
+    <div>TACTICAL SIMULATION</div>
+    <div>•</div>
+    <div>MOSCO EVENTS</div>
+    <div>•</div>
+    <div>IMMERSIVE EXPERIENCE</div>
+</section>
 
 <footer>
     <p>🪖 Mosco Events © 2026 - Todos los derechos reservados</p>
 </footer>
 
 <script src="eventos.js"></script>
-
 <script src="script.js"></script>
-
 <script src="calendario.js"></script>
 
 </body>
-</html>
-
-
-</main>
-
-<footer>
-<p>🪖 Mosco Events © 2026 - Todos los derechos reservados</p>
-</footer>
-<script src="eventos.js"></script>
-<script src="script.js"></script>
-<script src="calendario.js"></script>
-<body>
 </html>
