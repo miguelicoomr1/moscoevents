@@ -602,3 +602,32 @@ footer{
     border-radius:25px;
     padding:10px 15px;
 }
+/* ===== FORZAR ESTRUCTURA CALENDARIO ===== */
+
+body.calendario-page{
+    display:block !important;
+}
+
+body.calendario-page main{
+    display:block !important;
+    width:100%;
+}
+
+body.calendario-page .container{
+    width:100%;
+    max-width:1400px;
+    margin:0 auto;
+    padding:0;
+}
+
+body.calendario-page .calendar-section{
+    width:100%;
+    max-width:1200px;
+    margin:40px auto;
+}
+
+body.calendario-page .contacto{
+    width:100%;
+    max-width:1200px;
+    margin:80px auto;
+}
