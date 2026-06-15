@@ -5,7 +5,15 @@ const eventos = {
 "2026-08-09": {
 titulo: "🔥 Operación Verano",
 enlace: "operación-verano.html"
-}
+},
+"2026-05-23": {
+titulo: "Partida 23-05-2026",
+enlace: "23-05-2026.html"
+},
+"2026-04-16": {
+titulo: "TCSIM 16-04-2026",
+enlace: "TCSIM-16-04-2026.html"
+},
 };
 
 let currentDate = new Date();
