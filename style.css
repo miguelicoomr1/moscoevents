@@ -529,78 +529,33 @@ footer{
 .event a:hover{
     color:var(--mc-sand);
 }
-/* ===== PÁGINA CALENDARIO ===== */
+/* ===== HERO SOLO CALENDARIO ===== */
 
-.hero{
+.calendario-page .hero{
     position:relative;
-    min-height:55vh;
+    min-height:45vh;
     display:flex;
     justify-content:center;
     align-items:center;
     text-align:center;
 }
 
-.hero-content{
+.calendario-page .hero-content{
     position:relative;
     z-index:2;
 }
 
-.hero-content h1{
+.calendario-page .hero-content h1{
     font-size:clamp(3rem,8vw,6rem);
     color:var(--mc-sand);
     letter-spacing:4px;
     text-transform:uppercase;
 }
 
-.hero-content p{
+.calendario-page .hero-content p{
     margin-top:15px;
     font-size:1.2rem;
     color:var(--text-soft);
-}
-
-.container{
-    max-width:1400px;
-    margin:60px auto;
-    padding:0 20px;
-}
-
-.calendar-intro{
-    margin-bottom:40px;
-}
-
-.calendar-cards{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
-    gap:20px;
-}
-
-.calendar-card{
-    background:var(--bg3);
-    border:1px solid var(--border);
-    border-radius:12px;
-    padding:25px;
-    text-align:center;
-    box-shadow:var(--shadow);
-}
-
-.calendar-card h3{
-    color:var(--mc-sand);
-    margin-bottom:10px;
-}
-
-.legend{
-    display:flex;
-    justify-content:center;
-    gap:15px;
-    flex-wrap:wrap;
-    margin:30px 0;
-}
-
-.legend span{
-    background:var(--bg3);
-    border:1px solid var(--border);
-    border-radius:25px;
-    padding:10px 15px;
 }
 /* ===== FORZAR ESTRUCTURA CALENDARIO ===== */
 
