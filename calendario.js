@@ -18,7 +18,7 @@ const meses = [
 
 function renderCalendar() {
 
-```
+
 if (!calendar) return;
 
 calendar.innerHTML = "";
@@ -73,7 +73,7 @@ for (let day = 1; day <= daysInMonth; day++) {
 
     calendar.appendChild(cell);
 }
-```
+
 
 }
 
