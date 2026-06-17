@@ -279,16 +279,6 @@ h2::after{
     gap:15px;
 }
 
-.gallery-grid img{
-    width:100%;
-    aspect-ratio:4/3;
-    object-fit:cover;
-    border:1px solid var(--border);
-    border-radius:10px;
-    box-shadow:var(--shadow);
-    transition:.3s;
-}
-
 .zoomable{cursor:pointer;}
 .zoomable:hover{transform:scale(1.04);}
 
@@ -307,14 +297,16 @@ h2::after{
     margin-top:35px;
     text-align:center;
 }
-
 .gallery-grid img,
-.gallery-grid video {
-    width: 100%;
-    height: 230px;
-    object-fit: cover;
-    border-radius: 10px;
-    display: block;
+.gallery-grid video{
+    width:100%;
+    aspect-ratio:4/3;
+    object-fit:cover;
+    border:1px solid var(--border);
+    border-radius:10px;
+    box-shadow:var(--shadow);
+    transition:.3s;
+    display:block;
 }
 
 /* MODAL */
