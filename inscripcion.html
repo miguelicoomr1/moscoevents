@@ -1,0 +1,88 @@
+<h2>Inscripción</h2>
+
+<form id="inscripcionForm">
+
+  <input
+      type="text"
+      id="nombre"
+      placeholder="Nombre"
+      required>
+
+  <input
+      type="email"
+      id="email"
+      placeholder="Email"
+      required>
+
+  <button type="submit">
+      Reservar plaza
+  </button>
+
+</form>
+
+<div id="mensaje"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+<script>
+
+const supabase = window.supabase.createClient(
+  "sb_publishable_HrUKpmzXYux1BZZpRedABA_1JWdOOhk",
+  "sb_secret_THH7D2pjA7IatvKhU5eUiA_qiJf-HKd"
+);
+
+</script>
+
+.getElementById("inscripcionForm")
+.addEventListener("submit", async (e) => {
+
+  e.preventDefault();
+
+  const nombre =
+    document.getElementById("nombre").value;
+
+  const email =
+    document.getElementById("email").value;
+
+  const token =
+    crypto.randomUUID();
+
+  const { count } = await supabase
+    .from("inscripciones")
+    .select("*", {
+      count: "exact",
+      head: true
+    })
+    .eq("estado", "confirmado");
+
+  const estado =
+    count < 20
+      ? "confirmado"
+      : "espera";
+
+  const { error } =
+    await supabase
+      .from("inscripciones")
+      .insert([{
+        nombre,
+        email,
+        estado,
+        token_cancelacion: token
+      }]);
+
+  if(error){
+    document.getElementById("mensaje")
+      .innerText = "Error";
+    return;
+  }
+
+  if(estado === "confirmado"){
+    document.getElementById("mensaje")
+      .innerText =
+      "Plaza confirmada";
+  }
+  else{
+    document.getElementById("mensaje")
+      .innerText =
+      "Añadido a lista de espera";
+  }
+
+}); 
