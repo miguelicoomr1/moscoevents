@@ -14,7 +14,7 @@ enlace: "23-05-2026.html"
 titulo: "TCSIM 16-04-2026",
 enlace: "TCSIM-16-04-2026.html"
 },
-"2026-07-096":{
+"2026-07-09":{
 titulo: "Partida 09-07-2026",
 enlace: "jueves9.html"
 },
