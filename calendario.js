@@ -18,6 +18,10 @@ enlace: "TCSIM-16-04-2026.html"
 titulo: "Partida 09-07-2026",
 enlace: "jueves9.html"
 },
+    "2026-07-16": {
+titulo: "Partida 16-07-2026",
+enlace: "jueves16.html"
+},
 };
 
 let currentDate = new Date();
