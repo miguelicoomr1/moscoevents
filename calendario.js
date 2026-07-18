@@ -22,6 +22,10 @@ enlace: "jueves9.html"
 titulo: "Partida 16-07-2026",
 enlace: "jueves16.html"
 },
+    "2026-07-23": {
+titulo: "Partida 23-07-2026",
+enlace: "jueves23072026.html"
+},
 };
 
 let currentDate = new Date();
