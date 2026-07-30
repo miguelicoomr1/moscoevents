@@ -9,12 +9,12 @@ const eventos = {
 
 "2026-05-23": {
     titulo: "Partida 23-05-2026",
-    enlace: "../Eventos%20anteriores/23-05-2026.html"
+    enlace: "../Galeria/23-05-2026.html"
 },
 
 "2026-04-16": {
     titulo: "TCSIM 16-04-2026",
-    enlace: "../Eventos%20anteriores/TCSIM-16-04-2026.html"
+    enlace: "../Galeria/TCSIM-16-04-2026.html"
 },
 
 "2026-07-09": {
