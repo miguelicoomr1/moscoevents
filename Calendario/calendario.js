@@ -2,45 +2,45 @@ const calendar = document.getElementById("calendar");
 const monthYear = document.getElementById("monthYear");
 
 const eventos = {
-"2026-08-09": {
-    titulo: "🔥 Operación Verano",
-    enlace: "../Proximos%20Eventos/operaci%C3%B3n-verano.html"
-},
+    "2026-08-09": {
+        titulo: "🔥 Operación Verano",
+        enlace: "../Proximos Eventos/operación-verano.html"
+    },
 
-"2026-05-23": {
-    titulo: "Partida 23-05-2026",
-    enlace: "../Galeria/23-05-2026.html"
-},
+    "2026-05-23": {
+        titulo: "Partida 23-05-2026",
+        enlace: "../Galeria/23-05-2026.html"
+    },
 
-"2026-04-16": {
-    titulo: "TCSIM 16-04-2026",
-    enlace: "../Galeria/TCSIM-16-04-2026.html"
-},
+    "2026-04-16": {
+        titulo: "TCSIM 16-04-2026",
+        enlace: "../Galeria/TCSIM-16-04-2026.html"
+    },
 
-"2026-07-09": {
-    titulo: "Partida 09-07-2026",
-    enlace: "../Eventos%20anteriores/jueves9.html"
-},
+    "2026-07-09": {
+        titulo: "Partida 09-07-2026",
+        enlace: "../Eventos anteriores/jueves9.html"
+    },
 
-"2026-07-16": {
-    titulo: "Partida 16-07-2026",
-    enlace: "../Eventos%20anteriores/jueves16.html"
-},
+    "2026-07-16": {
+        titulo: "Partida 16-07-2026",
+        enlace: "../Eventos anteriores/jueves16.html"
+    },
 
-"2026-07-23": {
-    titulo: "Partida 23-07-2026",
-    enlace: "../Eventos%20anteriores/jueves23072026.html"
-},
+    "2026-07-23": {
+        titulo: "Partida 23-07-2026",
+        enlace: "../Eventos anteriores/jueves23072026.html"
+    },
 
-"2026-07-30": {
-    titulo: "Partida 30-07-2026",
-    enlace: "../Eventos%20anteriores/jueves30072026.html"
-},
+    "2026-07-30": {
+        titulo: "Partida 30-07-2026",
+        enlace: "../Eventos anteriores/jueves30072026.html"
+    },
 
-"2026-08-02": {
-    titulo: "Partida 02-08-2026",
-    enlace: "../Proximos%20Eventos/domingo02082026.html"
-}
+    "2026-08-02": {
+        titulo: "Partida 02-08-2026",
+        enlace: "../Proximos Eventos/domingo02082026.html"
+    }
 };
 
 let currentDate = new Date();
