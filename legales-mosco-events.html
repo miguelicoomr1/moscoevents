@@ -66,6 +66,37 @@
       -webkit-font-smoothing: antialiased;
     }
 
+    /* Evita que las reglas globales de header alteren los bloques legales. */
+    .me-legal .me-legal__hero,
+    .me-legal .me-legal__doc-header {
+      position: static !important;
+      inset: auto !important;
+      z-index: auto !important;
+      display: block !important;
+      width: auto !important;
+      height: auto !important;
+      min-height: 0 !important;
+      box-shadow: none !important;
+    }
+
+    .me-legal .me-legal__hero {
+      padding: clamp(48px, 8vw, 92px) 20px 34px !important;
+      color: #fff !important;
+      border: 0 !important;
+      background:
+        linear-gradient(120deg, rgba(23, 34, 25, 0.96), rgba(52, 77, 57, 0.9)),
+        #263b2b !important;
+    }
+
+    .me-legal .me-legal__doc-header {
+      margin: 0 !important;
+      padding: 0 0 25px !important;
+      color: var(--legal-ink) !important;
+      border: 0 !important;
+      border-bottom: 1px solid var(--legal-line) !important;
+      background: transparent !important;
+    }
+
     .me-legal *,
     .me-legal *::before,
     .me-legal *::after {
@@ -540,16 +571,105 @@
       }
     }
   </style>
+  <header id="top">
+
+      <div class="logo">
+          <a href="/index.html">
+              <img
+                  src="/images/base%20web/logo-png.png"
+                  alt="Mosco Events"
+              >
+          </a>
+      </div>
+
+      <button
+          class="menu-toggle"
+          id="menu-toggle"
+          type="button"
+          aria-label="Abrir menú"
+      >
+          ☰
+      </button>
+
+      <nav id="menu">
+
+          <a href="/index.html">Inicio</a>
+
+          <div class="dropdown">
+
+              <button
+                  class="dropbtn"
+                  type="button"
+              >
+                  Eventos ▼
+              </button>
+
+              <div class="dropdown-content">
+
+                  <a href="/Calendario/calendario.html">
+                      🗓️ Calendario
+                  </a>
+
+                  <a href="/Proximos%20Eventos/operaci%C3%B3n-verano.html">
+                      🔥 Operación Verano
+                  </a>
+
+                  <a href="/Proximos%20Eventos/proximos-eventos.html">
+                      🔜 Próximos Eventos
+                  </a>
+
+                  <a href="/Eventos%20anteriores/eventos-anteriores.html">
+                      🔙 Eventos Anteriores
+                  </a>
+
+              </div>
+
+          </div>
+
+          <a href="/Galeria/galeria.html">
+              Galería
+          </a>
+
+          <div class="dropdown">
+
+              <button
+                  class="dropbtn"
+                  type="button"
+              >
+                  Información ▼
+              </button>
+
+              <div class="dropdown-content">
+
+                  <a href="/normas.html">
+                      📜 Normas
+                  </a>
+
+                  <a href="/contacto.html">
+                      📞 Contacto
+                  </a>
+
+                  <a href="/legales-mosco-events.html">
+                      ⚖️ Información legal
+                  </a>
+
+              </div>
+
+          </div>
+
+      </nav>
+
+  </header>
   <div class="me-legal" id="inicio-legal">
     <a class="me-legal__skip" href="#contenido-legal">Saltar al contenido legal</a>
 
-    <header class="me-legal__hero">
+    <div class="me-legal__hero">
       <div class="me-legal__hero-inner">
         <p class="me-legal__eyebrow">Mosco Events</p>
         <h1>Información legal</h1>
         <p class="me-legal__lead">Aviso legal, condiciones generales de contratación y política de privacidad aplicables a www.moscoevents.com.</p>
       </div>
-    </header>
+    </div>
 
     <div class="me-legal__nav-wrap">
       <nav class="me-legal__nav" aria-label="Documentos legales">
@@ -567,11 +687,11 @@
         </div>
 
         <article class="me-legal__document" id="aviso-legal" aria-labelledby="titulo-aviso-legal">
-          <header class="me-legal__doc-header">
+          <div class="me-legal__doc-header">
             <p class="me-legal__kicker">Documento 01</p>
             <h2 id="titulo-aviso-legal">Aviso legal</h2>
             <p class="me-legal__updated">Última actualización: 1 de agosto de 2026</p>
-          </header>
+          </div>
 
           <details class="me-legal__toc">
             <summary>Índice del aviso legal</summary>
@@ -696,11 +816,11 @@
         </article>
 
         <article class="me-legal__document" id="condiciones-contratacion" aria-labelledby="titulo-condiciones">
-          <header class="me-legal__doc-header">
+          <div class="me-legal__doc-header">
             <p class="me-legal__kicker">Documento 02</p>
             <h2 id="titulo-condiciones">Condiciones generales de contratación</h2>
             <p class="me-legal__updated">Última actualización: <mark class="me-legal__pending">01/008/2026</mark></p>
-          </header>
+          </div>
 
           <p class="me-legal__intro">Estas condiciones generales regulan la solicitud de plaza, la contratación y la participación en los eventos de simulación táctica anunciados por Mosco Events en <a href="https://www.moscoevents.com/">www.moscoevents.com</a>. Las condiciones particulares publicadas para cada evento —fecha, horario, ubicación, precio, plazas, servicios incluidos y requisitos— forman parte del contrato y prevalecen sobre estas condiciones únicamente respecto de ese evento.</p>
           <p>Antes de enviar la solicitud de inscripción, la persona participante o, en caso de menores, su representante legal, deberá leer y aceptar estas condiciones, la información del evento y las normas de seguridad aplicables.</p>
@@ -871,11 +991,11 @@
         </article>
 
         <article class="me-legal__document" id="politica-privacidad" aria-labelledby="titulo-privacidad">
-          <header class="me-legal__doc-header">
+          <div class="me-legal__doc-header">
             <p class="me-legal__kicker">Documento 03</p>
             <h2 id="titulo-privacidad">Política de privacidad</h2>
             <p class="me-legal__updated">Última actualización: 1 de agosto de 2026</p>
-          </header>
+          </div>
 
           <p class="me-legal__intro">En Mosco Events nos comprometemos a proteger la privacidad y los datos personales de las personas que visitan <a href="https://www.moscoevents.com/">www.moscoevents.com</a>, contactan con nosotros o se inscriben en nuestros eventos.</p>
           <p>Esta Política de privacidad explica qué datos personales tratamos, con qué finalidad, cuál es la base jurídica del tratamiento y cómo pueden ejercerse los derechos reconocidos por la normativa de protección de datos.</p>
