@@ -9,11 +9,11 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>Próximos Eventos | Mosco Events</title>
+    <title>Evento | Mosco Events</title>
 
     <meta
         name="description"
-        content="Información e inscripción para los próximos eventos de Mosco Events."
+        content="Informaci&oacute;n e inscripci&oacute;n de evento Mosco Events."
     >
 
     <meta name="theme-color" content="#8d9a55">
@@ -21,23 +21,17 @@
     <link
         rel="icon"
         type="image/png"
-        href="../images/base%20web/favicon-32x32.png"
+        href="/images/base%20web/favicon-32x32.png"
     >
 
     <link
         rel="stylesheet"
-        href="../style.css?v=4"
+        href="/style.css?v=5"
     >
 
     <link
         rel="preconnect"
         href="https://fonts.googleapis.com"
-    >
-
-    <link
-        rel="preconnect"
-        href="https://fonts.gstatic.com"
-        crossorigin
     >
 
     <link
@@ -51,47 +45,34 @@
     >
 </head>
 
-<body>
-
+<body data-event-page>
 
 <script src="/header.js?v=1"></script>
 
-<section class="hero" aria-label="Próximo evento">
+<section class="hero" aria-label="Evento Mosco Events">
 
     <div class="overlay"></div>
 
-    <div class="hero-content">
+    <div class="hero-content" data-event-hero-content>
 
-        <h1>Próximos Eventos</h1>
+        <h1 data-event-hero-title>Evento</h1>
 
-        <p>
-            Eventos oficiales realizados por Mosco Events
+        <p data-event-hero-subtitle>
+            Evento oficial de Mosco Events
         </p>
 
     </div>
 
 </section>
+
 <main>
-    <section class="eventos" data-event-list="proximos">
-                <div class="card">
-<h2>Jueves tarde 06-08-2026</h2>
-            <p>
-                Laser Counter - Pedrola.
-            </p>
-<a href="jueves06082026.html" class="btn">
-    VER EVENTO 06/08/2026
-</a>
-             </div>
-        <div class="card">
-<h2>Operación Verano</h2>
-            <p>
-                Laser Counter - Pedrola.
-            </p>
-<a href="operación-verano.html" class="btn">
-    VER EVENTO 09/08/2026
-</a>
-             </div>
-      
+
+    <section class="eventos">
+
+        <h2 data-event-title>INFORMACI&Oacute;N DEL EVENTO</h2>
+
+        <div data-event-details></div>
+
     </section>
 
     <section id="contacto" class="contacto">
@@ -99,17 +80,15 @@
         <h2>CONTACTO</h2>
 
         <p>
-            ¿Preparado para la siguiente partida?
+            &iquest;Preparado para la siguiente partida?
         </p>
 
         <a
             class="whatsapp"
-             href="https://wa.me/34698125932?text=Hola,%20me%20interesa%20Mosco%20Events.%20%C2%BFC%C3%B3mo%20puedo%20participar%20en%20los%20pr%C3%B3ximos%20eventos%3F"
+            href="https://wa.me/34698125932?text=Hola,%20me%20interesa%20Mosco%20Events.%20%C2%BFC%C3%B3mo%20puedo%20participar%20en%20los%20pr%C3%B3ximos%20eventos%3F"
             target="_blank"
             rel="noopener noreferrer">
-
             CONTACTAR POR WHATSAPP
-
         </a>
 
         <a
@@ -117,9 +96,7 @@
             href="https://instagram.com/l3m_airsoft"
             target="_blank"
             rel="noopener noreferrer">
-
             CONTACTAR POR INSTAGRAM
-
         </a>
 
     </section>
@@ -127,11 +104,7 @@
 </main>
 
 <footer>
-
-    <p>
-        🪖 Mosco Events © 2026 - Todos los derechos reservados
-    </p>
-
+    <p>Mosco Events &copy; 2026 - Todos los derechos reservados</p>
 </footer>
 
 <script src="/datos.js?v=1"></script>

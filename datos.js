@@ -1,0 +1,280 @@
+(function () {
+    const INFO_NORMAS_URL =
+        "https://drive.google.com/file/d/1wOOu050V8u65RLv40-WRyz-POMSNgBfT/view?usp=sharing";
+
+    function crearGaleria({ carpeta, prefijo, extension, desde = 1, hasta = 0, excluir = [] }) {
+        const omitidos = new Set(excluir);
+        const carpetaLimpia = carpeta.replace(/\/$/, "");
+        const imagenes = [];
+
+        for (let numero = desde; numero <= hasta; numero += 1) {
+            if (!omitidos.has(numero)) {
+                imagenes.push(encodeURI(`${carpetaLimpia}/${prefijo}${numero}.${extension}`));
+            }
+        }
+
+        return imagenes;
+    }
+
+    const eventos = [
+        {
+            id: "operacion-verano-2026",
+            titulo: "Operaci\u00f3n Verano",
+            tituloListado: "Operaci\u00f3n Verano",
+            tituloCalendario: "\ud83d\udd25 Operaci\u00f3n Verano",
+            fecha: "2026-08-09",
+            fechaTexto: "9 de Agosto de 2026",
+            fechaCorta: "09/08/2026",
+            subtitulo: "Evento oficial de Mosco Events",
+            resumen: "Laser Counter - Pedrola.",
+            ubicacion: "Laser Counter (Pedrola)",
+            plazas: "26 participantes",
+            duracion: "6 horas",
+            premios: "Sorteos y recompensas especiales",
+            precio: "25\u20ac",
+            inscripcionUrl: "https://forms.gle/d3rTdQvUskJgyoPq6",
+            normasUrl: INFO_NORMAS_URL,
+            seccion: "proximos",
+            cuentaAtras: true,
+            fechaHora: "2026-08-09T09:00:00",
+            galeria: {
+                activa: true,
+                titulo: "GALER\u00cdA VERANO",
+                descripcion: "Fotograf\u00edas del evento del verano de Mosco Events",
+                botonListado: "FOTOS EVENTO ESPECIAL VERANO \u2192",
+                imagenes: []
+            }
+        },
+        {
+            id: "jueves-06-08-2026",
+            titulo: "Jueves 06 de Agosto",
+            tituloListado: "Jueves tarde 06-08-2026",
+            tituloCalendario: "Partida 06-08-2026",
+            fecha: "2026-08-06",
+            fechaTexto: "06 de Agosto de 2026",
+            fechaCorta: "06/08/2026",
+            subtitulo: "Evento oficial de Mosco Events",
+            resumen: "Laser Counter - Pedrola.",
+            ubicacion: "Laser Counter (Pedrola)",
+            plazas: "20 participantes",
+            horario: "18:00 - 21:30",
+            precio: "15\u20ac en efectivo en el campo",
+            inscripcionUrl: "https://forms.gle/qGDcxMmv2K4iUbbY7",
+            normasUrl: INFO_NORMAS_URL,
+            seccion: "proximos",
+            galeria: {
+                activa: true,
+                titulo: "GALER\u00cdA",
+                descripcion: "Fotograf\u00edas de Mosco Events en la PARTIDA del 06-08-2026",
+                botonListado: "FOTOS EVENTO 06-08-2026 \u2192",
+                imagenes: []
+            }
+        },
+        {
+            id: "domingo-02-08-2026",
+            titulo: "Domingo 2 de Agosto",
+            tituloListado: "Domingo 02-08-2026",
+            tituloCalendario: "Partida 02-08-2026",
+            fecha: "2026-08-02",
+            fechaTexto: "2 de Agosto de 2026",
+            fechaCorta: "02/08/2026",
+            subtitulo: "Evento oficial de Mosco Events",
+            resumen: "Laser Counter - Pedrola.",
+            ubicacion: "Laser Counter (Pedrola)",
+            plazas: "26 participantes",
+            horario: "10:00 - 15:00",
+            precio: "18\u20ac en efectivo en el campo",
+            inscripcionUrl: "https://forms.gle/TGDFqbdYjP6nEq4n9",
+            normasUrl: INFO_NORMAS_URL,
+            seccion: "anteriores",
+            galeria: {
+                activa: true,
+                titulo: "GALER\u00cdA",
+                descripcion: "Fotograf\u00edas de Mosco Events en la PARTIDA del 02-08-2026",
+                botonListado: "FOTOS EVENTO 02-08-2026 \u2192",
+                imagenes: []
+            }
+        },
+        {
+            id: "jueves-30-07-2026",
+            titulo: "Jueves 30 de Julio",
+            tituloListado: "Jueves Tarde 30-07-2026",
+            tituloCalendario: "Partida 30-07-2026",
+            fecha: "2026-07-30",
+            fechaTexto: "30 de Julio de 2026",
+            fechaCorta: "30/07/2026",
+            subtitulo: "Evento oficial de Mosco Events",
+            resumen: "Laser Counter - Pedrola.",
+            ubicacion: "Laser Counter (Pedrola)",
+            plazas: "20 participantes",
+            horario: "18:00 - 21:30",
+            precio: "15\u20ac en efectivo en el campo",
+            inscripcionUrl: "https://forms.gle/WryVuks8c3rT84LSA",
+            normasUrl: INFO_NORMAS_URL,
+            seccion: "anteriores",
+            galeria: {
+                activa: true,
+                titulo: "GALER\u00cdA",
+                descripcion: "Fotograf\u00edas de Mosco Events en la PARTIDA del 30-07-2026",
+                botonListado: "FOTOS EVENTO 30-07-2026 \u2192",
+                imagenes: crearGaleria({
+                    carpeta: "/images/30-07-2026",
+                    prefijo: "30072026 ",
+                    extension: "jpeg",
+                    hasta: 26
+                })
+            }
+        },
+        {
+            id: "jueves-23-07-2026",
+            titulo: "Jueves 23 de Julio",
+            tituloListado: "Jueves Tarde 23-07-2026",
+            tituloCalendario: "Partida 23-07-2026",
+            fecha: "2026-07-23",
+            fechaTexto: "23 de Julio de 2026",
+            fechaCorta: "23/07/2026",
+            subtitulo: "Evento oficial de Mosco Events",
+            resumen: "Laser Counter - Pedrola.",
+            ubicacion: "Laser Counter (Pedrola)",
+            plazas: "20 participantes",
+            duracion: "3 horas",
+            precio: "13\u20ac en efectivo en el campo",
+            inscripcionUrl: "https://forms.gle/xH4Tdf4dohxShC4f9",
+            normasUrl: INFO_NORMAS_URL,
+            seccion: "anteriores",
+            galeria: {
+                activa: true,
+                titulo: "GALER\u00cdA",
+                descripcion: "Fotograf\u00edas de Mosco Events en la PARTIDA del 23-07-2026",
+                botonListado: "FOTOS EVENTO 23-07-2026 \u2192",
+                imagenes: crearGaleria({
+                    carpeta: "/images/23-07-2026",
+                    prefijo: "23072026 ",
+                    extension: "jpeg",
+                    hasta: 41,
+                    excluir: [36]
+                })
+            }
+        },
+        {
+            id: "jueves-16-07-2026",
+            titulo: "Jueves 16 de Julio",
+            tituloListado: "Jueves Tarde 16-07-2026",
+            tituloCalendario: "Partida 16-07-2026",
+            fecha: "2026-07-16",
+            fechaTexto: "16 de Julio de 2026",
+            fechaCorta: "16/07/2026",
+            subtitulo: "Evento oficial de Mosco Events",
+            resumen: "Laser Counter - Pedrola.",
+            ubicacion: "Laser Counter (Pedrola)",
+            plazas: "20 participantes",
+            duracion: "3 horas",
+            precio: "13\u20ac en efectivo en el campo",
+            inscripcionUrl: "https://forms.gle/NjzcqVA7atxtCoMT8",
+            normasUrl: INFO_NORMAS_URL,
+            seccion: "anteriores",
+            galeria: {
+                activa: true,
+                titulo: "GALER\u00cdA",
+                descripcion: "Fotograf\u00edas de Mosco Events en la PARTIDA del 16-07-2026",
+                botonListado: "FOTOS EVENTO 16-07-2026 \u2192",
+                imagenes: crearGaleria({
+                    carpeta: "/images/16-07-2026",
+                    prefijo: "160726 ",
+                    extension: "jpg",
+                    hasta: 57
+                })
+            }
+        },
+        {
+            id: "jueves-09-07-2026",
+            titulo: "Jueves 9 de Julio",
+            tituloListado: "Jueves Tarde 09-07-2026",
+            tituloCalendario: "Partida 09-07-2026",
+            fecha: "2026-07-09",
+            fechaTexto: "9 de Julio de 2026",
+            fechaCorta: "09/07/2026",
+            subtitulo: "Evento oficial de Mosco Events",
+            resumen: "Laser Counter - Pedrola.",
+            ubicacion: "Laser Counter (Pedrola)",
+            plazas: "20 participantes",
+            duracion: "3 horas",
+            precio: "12\u20ac en efectivo en el campo",
+            inscripcionUrl: "https://forms.gle/2gg3h8aZYcDNfvuu5",
+            normasUrl: INFO_NORMAS_URL,
+            seccion: "anteriores",
+            galeria: {
+                activa: true,
+                titulo: "GALER\u00cdA",
+                descripcion: "Fotograf\u00edas de Mosco Events en la PARTIDA del 09-07-2026",
+                botonListado: "FOTOS EVENTO 09-07-2026 \u2192",
+                imagenes: crearGaleria({
+                    carpeta: "/images/09-07-2026",
+                    prefijo: "2026-07-09 ",
+                    extension: "jpg",
+                    hasta: 56
+                })
+            }
+        },
+        {
+            id: "partida-23-05-2026",
+            titulo: "23-05-2026",
+            tituloListado: "23-05-2026",
+            tituloCalendario: "Partida 23-05-2026",
+            fecha: "2026-05-23",
+            fechaTexto: "23 de Mayo de 2026",
+            fechaCorta: "23/05/2026",
+            subtitulo: "Evento oficial de Mosco Events",
+            resumen: "Laser Counter - Pedrola.",
+            ubicacion: "Laser Counter (Pedrola)",
+            seccion: "anteriores",
+            galeria: {
+                activa: true,
+                titulo: "GALER\u00cdA",
+                descripcion: "Fotograf\u00edas de Mosco Events en la PARTIDA del 23-05-2026",
+                botonListado: "FOTOS EVENTO 23-05-2026 \u2192",
+                imagenes: crearGaleria({
+                    carpeta: "/images/evento",
+                    prefijo: "evento",
+                    extension: "jpeg",
+                    hasta: 58
+                })
+            }
+        },
+        {
+            id: "tcsim-16-04-2026",
+            titulo: "TCSIM 16-04-2026",
+            tituloListado: "TCSIM 16-04-2026",
+            tituloCalendario: "TCSIM 16-04-2026",
+            fecha: "2026-04-16",
+            fechaTexto: "16 de Abril de 2026",
+            fechaCorta: "16/04/2026",
+            subtitulo: "Evento oficial de Mosco Events",
+            resumen: "Laser Counter - Pedrola.",
+            ubicacion: "Laser Counter (Pedrola)",
+            seccion: "anteriores",
+            galeria: {
+                activa: true,
+                titulo: "GALER\u00cdA",
+                descripcion: "Fotograf\u00edas de Mosco Events en la TCSIM del 16-04-2026",
+                botonListado: "FOTOS TCSIM 16-04-2026 \u2192",
+                imagenes: crearGaleria({
+                    carpeta: "/images/TCSIM",
+                    prefijo: "TCSIM ",
+                    extension: "jpeg",
+                    hasta: 72
+                })
+            }
+        }
+    ];
+
+    eventos.forEach((evento) => {
+        evento.url = `/evento.html?id=${encodeURIComponent(evento.id)}`;
+
+        if (evento.galeria?.activa) {
+            evento.galeria.url = `/galeria-evento.html?id=${encodeURIComponent(evento.id)}`;
+        }
+    });
+
+    window.MOSCO_EVENTOS = eventos;
+})();
