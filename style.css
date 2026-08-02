@@ -228,6 +228,11 @@ header .dropdown-content {
     z-index: 1000;
 }
 
+header .dropdown:last-child .dropdown-content {
+    right: 0;
+    left: auto;
+}
+
 header .dropdown-content a {
     display: block;
     padding: 12px 14px;
