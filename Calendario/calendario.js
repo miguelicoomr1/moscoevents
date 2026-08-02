@@ -40,6 +40,11 @@ const eventos = {
     "2026-08-02": {
         titulo: "Partida 02-08-2026",
         enlace: "/Proximos%20Eventos/domingo02082026.html"
+    },
+
+    "2026-08-06": {
+        titulo: "Partida 06-08-2026",
+        enlace: "/Proximos%20Eventos/jueves06082026.html"
     }
 };
 
