@@ -11,7 +11,7 @@ let currentIndex = 0;
 let modalDownload = null;
 
 function getImageSource(img) {
-    return img.getAttribute("src") || img.currentSrc || img.src;
+    return img.dataset.fullSrc || img.getAttribute("src") || img.currentSrc || img.src;
 }
 
 function getDownloadName(source, index) {
@@ -58,7 +58,7 @@ function setCurrentImage(index) {
     }
 
     currentIndex = index;
-    modalImg.src = images[currentIndex].src;
+    modalImg.src = getImageSource(images[currentIndex]);
 
     if (modalDownload) {
         updateDownloadLink(modalDownload, images[currentIndex], currentIndex);

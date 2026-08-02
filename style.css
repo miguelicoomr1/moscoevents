@@ -88,8 +88,7 @@ header {
     padding: 0 32px;
 
     background:
-        linear-gradient(180deg, rgba(10, 12, 9, 0.95), rgba(10, 12, 9, 0.84));
-    backdrop-filter: blur(18px) saturate(130%);
+        linear-gradient(180deg, rgba(10, 12, 9, 0.98), rgba(10, 12, 9, 0.94));
 
     border-bottom: 1px solid rgba(215, 192, 139, 0.18);
     box-shadow:
@@ -109,13 +108,11 @@ header {
     height: 54px;
     width: auto;
     cursor: pointer;
-    filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.46));
-    transition: transform 0.25s ease, filter 0.25s ease;
+    transition: transform 0.25s ease;
 }
 
 .logo img:hover {
     transform: translateY(-1px);
-    filter: drop-shadow(0 12px 22px rgba(0, 0, 0, 0.58));
 }
 
 .menu-toggle {
@@ -515,6 +512,11 @@ main > section:not(.hero) {
     border-top: 1px solid rgba(215, 192, 139, 0.09);
 }
 
+main > section:not(.hero) {
+    content-visibility: auto;
+    contain-intrinsic-size: 900px;
+}
+
 h2 {
     margin-bottom: 48px;
 
@@ -752,9 +754,8 @@ h2::after {
     border-radius: 6px;
 
     box-shadow: var(--shadow-soft);
-    filter: contrast(1.08) saturate(0.92) brightness(0.94) !important;
 
-    transition: transform 0.24s ease, filter 0.24s ease, border-color 0.24s ease, box-shadow 0.24s ease;
+    transition: transform 0.24s ease, border-color 0.24s ease, box-shadow 0.24s ease;
 }
 
 .zoomable {
@@ -764,7 +765,6 @@ h2::after {
 .zoomable:hover {
     transform: translateY(-4px) scale(1.015);
     border-color: var(--border-strong);
-    filter: contrast(1.1) saturate(1.02) brightness(1) !important;
     box-shadow: 0 24px 58px rgba(0, 0, 0, 0.5);
 }
 
@@ -1309,7 +1309,7 @@ footer {
 
         background:
             linear-gradient(180deg, rgba(7, 8, 6, 0.24), rgba(7, 8, 6, 0.7)),
-            url("./images/base%20web/fondo.png");
+            url("./images/base%20web/fondo-mobile.webp");
 
         background-size: cover;
         background-repeat: no-repeat;

@@ -4,7 +4,7 @@
             <div class="logo">
                 <a href="/index.html">
                     <img
-                        src="/images/base%20web/logo-png.png"
+                        src="/images/base%20web/logo-header.webp"
                         alt="Mosco Events"
                     >
                 </a>
