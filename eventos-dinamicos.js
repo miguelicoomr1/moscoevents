@@ -112,6 +112,56 @@
         });
     }
 
+    function obtenerImagenesEventos() {
+        return eventos.flatMap((evento) => {
+            const imagenes = Array.isArray(evento.galeria?.imagenes) ? evento.galeria.imagenes : [];
+
+            return imagenes.map((src) => ({
+                src,
+                titulo: evento.titulo
+            }));
+        });
+    }
+
+    function mezclar(lista) {
+        const mezclada = [...lista];
+
+        for (let index = mezclada.length - 1; index > 0; index -= 1) {
+            const randomIndex = Math.floor(Math.random() * (index + 1));
+            [mezclada[index], mezclada[randomIndex]] = [mezclada[randomIndex], mezclada[index]];
+        }
+
+        return mezclada;
+    }
+
+    function crearImagenGaleria(src, index, titulo) {
+        const imagen = document.createElement("img");
+        imagen.src = src;
+        imagen.className = "zoomable";
+        imagen.alt = titulo ? `Foto ${index + 1} - ${titulo}` : `Foto ${index + 1}`;
+        imagen.loading = "lazy";
+        imagen.decoding = "async";
+        return imagen;
+    }
+
+    function renderizarGaleriasAleatorias() {
+        const imagenesEventos = obtenerImagenesEventos();
+
+        if (!imagenesEventos.length) {
+            return;
+        }
+
+        document.querySelectorAll("[data-random-gallery]").forEach((contenedor) => {
+            const cantidad = Number.parseInt(contenedor.dataset.randomGallery, 10) || 18;
+            const seleccionadas = mezclar(imagenesEventos).slice(0, cantidad);
+            const nodos = seleccionadas.map((imagen, index) => (
+                crearImagenGaleria(imagen.src, index, imagen.titulo)
+            ));
+
+            contenedor.replaceChildren(...nodos);
+        });
+    }
+
     function actualizarTexto(selector, texto) {
         const elemento = document.querySelector(selector);
 
@@ -301,15 +351,7 @@
             return;
         }
 
-        const nodos = imagenes.map((src, index) => {
-            const imagen = document.createElement("img");
-            imagen.src = src;
-            imagen.className = "zoomable";
-            imagen.alt = `Foto ${index + 1} - ${evento.titulo}`;
-            imagen.loading = "lazy";
-            imagen.decoding = "async";
-            return imagen;
-        });
+        const nodos = imagenes.map((src, index) => crearImagenGaleria(src, index, evento.titulo));
 
         contenedor.replaceChildren(...nodos);
     }
@@ -326,6 +368,7 @@
 
     renderizarListados();
     renderizarEnlacesGaleria();
+    renderizarGaleriasAleatorias();
     renderizarPaginaEvento();
     renderizarPaginaGaleria();
 })();
