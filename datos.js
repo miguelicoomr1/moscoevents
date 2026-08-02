@@ -46,31 +46,6 @@
             }
         },
         {
-            id: "jueves-06-08-2026",
-            titulo: "Jueves 06 de Agosto",
-            tituloListado: "Jueves tarde 06-08-2026",
-            tituloCalendario: "Partida 06-08-2026",
-            fecha: "2026-08-06",
-            fechaTexto: "06 de Agosto de 2026",
-            fechaCorta: "06/08/2026",
-            subtitulo: "Evento oficial de Mosco Events",
-            resumen: "Laser Counter - Pedrola.",
-            ubicacion: "Laser Counter (Pedrola)",
-            plazas: "20 participantes",
-            horario: "18:00 - 21:30",
-            precio: "15\u20ac en efectivo en el campo",
-            inscripcionUrl: "https://forms.gle/qGDcxMmv2K4iUbbY7",
-            normasUrl: INFO_NORMAS_URL,
-            seccion: "proximos",
-            galeria: {
-                activa: true,
-                titulo: "GALER\u00cdA",
-                descripcion: "Fotograf\u00edas de Mosco Events en la PARTIDA del 06-08-2026",
-                botonListado: "FOTOS EVENTO 06-08-2026 \u2192",
-                imagenes: []
-            }
-        },
-        {
             id: "domingo-02-08-2026",
             titulo: "Domingo 2 de Agosto",
             tituloListado: "Domingo 02-08-2026",
