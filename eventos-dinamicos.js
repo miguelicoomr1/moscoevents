@@ -136,12 +136,40 @@
 
     function crearImagenGaleria(src, index, titulo) {
         const imagen = document.createElement("img");
-        imagen.src = src;
         imagen.className = "zoomable";
         imagen.alt = titulo ? `Foto ${index + 1} - ${titulo}` : `Foto ${index + 1}`;
         imagen.loading = "lazy";
         imagen.decoding = "async";
+        imagen.fetchPriority = "low";
+        imagen.dataset.fullSrc = src;
+        imagen.src = obtenerMiniatura(src);
+
+        imagen.addEventListener("error", () => {
+            if (imagen.getAttribute("src") !== src) {
+                imagen.src = src;
+            }
+        }, { once: true });
+
         return imagen;
+    }
+
+    function obtenerMiniatura(src) {
+        const limpia = src.split(/[?#]/)[0];
+        const decodificada = decodeURIComponent(limpia);
+
+        if (!decodificada.startsWith("/images/")) {
+            return src;
+        }
+
+        const sinCarpetaImagenes = decodificada.replace(/^\/images\//, "");
+        const puntoExtension = sinCarpetaImagenes.lastIndexOf(".");
+
+        if (puntoExtension === -1) {
+            return src;
+        }
+
+        const sinExtension = sinCarpetaImagenes.slice(0, puntoExtension);
+        return encodeURI(`/images/optimized/${sinExtension}.webp`);
     }
 
     function renderizarGaleriasAleatorias() {
