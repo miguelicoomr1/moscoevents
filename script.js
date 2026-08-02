@@ -106,7 +106,7 @@ if (modal && modalImg && images.length) {
     });
 }
 
-/* ===== CUENTA ATRAS OPERACION VERANO ===== */
+/* ===== CUENTA ATRAS ===== */
 
 const countdown = document.querySelector(".countdown");
 const countdownFields = {
@@ -117,15 +117,20 @@ const countdownFields = {
 };
 
 if (countdown && Object.values(countdownFields).every(Boolean)) {
-    const fechaEvento = new Date("2026-08-09T09:00:00").getTime();
+    const countdownDate = countdown.dataset.countdownDate || "2026-08-09T09:00:00";
+    const fechaEvento = new Date(countdownDate).getTime();
 
     function actualizarContador() {
+        if (Number.isNaN(fechaEvento)) {
+            return;
+        }
+
         const ahora = Date.now();
         const diferencia = fechaEvento - ahora;
 
         if (diferencia <= 0) {
             countdown.innerHTML =
-                "<div class='time-box'><span>🔥</span><small>¡EVENTO EN CURSO!</small></div>";
+                "<div class='time-box'><span>&#128293;</span><small>&iexcl;EVENTO EN CURSO!</small></div>";
             return;
         }
 
