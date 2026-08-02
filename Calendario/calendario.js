@@ -51,81 +51,88 @@ const eventos = {
 let currentDate = new Date();
 
 const meses = [
-"Enero","Febrero","Marzo","Abril",
-"Mayo","Junio","Julio","Agosto",
-"Septiembre","Octubre","Noviembre","Diciembre"
+    "Enero", "Febrero", "Marzo", "Abril",
+    "Mayo", "Junio", "Julio", "Agosto",
+    "Septiembre", "Octubre", "Noviembre", "Diciembre"
 ];
 
-function renderCalendar() {
+const dayNames = ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"];
 
-
-if (!calendar) return;
-
-calendar.innerHTML = "";
-
-const month = currentDate.getMonth();
-const year = currentDate.getFullYear();
-
-monthYear.textContent = `${meses[month]} ${year}`;
-
-["Lun","Mar","Mié","Jue","Vie","Sáb","Dom"].forEach(dayName => {
-    const el = document.createElement("div");
-    el.className = "day-name";
-    el.textContent = dayName;
-    calendar.appendChild(el);
-});
-
-let firstDay = new Date(year, month, 1).getDay();
-firstDay = firstDay === 0 ? 6 : firstDay - 1;
-
-const daysInMonth = new Date(year, month + 1, 0).getDate();
-
-for (let i = 0; i < firstDay; i++) {
-    calendar.appendChild(document.createElement("div"));
+function createDayName(name) {
+    const element = document.createElement("div");
+    element.className = "day-name";
+    element.textContent = name;
+    return element;
 }
 
-for (let day = 1; day <= daysInMonth; day++) {
-
-    const dateKey =
-        `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
-
+function createCalendarCell(day, event) {
     const cell = document.createElement("div");
+    cell.className = event ? "day event-day" : "day";
 
-    if (eventos[dateKey]) {
+    const dayNumber = document.createElement("div");
+    dayNumber.className = "day-number";
+    dayNumber.textContent = day;
 
-        cell.className = "day event-day";
-
-        cell.innerHTML = `
-            <a href="${eventos[dateKey].enlace}" class="calendar-event-link">
-                <div class="day-number">${day}</div>
-                <div class="event-title">${eventos[dateKey].titulo}</div>
-            </a>
-        `;
-
-    } else {
-
-        cell.className = "day";
-
-        cell.innerHTML = `
-            <div class="day-number">${day}</div>
-        `;
+    if (!event) {
+        cell.appendChild(dayNumber);
+        return cell;
     }
 
-    calendar.appendChild(cell);
+    const link = document.createElement("a");
+    link.href = event.enlace;
+    link.className = "calendar-event-link";
+
+    const eventTitle = document.createElement("div");
+    eventTitle.className = "event-title";
+    eventTitle.textContent = event.titulo;
+
+    link.append(dayNumber, eventTitle);
+    cell.appendChild(link);
+
+    return cell;
 }
 
+function renderCalendar() {
+    if (!calendar || !monthYear) {
+        return;
+    }
 
+    const fragment = document.createDocumentFragment();
+    const month = currentDate.getMonth();
+    const year = currentDate.getFullYear();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+    let firstDay = new Date(year, month, 1).getDay();
+    firstDay = firstDay === 0 ? 6 : firstDay - 1;
+
+    monthYear.textContent = `${meses[month]} ${year}`;
+
+    dayNames.forEach((dayName) => {
+        fragment.appendChild(createDayName(dayName));
+    });
+
+    for (let i = 0; i < firstDay; i++) {
+        fragment.appendChild(document.createElement("div"));
+    }
+
+    for (let day = 1; day <= daysInMonth; day++) {
+        const dateKey =
+            `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+
+        fragment.appendChild(createCalendarCell(day, eventos[dateKey]));
+    }
+
+    calendar.replaceChildren(fragment);
 }
 
 document.getElementById("prevMonth")?.addEventListener("click", () => {
-currentDate.setMonth(currentDate.getMonth() - 1);
-renderCalendar();
+    currentDate.setMonth(currentDate.getMonth() - 1);
+    renderCalendar();
 });
 
 document.getElementById("nextMonth")?.addEventListener("click", () => {
-currentDate.setMonth(currentDate.getMonth() + 1);
-renderCalendar();
+    currentDate.setMonth(currentDate.getMonth() + 1);
+    renderCalendar();
 });
 
 renderCalendar();
-
