@@ -65,16 +65,6 @@ if (modal) {
     });
 }
 
-// MENÚ MÓVIL
-
-const menuToggle = document.getElementById("menu-toggle");
-const menu = document.getElementById("menu");
-
-if (menuToggle && menu) {
-    menuToggle.addEventListener("click", () => {
-        menu.classList.toggle("active");
-    });
-}
 /* ===== CUENTA ATRÁS OPERACIÓN VERANO ===== */
 
 const fechaEvento = new Date("2026-08-09T09:00:00").getTime();
