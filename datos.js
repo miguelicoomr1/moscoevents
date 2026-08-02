@@ -67,7 +67,13 @@
                 titulo: "GALER\u00cdA",
                 descripcion: "Fotograf\u00edas de Mosco Events en la PARTIDA del 02-08-2026",
                 botonListado: "FOTOS EVENTO 02-08-2026 \u2192",
-                imagenes: []
+                imagenes: crearGaleria({
+                    carpeta: "/images/02-08-2026",
+                    prefijo: "02082026 ",
+                    extension: "jpeg",
+                    hasta: 38,
+                    excluir: [34]
+                })
             }
         },
         {
