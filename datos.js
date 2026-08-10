@@ -41,8 +41,14 @@
                 activa: true,
                 titulo: "GALER\u00cdA VERANO",
                 descripcion: "Fotograf\u00edas del evento del verano de Mosco Events",
+                url: "/Galeria/galeria-verano.html",
                 botonListado: "FOTOS EVENTO ESPECIAL VERANO \u2192",
-                imagenes: []
+                imagenes: crearGaleria({
+                    carpeta: "/images/optimized/evento-verano",
+                    prefijo: "evento-verano-",
+                    extension: "webp",
+                    hasta: 113
+                })
             }
         },
         {
@@ -253,7 +259,7 @@
         evento.url = `/evento.html?id=${encodeURIComponent(evento.id)}`;
 
         if (evento.galeria?.activa) {
-            evento.galeria.url = `/galeria-evento.html?id=${encodeURIComponent(evento.id)}`;
+            evento.galeria.url = evento.galeria.url || `/galeria-evento.html?id=${encodeURIComponent(evento.id)}`;
         }
     });
 
