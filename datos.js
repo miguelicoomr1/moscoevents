@@ -34,9 +34,8 @@
             precio: "25\u20ac",
             inscripcionUrl: "https://forms.gle/d3rTdQvUskJgyoPq6",
             normasUrl: INFO_NORMAS_URL,
-            seccion: "proximos",
-            cuentaAtras: true,
-            fechaHora: "2026-08-09T09:00:00",
+            seccion: "anteriores",
+            url: "/Eventos%20anteriores/operaci%C3%B3n-verano.html",
             galeria: {
                 activa: true,
                 titulo: "GALER\u00cdA VERANO",
@@ -256,7 +255,7 @@
     ];
 
     eventos.forEach((evento) => {
-        evento.url = `/evento.html?id=${encodeURIComponent(evento.id)}`;
+        evento.url = evento.url || `/evento.html?id=${encodeURIComponent(evento.id)}`;
 
         if (evento.galeria?.activa) {
             evento.galeria.url = evento.galeria.url || `/galeria-evento.html?id=${encodeURIComponent(evento.id)}`;

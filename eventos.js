@@ -1,7 +1,7 @@
 const eventos = {
     "2026-08-09": {
         titulo: "🔥 Operación Verano",
-        enlace: "operación-verano.html"
+        enlace: "/Eventos%20anteriores/operaci%C3%B3n-verano.html"
     },
 
     "2026-09-20": {
