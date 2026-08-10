@@ -37,7 +37,7 @@
                             \uD83D\uDCC5\uFE0F Calendario
                         </a>
 
-                        <a href="/Proximos%20Eventos/operaci%C3%B3n-verano.html">
+                        <a href="/Eventos%20anteriores/operaci%C3%B3n-verano.html">
                             \uD83D\uDD25 Operaci\u00F3n Verano
                         </a>
 
