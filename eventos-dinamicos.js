@@ -161,6 +161,10 @@
             return src;
         }
 
+        if (decodificada.startsWith("/images/optimized/")) {
+            return src;
+        }
+
         const sinCarpetaImagenes = decodificada.replace(/^\/images\//, "");
         const puntoExtension = sinCarpetaImagenes.lastIndexOf(".");
 
