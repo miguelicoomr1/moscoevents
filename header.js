@@ -41,6 +41,10 @@
                             \uD83D\uDD1C Pr\u00F3ximos Eventos
                         </a>
 
+                        <a href="/registro.html">
+                            \uD83D\uDCDD Inscripciones
+                        </a>
+
                         <a href="/Eventos%20anteriores/eventos-anteriores.html">
                             \uD83D\uDD19 Eventos Anteriores
                         </a>

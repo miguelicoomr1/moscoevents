@@ -996,6 +996,295 @@ h2::after {
 
 
 /* =========================
+   REGISTRATION
+========================= */
+
+.registration-hero {
+    min-height: 58svh;
+}
+
+.registration-section {
+    padding-top: 72px;
+    background:
+        linear-gradient(180deg, rgba(13, 16, 12, 0.98), rgba(7, 8, 6, 0.98));
+}
+
+.registration-layout {
+    display: grid;
+    grid-template-columns: minmax(280px, 0.72fr) minmax(320px, 1.28fr);
+    gap: 24px;
+
+    width: min(1180px, 100%);
+    margin: 0 auto;
+    align-items: start;
+}
+
+.registration-event,
+.registration-form,
+.registration-result {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background:
+        linear-gradient(145deg, rgba(36, 41, 29, 0.96), rgba(17, 20, 14, 0.98));
+    box-shadow: var(--shadow-soft);
+}
+
+.registration-event {
+    position: sticky;
+    top: 98px;
+    padding: 28px;
+}
+
+.registration-kicker {
+    margin-bottom: 10px;
+    color: var(--mc-sand);
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.registration-event h2,
+.registration-result h2 {
+    margin: 0 0 22px;
+    font-size: 1.8rem;
+    text-align: left;
+}
+
+.registration-event h2::after,
+.registration-result h2::after {
+    margin-left: 0;
+}
+
+.registration-event-details {
+    display: grid;
+    gap: 12px;
+}
+
+.registration-event-details div,
+.registration-receipt div {
+    display: grid;
+    grid-template-columns: 150px 1fr;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(215, 192, 139, 0.14);
+}
+
+.registration-event-details dt,
+.registration-receipt dt {
+    color: var(--text-muted);
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.registration-event-details dd,
+.registration-receipt dd {
+    color: var(--text);
+    font-weight: 700;
+}
+
+.registration-legal-card,
+.registration-legal {
+    margin-top: 24px;
+    padding: 18px;
+    border: 1px solid rgba(215, 192, 139, 0.2);
+    border-radius: 8px;
+    background: rgba(215, 192, 139, 0.08);
+}
+
+.registration-legal-card strong,
+.registration-legal strong {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--mc-sand);
+    font-size: 1.05rem;
+}
+
+.registration-legal-card p,
+.registration-legal p,
+.signature-help {
+    margin: 8px 0;
+    color: var(--text-soft);
+    font-size: 1rem;
+}
+
+.registration-form {
+    padding: 32px;
+}
+
+.registration-form fieldset {
+    min-width: 0;
+    margin: 0 0 28px;
+    padding: 0;
+    border: 0;
+}
+
+.registration-form legend {
+    margin-bottom: 18px;
+    color: var(--mc-sand);
+    font-family: "Oswald", sans-serif;
+    font-size: 1.35rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.registration-fields {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.form-field {
+    display: grid;
+    gap: 8px;
+}
+
+.form-field span,
+.registration-consent p,
+.registration-rules span {
+    color: var(--text);
+    font-weight: 700;
+}
+
+.form-field input,
+.form-field select {
+    width: 100%;
+    min-height: 48px;
+    padding: 12px 14px;
+    border: 1px solid rgba(215, 192, 139, 0.26);
+    border-radius: 6px;
+    background: rgba(7, 8, 6, 0.88);
+    color: var(--text);
+    font: inherit;
+}
+
+.form-field input:focus,
+.form-field select:focus,
+.registration-consent input:focus-visible,
+.registration-rules input:focus-visible,
+.signature-canvas:focus {
+    outline: 2px solid var(--mc-sand);
+    outline-offset: 3px;
+}
+
+.form-field select {
+    appearance: none;
+    background-image:
+        linear-gradient(45deg, transparent 50%, var(--mc-sand) 50%),
+        linear-gradient(135deg, var(--mc-sand) 50%, transparent 50%);
+    background-position:
+        calc(100% - 18px) 50%,
+        calc(100% - 12px) 50%;
+    background-repeat: no-repeat;
+    background-size: 6px 6px;
+}
+
+.registration-event-select {
+    max-width: 620px;
+}
+
+.registration-empty {
+    margin-top: 12px;
+    color: #ffb4a0;
+    font-weight: 700;
+}
+
+.registration-honey {
+    display: none !important;
+}
+
+.registration-consent {
+    display: grid;
+    gap: 12px;
+}
+
+.registration-consent label,
+.registration-rules {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px;
+    border: 1px solid rgba(215, 192, 139, 0.18);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.035);
+}
+
+.registration-consent input,
+.registration-rules input {
+    flex: 0 0 auto;
+    width: 20px;
+    height: 20px;
+    margin-top: 2px;
+    accent-color: var(--mc-sand);
+}
+
+.registration-rules {
+    margin-top: 16px;
+}
+
+.signature-box {
+    overflow: hidden;
+    border: 1px solid rgba(215, 192, 139, 0.3);
+    border-radius: 8px;
+    background: #0d100c;
+}
+
+.signature-canvas {
+    display: block;
+    width: 100%;
+    height: 190px;
+    touch-action: none;
+    cursor: crosshair;
+}
+
+.form-error {
+    margin-top: 10px;
+    color: #ffb4a0;
+    font-weight: 700;
+}
+
+.registration-submit {
+    width: 100%;
+    margin-top: 0;
+}
+
+.registration-submit.is-disabled,
+.registration-submit:disabled {
+    opacity: 0.48;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.registration-secondary {
+    min-height: 44px;
+    margin-top: 14px;
+    padding: 12px 18px;
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
+    color: var(--text);
+}
+
+.registration-result {
+    width: min(1180px, 100%);
+    margin: 26px auto 0;
+    padding: 30px;
+}
+
+.registration-receipt {
+    display: grid;
+    gap: 0;
+    margin-top: 12px;
+}
+
+.signature-preview {
+    display: block;
+    width: min(460px, 100%);
+    margin: 22px 0 0;
+    border: 1px solid rgba(215, 192, 139, 0.26);
+    border-radius: 8px;
+    background: #0d100c;
+}
+
+
+/* =========================
    FOOTER
 ========================= */
 
@@ -1360,6 +1649,14 @@ footer {
     .stats {
         gap: 16px;
     }
+
+    .registration-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .registration-event {
+        position: static;
+    }
 }
 
 @media (max-width: 600px) {
@@ -1461,6 +1758,27 @@ footer {
 
     .event-title {
         font-size: 0.7rem;
+    }
+
+    .registration-section {
+        padding: 56px 16px;
+    }
+
+    .registration-form,
+    .registration-event,
+    .registration-result {
+        padding: 22px;
+    }
+
+    .registration-fields,
+    .registration-event-details div,
+    .registration-receipt div {
+        grid-template-columns: 1fr;
+        gap: 4px;
+    }
+
+    .signature-canvas {
+        height: 170px;
     }
 }
 

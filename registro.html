@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>INSCRIPCIONES | Mosco Events</title>
+
+    <meta
+        name="description"
+        content="Formulario de registro para partidas de Mosco Events."
+    >
+
+    <meta name="theme-color" content="#8d9a55">
+
+    <link
+        rel="icon"
+        type="image/png"
+        href="/images/base%20web/favicon-32x32.png"
+    >
+
+    <link
+        rel="stylesheet"
+        href="/style.css?v=15"
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
+
+    <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&display=swap"
+    >
+
+    <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&display=swap"
+    >
+</head>
+
+<body data-registration-page>
+
+<script src="/header.js?v=5"></script>
+
+<section class="hero registration-hero" aria-label="Inscripciones Mosco Events">
+
+    <div class="overlay"></div>
+
+    <div class="hero-content">
+
+        <h1>INSCRIPCIONES</h1>
+
+        <p data-registration-hero>
+            Inscripci&oacute;n Mosco Events
+        </p>
+
+    </div>
+
+</section>
+
+<main>
+
+    <section class="registration-section">
+
+        <div class="registration-layout">
+
+            <aside class="registration-event" aria-labelledby="registration-event-title">
+
+                <p class="registration-kicker">Partida seleccionada</p>
+
+                <h2 id="registration-event-title" data-registration-event-title>
+                    Mosco Events
+                </h2>
+
+                <dl class="registration-event-details">
+                    <div>
+                        <dt>Fecha</dt>
+                        <dd data-registration-event-date>Por confirmar</dd>
+                    </div>
+                    <div>
+                        <dt>Ubicaci&oacute;n</dt>
+                        <dd data-registration-event-location>Laser Counter (Pedrola)</dd>
+                    </div>
+                    <div>
+                        <dt>Horario</dt>
+                        <dd data-registration-event-time>Seg&uacute;n evento</dd>
+                    </div>
+                    <div>
+                        <dt>Precio</dt>
+                        <dd data-registration-event-price>Seg&uacute;n evento</dd>
+                    </div>
+                </dl>
+
+                <div class="registration-legal-card">
+                    <strong>Informaci&oacute;n legal firmada</strong>
+                    <p>
+                        Titular: Martin Lopez Moscoso. NIF: 54151036C.
+                        Nombre comercial: Mosco Events.
+                    </p>
+                    <p>
+                        La persona inscrita declara haber le&iacute;do las normas,
+                        condiciones generales, aviso legal y pol&iacute;tica de privacidad.
+                    </p>
+                    <a href="/legales-mosco-events.html" target="_blank" rel="noopener noreferrer">
+                        Ver informaci&oacute;n legal
+                    </a>
+                </div>
+
+            </aside>
+
+            <form
+                class="registration-form"
+                id="registration-form"
+                action="https://formsubmit.co/moscoeventes@gmail.com"
+                method="POST"
+                novalidate
+            >
+
+                <input type="hidden" name="eventoId" data-registration-event-id>
+                <input type="hidden" name="eventoTitulo" data-registration-event-name>
+                <input type="hidden" name="firmaLegal" id="signature-data">
+                <input type="hidden" name="referencia" data-mail-reference>
+                <input type="hidden" name="_subject" data-mail-subject>
+                <input type="hidden" name="_template" value="table">
+                <input type="hidden" name="_captcha" value="false">
+                <input type="hidden" name="_replyto" data-mail-reply-to>
+                <input type="hidden" name="_cc" data-mail-copy-to>
+                <input type="hidden" name="_next" data-mail-next>
+                <input type="text" name="_honey" class="registration-honey" tabindex="-1" autocomplete="off">
+                <input type="hidden" name="Evento" data-mail-event>
+                <input type="hidden" name="Fecha del evento" data-mail-date>
+                <input type="hidden" name="Ubicacion" data-mail-location>
+                <input type="hidden" name="Horario" data-mail-time>
+                <input type="hidden" name="Precio" data-mail-price>
+                <input type="hidden" name="Normas leidas y aceptadas" data-mail-rules>
+                <input type="hidden" name="Texto legal firmado" data-mail-legal-text>
+
+                <fieldset>
+                    <legend>Evento</legend>
+
+                    <label class="form-field registration-event-select">
+                        <span>Selecciona la partida</span>
+                        <select
+                            name="eventoSeleccionado"
+                            id="registration-event-select"
+                            required
+                        >
+                            <option value="">Selecciona un evento</option>
+                        </select>
+                    </label>
+
+                    <p class="registration-empty" data-registration-empty hidden>
+                        No hay pr&oacute;ximas partidas disponibles para registro.
+                    </p>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Datos del participante</legend>
+
+                    <div class="registration-fields">
+                        <label class="form-field">
+                            <span>Nombre completo</span>
+                            <input
+                                type="text"
+                                name="nombre"
+                                autocomplete="name"
+                                required
+                            >
+                        </label>
+
+                        <label class="form-field">
+                            <span>Equipo</span>
+                            <input
+                                type="text"
+                                name="equipo"
+                                autocomplete="organization"
+                                required
+                            >
+                        </label>
+
+                        <label class="form-field">
+                            <span>Equipamiento</span>
+                            <select
+                                name="equipamiento"
+                                required
+                            >
+                                <option value="">Selecciona una opci&oacute;n</option>
+                                <option value="Material">Material</option>
+                                <option value="Alquiler +20&euro;">Alquiler +20&euro;</option>
+                            </select>
+                        </label>
+
+                        <label class="form-field">
+                            <span>Tel&eacute;fono</span>
+                            <input
+                                type="tel"
+                                name="telefono"
+                                autocomplete="tel"
+                                inputmode="tel"
+                                required
+                            >
+                        </label>
+
+                        <label class="form-field">
+                            <span>Correo electr&oacute;nico</span>
+                            <input
+                                type="email"
+                                name="email"
+                                autocomplete="email"
+                                required
+                            >
+                        </label>
+                    </div>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Consentimientos</legend>
+
+                    <div class="registration-consent">
+                        <p>Consentimiento para im&aacute;genes de la partida</p>
+
+                        <label>
+                            <input
+                                type="radio"
+                                name="consentimientoImagenes"
+                                value="Si"
+                                required
+                            >
+                            <span>S&iacute;, autorizo el uso de im&aacute;genes de la partida</span>
+                        </label>
+
+                        <label>
+                            <input
+                                type="radio"
+                                name="consentimientoImagenes"
+                                value="No"
+                                required
+                            >
+                            <span>No autorizo el uso de im&aacute;genes de la partida</span>
+                        </label>
+                    </div>
+
+                    <label class="registration-rules">
+                        <input
+                            type="checkbox"
+                            name="normasLeidas"
+                            value="Si"
+                            aria-describedby="registration-rules-error"
+                            required
+                        >
+                        <span>
+                            S&iacute;, he le&iacute;do y acepto las normas de Mosco Events.
+                        </span>
+                    </label>
+
+                    <p
+                        class="form-error"
+                        id="registration-rules-error"
+                        data-rules-error
+                        hidden
+                    >
+                        Este recuadro es obligatorio para registrar la inscripci&oacute;n.
+                    </p>
+
+                    <div class="registration-legal">
+                        <strong>Declaraci&oacute;n legal</strong>
+                        <p>
+                            Al firmar, confirmo que los datos facilitados son correctos,
+                            acepto las condiciones de participaci&oacute;n y autorizo a
+                            Mosco Events a tratar mis datos para gestionar esta partida.
+                        </p>
+                    </div>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Firma del participante</legend>
+
+                    <div class="signature-box">
+                        <canvas
+                            id="signature-canvas"
+                            class="signature-canvas"
+                            aria-label="Firma del participante"
+                        ></canvas>
+                    </div>
+
+                    <p class="signature-help">
+                        Firma dentro del recuadro para completar la inscripci&oacute;n.
+                    </p>
+
+                    <p class="form-error" data-signature-error hidden>
+                        La firma es obligatoria.
+                    </p>
+
+                    <button
+                        class="btn registration-secondary"
+                        type="button"
+                        id="clear-signature"
+                    >
+                        LIMPIAR FIRMA
+                    </button>
+                </fieldset>
+
+                <button class="btn registration-submit" type="submit">
+                    ENVIAR INSCRIPCI&Oacute;N
+                </button>
+
+            </form>
+
+        </div>
+
+        <section
+            class="registration-result"
+            id="registration-result"
+            aria-live="polite"
+            hidden
+        ></section>
+
+    </section>
+
+</main>
+
+<footer>
+    <p>Mosco Events &copy; 2026 - Todos los derechos reservados</p>
+</footer>
+
+<script src="/datos.js?v=5"></script>
+<script src="/inscripciones-config.js?v=1"></script>
+<script src="/registro.js?v=7"></script>
+
+</body>
+</html>
