@@ -58,6 +58,16 @@
         return enlace;
     }
 
+    function crearEnlaceRegistro(evento) {
+        const href = evento.inscripcionUrl || `/registro.html?id=${encodeURIComponent(evento.id)}`;
+
+        return crearEnlace(
+            href,
+            "btn",
+            "INSCRIBIRSE"
+        );
+    }
+
     function textoBotonEvento(evento) {
         return evento.botonEvento || `VER EVENTO ${evento.fechaCorta}`;
     }
@@ -355,7 +365,7 @@
         detallesEvento(evento).forEach((detalle) => tarjeta.appendChild(detalle));
 
         if (evento.inscripcionUrl) {
-            acciones.appendChild(crearBotonExterno(evento.inscripcionUrl, "INSCRIBIRSE"));
+            acciones.appendChild(crearEnlaceRegistro(evento));
         }
 
         if (evento.normasUrl) {

@@ -32,7 +32,7 @@
             duracion: "6 horas",
             premios: "Sorteos y recompensas especiales",
             precio: "25\u20ac",
-            inscripcionUrl: "https://forms.gle/d3rTdQvUskJgyoPq6",
+            inscripcionUrl: "/registro.html?id=operacion-verano-2026",
             normasUrl: INFO_NORMAS_URL,
             seccion: "anteriores",
             url: "/Eventos%20anteriores/operaci%C3%B3n-verano.html",
@@ -64,7 +64,7 @@
             plazas: "26 participantes",
             horario: "10:00 - 15:00",
             precio: "18\u20ac en efectivo en el campo",
-            inscripcionUrl: "https://forms.gle/TGDFqbdYjP6nEq4n9",
+            inscripcionUrl: "/registro.html?id=domingo-02-08-2026",
             normasUrl: INFO_NORMAS_URL,
             seccion: "anteriores",
             galeria: {
@@ -95,7 +95,7 @@
             plazas: "20 participantes",
             horario: "18:00 - 21:30",
             precio: "15\u20ac en efectivo en el campo",
-            inscripcionUrl: "https://forms.gle/WryVuks8c3rT84LSA",
+            inscripcionUrl: "/registro.html?id=jueves-30-07-2026",
             normasUrl: INFO_NORMAS_URL,
             seccion: "anteriores",
             galeria: {
@@ -125,7 +125,7 @@
             plazas: "20 participantes",
             duracion: "3 horas",
             precio: "13\u20ac en efectivo en el campo",
-            inscripcionUrl: "https://forms.gle/xH4Tdf4dohxShC4f9",
+            inscripcionUrl: "/registro.html?id=jueves-23-07-2026",
             normasUrl: INFO_NORMAS_URL,
             seccion: "anteriores",
             galeria: {
@@ -156,7 +156,7 @@
             plazas: "20 participantes",
             duracion: "3 horas",
             precio: "13\u20ac en efectivo en el campo",
-            inscripcionUrl: "https://forms.gle/NjzcqVA7atxtCoMT8",
+            inscripcionUrl: "/registro.html?id=jueves-16-07-2026",
             normasUrl: INFO_NORMAS_URL,
             seccion: "anteriores",
             galeria: {
@@ -186,7 +186,7 @@
             plazas: "20 participantes",
             duracion: "3 horas",
             precio: "12\u20ac en efectivo en el campo",
-            inscripcionUrl: "https://forms.gle/2gg3h8aZYcDNfvuu5",
+            inscripcionUrl: "/registro.html?id=jueves-09-07-2026",
             normasUrl: INFO_NORMAS_URL,
             seccion: "anteriores",
             galeria: {
