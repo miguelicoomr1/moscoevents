@@ -136,17 +136,27 @@
 
     function crearImagenGaleria(src, index, titulo) {
         const imagen = document.createElement("img");
+        const miniatura = obtenerMiniatura(src);
+
         imagen.className = "zoomable";
         imagen.alt = titulo ? `Foto ${index + 1} - ${titulo}` : `Foto ${index + 1}`;
         imagen.loading = "lazy";
         imagen.decoding = "async";
         imagen.fetchPriority = "low";
-        imagen.dataset.fullSrc = src;
-        imagen.src = obtenerMiniatura(src);
+        imagen.width = 640;
+        imagen.height = 480;
+        imagen.dataset.fullSrc = miniatura;
+        imagen.src = miniatura;
+
+        if (miniatura !== src) {
+            imagen.dataset.downloadSrc = src;
+        }
 
         imagen.addEventListener("error", () => {
             if (imagen.getAttribute("src") !== src) {
                 imagen.src = src;
+                imagen.dataset.fullSrc = src;
+                imagen.dataset.downloadSrc = src;
             }
         }, { once: true });
 
