@@ -2,16 +2,24 @@
 
 const modal = document.getElementById("modal");
 const modalImg = document.getElementById("modal-img");
-const images = document.querySelectorAll(".gallery-grid img.zoomable");
-const closeBtn = document.querySelector(".close");
-const prevBtn = document.querySelector(".prev");
-const nextBtn = document.querySelector(".next");
+const closeBtn = modal?.querySelector(".close");
+const prevBtn = modal?.querySelector(".prev");
+const nextBtn = modal?.querySelector(".next");
 
 let currentIndex = 0;
 let modalDownload = null;
+let previousFocus = null;
+
+function getGalleryImages() {
+    return Array.from(document.querySelectorAll(".gallery-grid img.zoomable"));
+}
 
 function getImageSource(img) {
-    return img.dataset.fullSrc || img.getAttribute("src") || img.currentSrc || img.src;
+    return img.dataset.fullSrc || img.currentSrc || img.getAttribute("src") || img.src;
+}
+
+function getDownloadSource(img) {
+    return img.dataset.downloadSrc || getImageSource(img);
 }
 
 function getDownloadName(source, index) {
@@ -30,20 +38,19 @@ function getDownloadName(source, index) {
 }
 
 function updateDownloadLink(link, img, index) {
-    const source = getImageSource(img);
+    const source = getDownloadSource(img);
 
     link.href = source;
     link.download = getDownloadName(source, index);
 }
 
-function createDownloadButton(img, index) {
+function createDownloadButton() {
     const button = document.createElement("a");
 
     button.className = "gallery-download";
     button.textContent = "Descargar";
     button.setAttribute("aria-label", "Descargar imagen");
     button.setAttribute("title", "Descargar imagen");
-    updateDownloadLink(button, img, index);
 
     button.addEventListener("click", (event) => {
         event.stopPropagation();
@@ -53,55 +60,162 @@ function createDownloadButton(img, index) {
 }
 
 function setCurrentImage(index) {
+    const images = getGalleryImages();
+
     if (!modalImg || !images.length) {
         return;
     }
 
-    currentIndex = index;
-    modalImg.src = getImageSource(images[currentIndex]);
+    currentIndex = (index + images.length) % images.length;
+
+    const image = images[currentIndex];
+    modalImg.alt = image.alt || `Imagen ampliada ${currentIndex + 1}`;
+    modalImg.src = getImageSource(image);
 
     if (modalDownload) {
-        updateDownloadLink(modalDownload, images[currentIndex], currentIndex);
+        updateDownloadLink(modalDownload, image, currentIndex);
+    }
+
+    const hasMultipleImages = images.length > 1;
+    prevBtn?.toggleAttribute("hidden", !hasMultipleImages);
+    nextBtn?.toggleAttribute("hidden", !hasMultipleImages);
+}
+
+function openModal() {
+    if (!modal) {
+        return;
+    }
+
+    if (modal.parentElement !== document.body) {
+        document.body.appendChild(modal);
+    }
+
+    previousFocus = document.activeElement;
+    modal.classList.add("active");
+    modal.setAttribute("aria-hidden", "false");
+    document.documentElement.classList.add("modal-open");
+    document.body.classList.add("modal-open");
+    closeBtn?.focus?.({ preventScroll: true });
+}
+
+function closeModal() {
+    if (!modal || !modalImg) {
+        return;
+    }
+
+    modal.classList.remove("active");
+    modal.setAttribute("aria-hidden", "true");
+    document.documentElement.classList.remove("modal-open");
+    document.body.classList.remove("modal-open");
+    modalImg.removeAttribute("src");
+
+    if (previousFocus instanceof HTMLElement) {
+        previousFocus.focus({ preventScroll: true });
     }
 }
 
+function showRelativeImage(delta) {
+    const images = getGalleryImages();
+
+    if (images.length < 2) {
+        return;
+    }
+
+    setCurrentImage(currentIndex + delta);
+}
+
 function showImage(index) {
+    const images = getGalleryImages();
+
     if (!modal || !modalImg || !images.length) {
         return;
     }
 
     setCurrentImage(index);
-    modal.classList.add("active");
+    openModal();
 }
 
-if (modal && modalImg && images.length) {
-    modalDownload = createDownloadButton(images[0], 0);
+function activateModalControl(control, handler) {
+    if (!control) {
+        return;
+    }
+
+    if (control.tagName !== "BUTTON") {
+        control.setAttribute("role", "button");
+        control.setAttribute("tabindex", "0");
+    }
+
+    control.addEventListener("click", handler);
+    control.addEventListener("keydown", (event) => {
+        if (event.key !== "Enter" && event.key !== " ") {
+            return;
+        }
+
+        event.preventDefault();
+        handler(event);
+    });
+}
+
+if (modal && modalImg) {
+    modal.setAttribute("role", "dialog");
+    modal.setAttribute("aria-modal", "true");
+    modal.setAttribute("aria-hidden", "true");
+
+    modalDownload = createDownloadButton();
     modalDownload.classList.add("modal-download");
     modal.appendChild(modalDownload);
 
-    images.forEach((img, index) => {
-        img.addEventListener("click", () => {
+    document.addEventListener("click", (event) => {
+        const image = event.target.closest?.(".gallery-grid img.zoomable");
+
+        if (!image) {
+            return;
+        }
+
+        const images = getGalleryImages();
+        const index = images.indexOf(image);
+
+        if (index !== -1) {
             showImage(index);
-        });
+        }
     });
 
-    nextBtn?.addEventListener("click", (event) => {
+    activateModalControl(nextBtn, (event) => {
         event.stopPropagation();
-        setCurrentImage((currentIndex + 1) % images.length);
+        showRelativeImage(1);
     });
 
-    prevBtn?.addEventListener("click", (event) => {
+    activateModalControl(prevBtn, (event) => {
         event.stopPropagation();
-        setCurrentImage((currentIndex - 1 + images.length) % images.length);
+        showRelativeImage(-1);
     });
 
-    closeBtn?.addEventListener("click", () => {
-        modal.classList.remove("active");
+    activateModalControl(closeBtn, (event) => {
+        event.stopPropagation();
+        closeModal();
     });
 
     modal.addEventListener("click", (event) => {
         if (event.target === modal) {
-            modal.classList.remove("active");
+            closeModal();
+        }
+    });
+
+    document.addEventListener("keydown", (event) => {
+        if (!modal.classList.contains("active")) {
+            return;
+        }
+
+        if (event.key === "Escape") {
+            closeModal();
+        }
+
+        if (event.key === "ArrowRight") {
+            showRelativeImage(1);
+        }
+
+        if (event.key === "ArrowLeft") {
+            showRelativeImage(-1);
         }
     });
 }

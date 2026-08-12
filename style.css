@@ -64,6 +64,12 @@ body {
     -webkit-font-smoothing: antialiased;
 }
 
+html.modal-open,
+body.modal-open {
+    overflow: hidden;
+    overscroll-behavior: none;
+}
+
 img,
 video {
     max-width: 100%;
@@ -738,6 +744,7 @@ h2::after {
 
     max-width: 1260px;
     margin: 0 auto;
+    align-items: stretch;
 }
 
 .gallery-grid img,
@@ -753,7 +760,7 @@ h2::after {
     border: 1px solid rgba(215, 192, 139, 0.2);
     border-radius: 6px;
 
-    box-shadow: var(--shadow-soft);
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.28);
 
     transition: transform 0.24s ease, border-color 0.24s ease, box-shadow 0.24s ease;
 }
@@ -763,9 +770,9 @@ h2::after {
 }
 
 .zoomable:hover {
-    transform: translateY(-4px) scale(1.015);
+    transform: translateY(-2px);
     border-color: var(--border-strong);
-    box-shadow: 0 24px 58px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.36);
 }
 
 .gallery-download {
@@ -786,7 +793,6 @@ h2::after {
     border: 1px solid rgba(215, 192, 139, 0.44);
     border-radius: 6px;
     box-shadow: 0 12px 28px rgba(0, 0, 0, 0.42);
-    backdrop-filter: blur(10px);
 
     color: var(--mc-sand);
     font-size: 0.82rem;
@@ -837,31 +843,39 @@ h2::after {
 ========================= */
 
 .modal {
-    display: none;
-
     position: fixed;
     inset: 0;
 
+    display: flex;
     justify-content: center;
     align-items: center;
+    padding: 28px 92px;
 
-    background: rgba(0, 0, 0, 0.94);
-    backdrop-filter: blur(8px);
+    background: rgba(0, 0, 0, 0.97);
 
+    opacity: 0;
+    pointer-events: none;
+    visibility: hidden;
+    overscroll-behavior: contain;
+    touch-action: none;
     z-index: 999999;
+    transition: opacity 0.16s ease, visibility 0.16s ease;
 }
 
 .modal.active {
-    display: flex;
+    opacity: 1;
+    pointer-events: auto;
+    visibility: visible;
 }
 
 #modal-img {
-    max-width: 90%;
-    max-height: 90vh;
+    max-width: calc(100vw - 184px);
+    max-height: calc(100svh - 72px);
 
     object-fit: contain;
     border-radius: 6px;
-    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.75);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.62);
+    user-select: none;
 }
 
 .close,
@@ -883,6 +897,7 @@ h2::after {
 
     color: #ffffff;
     font-family: inherit;
+    line-height: 1;
 
     cursor: pointer;
     user-select: none;
@@ -1375,6 +1390,10 @@ footer {
         gap: 12px;
     }
 
+    .zoomable:hover {
+        transform: none;
+    }
+
     .gallery-download {
         right: 8px;
         bottom: 8px;
@@ -1389,6 +1408,15 @@ footer {
     .modal-download {
         right: 14px;
         bottom: 14px;
+    }
+
+    .modal {
+        padding: 68px 12px 72px;
+    }
+
+    #modal-img {
+        max-width: calc(100vw - 24px);
+        max-height: calc(100svh - 150px);
     }
 
     .stats {
