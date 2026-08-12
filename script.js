@@ -6,16 +6,23 @@ const closeBtn = modal?.querySelector(".close");
 const prevBtn = modal?.querySelector(".prev");
 const nextBtn = modal?.querySelector(".next");
 
+const GALLERY_PLACEHOLDER_SRC =
+    "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==";
+const GALLERY_INITIAL_ITEMS = window.matchMedia("(max-width: 700px)").matches ? 6 : 12;
+const GALLERY_BATCH_SIZE = window.matchMedia("(max-width: 700px)").matches ? 6 : 12;
+const GALLERY_PRELOAD_MARGIN = window.matchMedia("(max-width: 700px)").matches ? "360px 0px" : "620px 0px";
+
 let currentIndex = 0;
 let modalDownload = null;
 let previousFocus = null;
+let galleryImageObserver = null;
 
 function getGalleryImages() {
     return Array.from(document.querySelectorAll(".gallery-grid img.zoomable"));
 }
 
 function getImageSource(img) {
-    return img.dataset.fullSrc || img.currentSrc || img.getAttribute("src") || img.src;
+    return img.dataset.fullSrc || img.dataset.src || img.currentSrc || img.getAttribute("src") || img.src;
 }
 
 function getDownloadSource(img) {
@@ -57,6 +64,159 @@ function createDownloadButton() {
     });
 
     return button;
+}
+
+function markImageLoaded(img) {
+    img.classList.remove("gallery-lazy");
+    img.classList.add("is-loaded");
+}
+
+function loadGalleryImage(img) {
+    const source = img.dataset.src || img.dataset.fullSrc;
+
+    if (!source || img.dataset.loaded === "true") {
+        return;
+    }
+
+    img.dataset.loaded = "true";
+
+    img.addEventListener("load", () => markImageLoaded(img), { once: true });
+    img.addEventListener("error", () => markImageLoaded(img), { once: true });
+    img.src = source;
+
+    if (img.complete) {
+        markImageLoaded(img);
+    }
+}
+
+function observeGalleryImage(img) {
+    if (img.dataset.loaded === "true") {
+        return;
+    }
+
+    if (galleryImageObserver) {
+        galleryImageObserver.observe(img);
+        return;
+    }
+
+    loadGalleryImage(img);
+}
+
+function prepareGalleryImage(img) {
+    const currentSource = img.getAttribute("src");
+    const lazySource = img.dataset.src || img.dataset.fullSrc || currentSource;
+
+    if (!lazySource) {
+        return;
+    }
+
+    img.dataset.src = lazySource;
+    img.dataset.fullSrc = img.dataset.fullSrc || lazySource;
+    img.width = img.width || 640;
+    img.height = img.height || 480;
+
+    if (currentSource !== GALLERY_PLACEHOLDER_SRC && img.dataset.loaded !== "true") {
+        img.src = GALLERY_PLACEHOLDER_SRC;
+    }
+
+    if (img.dataset.loaded !== "true") {
+        img.classList.add("gallery-lazy");
+    }
+}
+
+function revealGalleryBatch(grid, images) {
+    const hiddenImages = images.filter((img) => img.hidden).slice(0, GALLERY_BATCH_SIZE);
+
+    hiddenImages.forEach((img) => {
+        img.hidden = false;
+        img.classList.remove("gallery-item-deferred");
+        observeGalleryImage(img);
+    });
+
+    return images.some((img) => img.hidden);
+}
+
+function setupGalleryBatching(grid) {
+    const images = Array.from(grid.querySelectorAll("img.zoomable"));
+
+    if (!images.length) {
+        return;
+    }
+
+    images.forEach((img, index) => {
+        prepareGalleryImage(img);
+
+        if (index >= GALLERY_INITIAL_ITEMS) {
+            img.hidden = true;
+            img.classList.add("gallery-item-deferred");
+            return;
+        }
+
+        observeGalleryImage(img);
+    });
+
+    if (images.length <= GALLERY_INITIAL_ITEMS) {
+        return;
+    }
+
+    const loader = document.createElement("span");
+    loader.className = "gallery-loader";
+    loader.setAttribute("aria-hidden", "true");
+    grid.after(loader);
+
+    const revealMore = () => {
+        const hasHiddenImages = revealGalleryBatch(grid, images);
+
+        if (!hasHiddenImages) {
+            loader.remove();
+            return false;
+        }
+
+        return true;
+    };
+
+    if (!("IntersectionObserver" in window)) {
+        while (revealMore()) {
+            // Compatibility fallback: old browsers get the complete gallery.
+        }
+
+        return;
+    }
+
+    const batchObserver = new IntersectionObserver((entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+            const hasHiddenImages = revealMore();
+
+            if (!hasHiddenImages) {
+                batchObserver.disconnect();
+            }
+        }
+    }, { rootMargin: GALLERY_PRELOAD_MARGIN });
+
+    batchObserver.observe(loader);
+}
+
+function initGalleryPerformance() {
+    const grids = document.querySelectorAll(".gallery-grid");
+
+    if (!grids.length) {
+        return;
+    }
+
+    if ("IntersectionObserver" in window) {
+        galleryImageObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (!entry.isIntersecting) {
+                    return;
+                }
+
+                galleryImageObserver.unobserve(entry.target);
+                loadGalleryImage(entry.target);
+            });
+        }, { rootMargin: GALLERY_PRELOAD_MARGIN });
+    }
+
+    grids.forEach(setupGalleryBatching);
 }
 
 function setCurrentImage(index) {
@@ -157,6 +317,8 @@ function activateModalControl(control, handler) {
 }
 
 if (modal && modalImg) {
+    initGalleryPerformance();
+
     modal.setAttribute("role", "dialog");
     modal.setAttribute("aria-modal", "true");
     modal.setAttribute("aria-hidden", "true");

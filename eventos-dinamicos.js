@@ -1,6 +1,8 @@
 (function () {
     const eventos = Array.isArray(window.MOSCO_EVENTOS) ? window.MOSCO_EVENTOS : [];
     const eventosPorId = new Map(eventos.map((evento) => [evento.id, evento]));
+    const GALLERY_PLACEHOLDER_SRC =
+        "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==";
 
     function crearElemento(etiqueta, clase, texto) {
         const elemento = document.createElement(etiqueta);
@@ -137,6 +139,7 @@
     function crearImagenGaleria(src, index, titulo) {
         const imagen = document.createElement("img");
         const miniatura = obtenerMiniatura(src);
+        const ampliada = obtenerImagenAmpliada(src);
 
         imagen.className = "zoomable";
         imagen.alt = titulo ? `Foto ${index + 1} - ${titulo}` : `Foto ${index + 1}`;
@@ -145,16 +148,18 @@
         imagen.fetchPriority = "low";
         imagen.width = 640;
         imagen.height = 480;
-        imagen.dataset.fullSrc = miniatura;
-        imagen.src = miniatura;
+        imagen.dataset.src = miniatura;
+        imagen.dataset.fullSrc = ampliada;
+        imagen.src = GALLERY_PLACEHOLDER_SRC;
 
-        if (miniatura !== src) {
+        if (ampliada !== src) {
             imagen.dataset.downloadSrc = src;
         }
 
         imagen.addEventListener("error", () => {
             if (imagen.getAttribute("src") !== src) {
                 imagen.src = src;
+                imagen.dataset.src = src;
                 imagen.dataset.fullSrc = src;
                 imagen.dataset.downloadSrc = src;
             }
@@ -164,6 +169,33 @@
     }
 
     function obtenerMiniatura(src) {
+        const limpia = src.split(/[?#]/)[0];
+        const decodificada = decodeURIComponent(limpia);
+
+        if (!decodificada.startsWith("/images/")) {
+            return src;
+        }
+
+        if (decodificada.startsWith("/images/thumbs/")) {
+            return src;
+        }
+
+        if (decodificada.startsWith("/images/optimized/")) {
+            return encodeURI(decodificada.replace(/^\/images\/optimized\//, "/images/thumbs/"));
+        }
+
+        const sinCarpetaImagenes = decodificada.replace(/^\/images\//, "");
+        const puntoExtension = sinCarpetaImagenes.lastIndexOf(".");
+
+        if (puntoExtension === -1) {
+            return src;
+        }
+
+        const sinExtension = sinCarpetaImagenes.slice(0, puntoExtension);
+        return encodeURI(`/images/thumbs/${sinExtension}.webp`);
+    }
+
+    function obtenerImagenAmpliada(src) {
         const limpia = src.split(/[?#]/)[0];
         const decodificada = decodeURIComponent(limpia);
 
