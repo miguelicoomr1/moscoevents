@@ -1000,11 +1000,11 @@ h2::after {
 ========================= */
 
 .registration-hero {
-    min-height: 58svh;
+    min-height: 46svh;
 }
 
 .registration-section {
-    padding-top: 72px;
+    padding-top: 48px;
     background:
         linear-gradient(180deg, rgba(13, 16, 12, 0.98), rgba(7, 8, 6, 0.98));
 }
@@ -1021,6 +1021,7 @@ h2::after {
 
 .registration-event,
 .registration-form,
+.registration-waitlist,
 .registration-result {
     border: 1px solid var(--border);
     border-radius: 8px;
@@ -1108,6 +1109,38 @@ h2::after {
 
 .registration-form {
     padding: 32px;
+}
+
+.registration-waitlist {
+    margin-bottom: 28px;
+    padding: 24px;
+}
+
+.registration-waitlist[hidden],
+[data-registration-participant][hidden] {
+    display: none !important;
+}
+
+.registration-waitlist h2 {
+    margin: 0 0 16px;
+    text-align: left;
+}
+
+.registration-waitlist h2::after {
+    margin-left: 0;
+}
+
+.registration-waitlist > p,
+.reservation-date-help {
+    color: var(--text-soft);
+}
+
+.registration-waitlist > p {
+    margin-bottom: 24px;
+}
+
+.reservation-date-help {
+    margin: 16px 0;
 }
 
 .registration-form fieldset {
@@ -1260,6 +1293,12 @@ h2::after {
     background:
         linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
     color: var(--text);
+}
+
+.registration-legal-link {
+    width: 100%;
+    margin-top: 16px;
+    text-decoration: none;
 }
 
 .registration-result {
@@ -1531,34 +1570,37 @@ footer {
 @media (max-width: 900px) {
 
     header {
-        height: 72px;
-        padding: 0 18px;
+        height: 58px;
+        padding: 0 12px;
         background: #000000;
     }
 
     .logo img {
-        height: 50px;
+        height: 38px;
     }
 
     .menu-toggle {
         display: inline-flex;
         justify-content: center;
         align-items: center;
+        width: 36px;
+        height: 36px;
+        font-size: 22px;
     }
 
     header nav {
         display: none;
 
         position: absolute;
-        top: 72px;
+        top: 58px;
         left: 0;
 
         width: 100%;
-        padding: 18px;
+        padding: 10px 12px;
 
         flex-direction: column;
         align-items: stretch;
-        gap: 8px;
+        gap: 4px;
 
         background: #000000;
         border-bottom: 1px solid var(--border);
@@ -1572,7 +1614,8 @@ footer {
     header nav a,
     header .dropbtn {
         width: 100%;
-        padding: 12px 10px;
+        padding: 8px 10px;
+        font-size: 0.84rem;
         text-align: center;
     }
 
@@ -1590,12 +1633,18 @@ footer {
 
         width: 100%;
         min-width: 0;
-        margin-top: 6px;
+        margin-top: 3px;
+        padding: 4px;
 
         background: #000000;
         border-color: rgba(215, 192, 139, 0.22);
         transform: none;
         text-align: center;
+    }
+
+    header .dropdown-content a {
+        padding: 8px 10px;
+        font-size: 0.8rem;
     }
 
     header .dropdown:hover .dropdown-content,
@@ -1615,6 +1664,24 @@ footer {
         background-size: cover;
         background-repeat: no-repeat;
         background-position: center center;
+    }
+
+    .registration-hero {
+        min-height: 48svh;
+        padding: 88px 18px 42px;
+    }
+
+    .registration-hero .hero-content::before {
+        width: 82px;
+        margin-bottom: 14px;
+    }
+
+    .registration-hero h1 {
+        font-size: 3.2rem;
+    }
+
+    .registration-hero p {
+        margin-top: 14px;
     }
 
     .hero-content::before {
@@ -1663,6 +1730,15 @@ footer {
 
     .hero h1 {
         font-size: 3.1rem;
+    }
+
+    .registration-hero {
+        min-height: 42svh;
+        padding: 80px 16px 34px;
+    }
+
+    .registration-hero h1 {
+        font-size: 2.65rem;
     }
 
     .hero-buttons {
@@ -1761,20 +1837,58 @@ footer {
     }
 
     .registration-section {
-        padding: 56px 16px;
+        padding: 38px 14px;
     }
 
     .registration-form,
     .registration-event,
+    .registration-waitlist,
     .registration-result {
-        padding: 22px;
+        padding: 18px;
     }
 
     .registration-fields,
-    .registration-event-details div,
     .registration-receipt div {
         grid-template-columns: 1fr;
         gap: 4px;
+    }
+
+    .registration-layout {
+        gap: 16px;
+    }
+
+    .registration-event h2 {
+        margin-bottom: 14px;
+        font-size: 1.45rem;
+    }
+
+    .registration-kicker {
+        margin-bottom: 6px;
+        font-size: 0.84rem;
+    }
+
+    .registration-event-details {
+        gap: 4px;
+    }
+
+    .registration-event-details div {
+        grid-template-columns: 82px minmax(0, 1fr);
+        gap: 8px;
+        padding: 8px 0;
+    }
+
+    .registration-event-details dt,
+    .registration-event-details dd {
+        font-size: 0.92rem;
+    }
+
+    .registration-legal-card {
+        margin-top: 16px;
+        padding: 14px;
+    }
+
+    .registration-legal-card p {
+        font-size: 0.9rem;
     }
 
     .signature-canvas {
