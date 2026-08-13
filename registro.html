@@ -26,7 +26,7 @@
 
     <link
         rel="stylesheet"
-        href="/style.css?v=15"
+        href="/style.css?v=16"
     >
 
     <link
@@ -108,7 +108,12 @@
                         La persona inscrita declara haber le&iacute;do las normas,
                         condiciones generales, aviso legal y pol&iacute;tica de privacidad.
                     </p>
-                    <a href="/legales-mosco-events.html" target="_blank" rel="noopener noreferrer">
+                    <a
+                        class="btn registration-secondary registration-legal-link"
+                        href="/legales-mosco-events.html"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
                         Ver informaci&oacute;n legal
                     </a>
                 </div>
@@ -152,7 +157,7 @@
                             id="registration-event-select"
                             required
                         >
-                            <option value="">Selecciona un evento</option>
+                            <option value="">Seleccionar evento</option>
                         </select>
                     </label>
 
@@ -161,7 +166,64 @@
                     </p>
                 </fieldset>
 
-                <fieldset>
+                <section
+                    class="registration-waitlist"
+                    id="registration-waitlist"
+                    aria-labelledby="registration-waitlist-title"
+                    aria-live="polite"
+                    hidden
+                >
+                    <h2 id="registration-waitlist-title">Partida llena</h2>
+
+                    <p>
+                        Partida llena, deja tus datos aqu&iacute; abajo y te contactaremos
+                        conforme haya una plaza libre.
+                    </p>
+
+                    <div id="reservation-form">
+                        <input type="hidden" name="tipoRegistro" value="Reserva">
+                        <input type="hidden" name="eventoId" data-reservation-event-id>
+                        <input type="hidden" name="eventoTitulo" data-reservation-event-name>
+                        <input type="hidden" name="fechaHoraRegistro" data-reservation-date>
+
+                        <div class="registration-fields">
+                            <label class="form-field">
+                                <span>Nombre completo</span>
+                                <input
+                                    type="text"
+                                    name="nombreReserva"
+                                    autocomplete="name"
+                                    required
+                                >
+                            </label>
+
+                            <label class="form-field">
+                                <span>Tel&eacute;fono</span>
+                                <input
+                                    type="tel"
+                                    name="telefonoReserva"
+                                    autocomplete="tel"
+                                    inputmode="tel"
+                                    required
+                                >
+                            </label>
+                        </div>
+
+                        <p class="reservation-date-help">
+                            La fecha y hora de registro se guardar&aacute;n autom&aacute;ticamente.
+                        </p>
+
+                        <button
+                            class="btn registration-submit"
+                            id="reservation-submit"
+                            type="button"
+                        >
+                            APUNTARME A RESERVAS
+                        </button>
+                    </div>
+                </section>
+
+                <fieldset data-registration-participant>
                     <legend>Datos del participante</legend>
 
                     <div class="registration-fields">
@@ -220,7 +282,7 @@
                     </div>
                 </fieldset>
 
-                <fieldset>
+                <fieldset data-registration-participant>
                     <legend>Consentimientos</legend>
 
                     <div class="registration-consent">
@@ -279,7 +341,7 @@
                     </div>
                 </fieldset>
 
-                <fieldset>
+                <fieldset data-registration-participant>
                     <legend>Firma del participante</legend>
 
                     <div class="signature-box">
@@ -307,7 +369,11 @@
                     </button>
                 </fieldset>
 
-                <button class="btn registration-submit" type="submit">
+                <button
+                    class="btn registration-submit"
+                    type="submit"
+                    data-registration-participant
+                >
                     ENVIAR INSCRIPCI&Oacute;N
                 </button>
 
@@ -332,7 +398,7 @@
 
 <script src="/datos.js?v=5"></script>
 <script src="/inscripciones-config.js?v=1"></script>
-<script src="/registro.js?v=7"></script>
+<script src="/registro.js?v=9"></script>
 
 </body>
 </html>

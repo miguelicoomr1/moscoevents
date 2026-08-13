@@ -2,7 +2,9 @@ const CONFIG = {
     OWNER_EMAIL: "moscoeventes@gmail.com",
     DRIVE_FOLDER_NAME: "MoscoEvents",
     SPREADSHEET_NAME: "Inscripciones Mosco Events",
-    SIGNATURES_FOLDER_NAME: "Firmas inscripciones"
+    SIGNATURES_FOLDER_NAME: "Firmas inscripciones",
+    MAX_REGISTRATIONS_PER_EVENT: 20,
+    RESERVATIONS_SHEET_NAME: "Reservas"
 };
 
 const HEADERS = [
@@ -25,7 +27,21 @@ const HEADERS = [
     "Firma URL"
 ];
 
-function doGet() {
+const RESERVATION_HEADERS = [
+    "Fecha y hora registro",
+    "Evento ID",
+    "Evento",
+    "Nombre",
+    "Telefono"
+];
+
+function doGet(e) {
+    const params = e && e.parameter ? e.parameter : {};
+
+    if (value_(params.action) === "status") {
+        return capacityStatusResponse_(params);
+    }
+
     return html_("Inscripciones Mosco Events", "El sistema de inscripciones esta activo.");
 }
 
@@ -36,6 +52,11 @@ function doPost(e) {
         lock.waitLock(30000);
 
         const payload = e && e.parameter ? e.parameter : {};
+
+        if (value_(payload.tipoRegistro) === "Reserva") {
+            return saveReservation_(payload);
+        }
+
         const record = normalizeRegistration_(payload);
 
         validateRegistration_(record);
@@ -43,6 +64,14 @@ function doPost(e) {
         const folder = getOrCreateFolder_(CONFIG.DRIVE_FOLDER_NAME);
         const spreadsheet = getOrCreateSpreadsheet_(folder);
         const sheet = getOrCreateSheet_(spreadsheet, record.evento);
+
+        if (registrationCount_(sheet) >= CONFIG.MAX_REGISTRATIONS_PER_EVENT) {
+            return html_(
+                "Partida llena",
+                "La partida ya ha alcanzado el limite de 20 inscripciones. Vuelve al formulario para apuntarte a reservas."
+            );
+        }
+
         const signatureUrl = saveSignature_(folder, record.firmaLegal, record.referencia);
         const row = buildSheetRow_(record, signatureUrl);
         let emailsSent = true;
@@ -120,6 +149,100 @@ function validateRegistration_(record) {
     }
 }
 
+function capacityStatusResponse_(params) {
+    const eventId = value_(params.eventId);
+    const eventName = value_(params.eventName);
+    const callback = safeCallback_(params.callback);
+    let count = 0;
+
+    if (eventName) {
+        const folder = getOrCreateFolder_(CONFIG.DRIVE_FOLDER_NAME);
+        const spreadsheet = getOrCreateSpreadsheet_(folder);
+        const sheet = spreadsheet.getSheetByName(sheetName_(eventName));
+
+        count = registrationCount_(sheet);
+    }
+
+    const payload = {
+        eventId: eventId,
+        count: count,
+        limit: CONFIG.MAX_REGISTRATIONS_PER_EVENT,
+        full: count >= CONFIG.MAX_REGISTRATIONS_PER_EVENT
+    };
+    const content = callback
+        ? `${callback}(${JSON.stringify(payload)});`
+        : JSON.stringify(payload);
+    const mimeType = callback
+        ? ContentService.MimeType.JAVASCRIPT
+        : ContentService.MimeType.JSON;
+
+    return ContentService
+        .createTextOutput(content)
+        .setMimeType(mimeType);
+}
+
+function safeCallback_(value) {
+    const callback = value_(value);
+
+    return /^[A-Za-z_$][0-9A-Za-z_$]{0,80}$/.test(callback) ? callback : "";
+}
+
+function registrationCount_(sheet) {
+    if (!sheet) {
+        return 0;
+    }
+
+    return Math.max(0, sheet.getLastRow() - 1);
+}
+
+function saveReservation_(payload) {
+    const reservation = {
+        fechaRegistro: new Date(),
+        eventoId: value_(payload.eventoId),
+        evento: value_(payload.eventoTitulo),
+        nombre: value_(payload.nombreReserva),
+        telefono: value_(payload.telefonoReserva)
+    };
+    const missing = [];
+
+    if (!reservation.eventoId) missing.push("Evento ID");
+    if (!reservation.evento) missing.push("Evento");
+    if (!reservation.nombre) missing.push("Nombre");
+    if (!reservation.telefono) missing.push("Telefono");
+
+    if (missing.length) {
+        throw new Error(`Faltan campos obligatorios de la reserva: ${missing.join(", ")}`);
+    }
+
+    const folder = getOrCreateFolder_(CONFIG.DRIVE_FOLDER_NAME);
+    const spreadsheet = getOrCreateSpreadsheet_(folder);
+    const eventSheet = spreadsheet.getSheetByName(sheetName_(reservation.evento));
+
+    if (registrationCount_(eventSheet) < CONFIG.MAX_REGISTRATIONS_PER_EVENT) {
+        throw new Error("La partida todavia tiene plazas disponibles.");
+    }
+
+    const reservationSheet = getOrCreateNamedSheet_(
+        spreadsheet,
+        CONFIG.RESERVATIONS_SHEET_NAME,
+        RESERVATION_HEADERS
+    );
+
+    reservationSheet.appendRow([
+        reservation.fechaRegistro,
+        safeCell_(reservation.eventoId),
+        safeCell_(reservation.evento),
+        safeCell_(reservation.nombre),
+        safeCell_(reservation.telefono)
+    ]);
+    reservationSheet.autoResizeColumns(1, RESERVATION_HEADERS.length);
+
+    return html_(
+        "Reserva recibida",
+        "Te hemos anadido a la lista de reservas. Contactaremos contigo cuando quede una plaza libre."
+    );
+}
+
 function getOrCreateFolder_(name) {
     const folders = DriveApp.getFoldersByName(name);
 
@@ -167,26 +290,31 @@ function getOrCreateSpreadsheet_(folder) {
 
 function getOrCreateSheet_(spreadsheet, eventName) {
     const name = sheetName_(eventName);
+
+    return getOrCreateNamedSheet_(spreadsheet, name, HEADERS);
+}
+
+function getOrCreateNamedSheet_(spreadsheet, name, headers) {
     let sheet = spreadsheet.getSheetByName(name);
 
     if (!sheet) {
         sheet = spreadsheet.insertSheet(name);
     }
 
-    ensureHeaders_(sheet);
+    ensureHeaders_(sheet, headers);
     removeDefaultSheet_(spreadsheet);
 
     return sheet;
 }
 
-function ensureHeaders_(sheet) {
+function ensureHeaders_(sheet, headers) {
     if (sheet.getLastRow() > 0) {
         return;
     }
 
-    sheet.appendRow(HEADERS);
+    sheet.appendRow(headers);
     sheet.setFrozenRows(1);
-    sheet.getRange(1, 1, 1, HEADERS.length)
+    sheet.getRange(1, 1, 1, headers.length)
         .setFontWeight("bold")
         .setBackground("#d6b96f")
         .setFontColor("#10150f");
@@ -350,6 +478,14 @@ function safePayload_(e) {
 
     if (payload.firmaLegal) {
         payload.firmaLegal = "[firma recibida]";
+    }
+
+    if (payload.nombreReserva) {
+        payload.nombreReserva = "[nombre recibido]";
+    }
+
+    if (payload.telefonoReserva) {
+        payload.telefonoReserva = "[telefono recibido]";
     }
 
     return payload;
