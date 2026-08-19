@@ -475,14 +475,14 @@ function buildHtmlBody_(record, spreadsheetUrl, signatureUrl, includeAdminLinks)
     }
 
     const renderRows = rows => rows.map(([label, value], index) => {
-        const border = index === rows.length - 1 ? "" : "border-bottom:1px solid #e5e8e1;";
+        const border = index === rows.length - 1 ? "" : "border-bottom:1px solid #e6e1d6;";
 
         return `
             <tr>
-                <td width="36%" valign="top" style="padding:12px 14px;${border}color:#667061;font-size:13px;font-weight:700;line-height:1.35">
+                <td width="36%" valign="top" style="padding:13px 14px;${border}background:#f3f1e9;color:#62685f;font-size:12px;font-weight:800;line-height:1.35;text-transform:uppercase;letter-spacing:.35px">
                     ${escapeHtml_(label)}
                 </td>
-                <td valign="top" style="padding:12px 14px;${border}color:#171c15;font-size:14px;line-height:1.35;word-break:break-word">
+                <td valign="top" style="padding:13px 14px;${border}background:#fffdf8;color:#11150f;font-size:14px;font-weight:600;line-height:1.4;word-break:break-word">
                     ${linkOrText_(value)}
                 </td>
             </tr>
@@ -497,14 +497,15 @@ function buildHtmlBody_(record, spreadsheetUrl, signatureUrl, includeAdminLinks)
     const whatsappUrl = `https://wa.me/${CONFIG.WHATSAPP_NUMBER}?text=${whatsappText}`;
     const helpBlock = includeAdminLinks ? "" : `
         <tr>
-            <td style="padding:0 28px 28px">
-                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f3f6ef;border:1px solid #dce3d5;border-radius:12px">
+            <td class="email-pad" style="padding:0 30px 30px">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#11150f;border:1px solid #2d332b;border-radius:16px">
                     <tr>
-                        <td style="padding:20px;text-align:center">
-                            <p style="margin:0 0 7px;color:#171c15;font-size:16px;font-weight:700">&iquest;Necesitas ayuda?</p>
-                            <p style="margin:0 0 16px;color:#65705f;font-size:14px;line-height:1.55">Si tienes cualquier problema o necesitas modificar alg&uacute;n dato, escr&iacute;benos por WhatsApp.</p>
-                            <a href="${escapeHtml_(whatsappUrl)}" style="display:inline-block;background:#25d366;color:#ffffff;text-decoration:none;font-size:14px;font-weight:700;padding:12px 22px;border-radius:8px">CONTACTAR POR WHATSAPP</a>
-                            <p style="margin:12px 0 0;color:#65705f;font-size:13px;font-weight:700">${escapeHtml_(CONFIG.WHATSAPP_DISPLAY)}</p>
+                        <td style="padding:24px;text-align:center">
+                            <p style="margin:0 0 8px;color:#d8f65a;font-size:12px;font-weight:900;letter-spacing:1.2px;text-transform:uppercase">Soporte de la partida</p>
+                            <p style="margin:0 0 7px;color:#ffffff;font-size:20px;font-weight:900">&iquest;Necesitas ayuda?</p>
+                            <p style="margin:0 auto 18px;max-width:440px;color:#b8bdb5;font-size:14px;line-height:1.6">Si tienes cualquier problema o necesitas modificar alg&uacute;n dato, escr&iacute;benos por WhatsApp.</p>
+                            <a href="${escapeHtml_(whatsappUrl)}" style="display:inline-block;background:#ff5a36;color:#ffffff;text-decoration:none;font-size:13px;font-weight:900;padding:14px 24px;border-radius:999px;letter-spacing:.25px">CONTACTAR POR WHATSAPP</a>
+                            <p style="margin:13px 0 0;color:#d8f65a;font-size:13px;font-weight:800">${escapeHtml_(CONFIG.WHATSAPP_DISPLAY)}</p>
                         </td>
                     </tr>
                 </table>
@@ -518,57 +519,70 @@ function buildHtmlBody_(record, spreadsheetUrl, signatureUrl, includeAdminLinks)
         <head>
             <meta name="viewport" content="width=device-width,initial-scale=1">
             <meta name="color-scheme" content="light">
+            <style>
+                @media only screen and (max-width: 520px) {
+                    .email-shell { border-radius: 0 !important; }
+                    .email-pad { padding-left: 18px !important; padding-right: 18px !important; }
+                    .brand-title { font-size: 18px !important; }
+                    .hero-title { font-size: 27px !important; }
+                    .logo-cell { width: 66px !important; }
+                }
+            </style>
         </head>
-        <body style="margin:0;padding:0;background:#eef0eb;font-family:Arial,Helvetica,sans-serif;color:#171c15">
-            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="width:100%;background:#eef0eb">
+        <body style="margin:0;padding:0;background:#e8e6dc;font-family:Arial,Helvetica,sans-serif;color:#11150f">
+            <div style="display:none;max-height:0;overflow:hidden;opacity:0;color:transparent">Tu inscripci&oacute;n en Mosco Events ha quedado registrada.</div>
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="width:100%;background:#e8e6dc">
                 <tr>
-                    <td align="center" style="padding:28px 12px">
-                        <table role="presentation" width="620" cellpadding="0" cellspacing="0" style="width:100%;max-width:620px;background:#ffffff;border:1px solid #dfe3dc;border-radius:18px;overflow:hidden;box-shadow:0 8px 28px rgba(23,28,21,0.08)">
+                    <td align="center" style="padding:30px 12px">
+                        <table class="email-shell" role="presentation" width="640" cellpadding="0" cellspacing="0" style="width:100%;max-width:640px;background:#f7f5ee;border:1px solid #d7d3c7;border-radius:24px;overflow:hidden">
                             <tr>
-                                <td style="padding:26px 28px;background:#11170f;border-bottom:4px solid #d6b96f">
+                                <td height="7" style="height:7px;background:#ff5a36;font-size:0;line-height:0">&nbsp;</td>
+                            </tr>
+                            <tr>
+                                <td class="email-pad" style="padding:25px 30px;background:#11150f">
                                     <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
                                         <tr>
-                                            <td width="82" valign="middle">
-                                                <img src="${escapeHtml_(CONFIG.LOGO_URL)}" width="68" height="68" alt="Mosco Events" style="display:block;width:68px;height:68px;border:0;border-radius:50%">
+                                            <td class="logo-cell" width="78" valign="middle">
+                                                <img src="${escapeHtml_(CONFIG.LOGO_URL)}" width="62" height="62" alt="Mosco Events" style="display:block;width:62px;height:62px;border:2px solid #d8f65a;border-radius:50%">
                                             </td>
                                             <td valign="middle">
-                                                <p style="margin:0 0 4px;color:#d6b96f;font-size:12px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase">Mosco Events</p>
-                                                <p style="margin:0;color:#ffffff;font-size:22px;font-weight:800;line-height:1.2">Confirmaci&oacute;n de inscripci&oacute;n</p>
+                                                <p style="margin:0 0 5px;color:#d8f65a;font-size:11px;font-weight:900;letter-spacing:1.8px;text-transform:uppercase">TCSIM &middot; Simulaci&oacute;n &middot; Experiencias</p>
+                                                <p class="brand-title" style="margin:0;color:#ffffff;font-size:22px;font-weight:900;line-height:1.15;letter-spacing:-.4px">MOSCO EVENTS / INSCRIPCIONES</p>
                                             </td>
                                         </tr>
                                     </table>
                                 </td>
                             </tr>
                             <tr>
-                                <td style="padding:30px 28px 22px;text-align:center">
-                                    <span style="display:inline-block;margin-bottom:14px;padding:7px 12px;background:#edf5e8;border:1px solid #cfe0c5;border-radius:999px;color:#3d6131;font-size:12px;font-weight:800;letter-spacing:.5px">&#10003;&nbsp; INSCRIPCI&Oacute;N REGISTRADA</span>
-                                    <h1 style="margin:0 0 12px;color:#171c15;font-size:28px;line-height:1.2">${title}</h1>
-                                    <p style="margin:0 auto;max-width:500px;color:#596255;font-size:15px;line-height:1.65">${intro}</p>
-                                    <p style="margin:18px 0 0;color:#7a8276;font-size:12px;text-transform:uppercase;letter-spacing:1px">Referencia</p>
-                                    <p style="margin:5px 0 0;color:#171c15;font-family:Consolas,Monaco,monospace;font-size:18px;font-weight:800">${escapeHtml_(record.referencia)}</p>
+                                <td class="email-pad" style="padding:34px 30px 25px;text-align:center;background:#f7f5ee">
+                                    <span style="display:inline-block;margin-bottom:16px;padding:8px 13px;background:#d8f65a;border-radius:999px;color:#11150f;font-size:11px;font-weight:900;letter-spacing:.7px">&#10003;&nbsp; INSCRIPCI&Oacute;N REGISTRADA</span>
+                                    <h1 class="hero-title" style="margin:0 0 13px;color:#11150f;font-size:32px;font-weight:900;line-height:1.08;letter-spacing:-.8px">${title}</h1>
+                                    <p style="margin:0 auto;max-width:510px;color:#5d645b;font-size:15px;line-height:1.65">${intro}</p>
+                                    <p style="margin:22px 0 8px;color:#6f756c;font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:1.4px">Referencia de inscripci&oacute;n</p>
+                                    <p style="display:inline-block;margin:0;padding:11px 17px;background:#11150f;color:#ffffff;border-left:5px solid #ff5a36;font-family:Consolas,Monaco,monospace;font-size:17px;font-weight:900;letter-spacing:.5px">${escapeHtml_(record.referencia)}</p>
                                 </td>
                             </tr>
                             <tr>
-                                <td style="padding:0 28px 22px">
-                                    <p style="margin:0 0 9px;color:#778070;font-size:12px;font-weight:800;letter-spacing:1.1px;text-transform:uppercase">Datos de la partida</p>
-                                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #dfe3dc;border-radius:12px;border-collapse:separate;border-spacing:0;overflow:hidden">
+                                <td class="email-pad" style="padding:0 30px 23px">
+                                    <p style="margin:0 0 10px;color:#ff5a36;font-size:11px;font-weight:900;letter-spacing:1.25px;text-transform:uppercase">01 / Datos de la partida</p>
+                                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #d9d5c9;border-radius:14px;border-collapse:separate;border-spacing:0;overflow:hidden">
                                         ${renderRows(eventRows)}
                                     </table>
                                 </td>
                             </tr>
                             <tr>
-                                <td style="padding:0 28px 24px">
-                                    <p style="margin:0 0 9px;color:#778070;font-size:12px;font-weight:800;letter-spacing:1.1px;text-transform:uppercase">Datos del jugador</p>
-                                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #dfe3dc;border-radius:12px;border-collapse:separate;border-spacing:0;overflow:hidden">
+                                <td class="email-pad" style="padding:0 30px 27px">
+                                    <p style="margin:0 0 10px;color:#ff5a36;font-size:11px;font-weight:900;letter-spacing:1.25px;text-transform:uppercase">02 / Datos del jugador</p>
+                                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #d9d5c9;border-radius:14px;border-collapse:separate;border-spacing:0;overflow:hidden">
                                         ${renderRows(participantRows)}
                                     </table>
                                 </td>
                             </tr>
                             ${helpBlock}
                             <tr>
-                                <td style="padding:22px 28px;background:#171c15;text-align:center">
-                                    <p style="margin:0 0 7px;color:#ffffff;font-size:14px;font-weight:700">Nos vemos en la partida.</p>
-                                    <p style="margin:0;color:#aeb7a8;font-size:12px;line-height:1.5">Equipo Mosco Events &middot; <a href="${escapeHtml_(CONFIG.WEBSITE_URL)}" style="color:#d6b96f;text-decoration:none">moscoevents.com</a></p>
+                                <td class="email-pad" style="padding:24px 30px;background:#11150f;border-top:6px solid #d8f65a;text-align:center">
+                                    <p style="margin:0 0 7px;color:#ffffff;font-size:15px;font-weight:900">NOS VEMOS EN LA PARTIDA.</p>
+                                    <p style="margin:0;color:#aeb4ab;font-size:12px;line-height:1.5">Equipo Mosco Events &middot; <a href="${escapeHtml_(CONFIG.WEBSITE_URL)}" style="color:#ff7a5c;text-decoration:none;font-weight:800">moscoevents.com</a></p>
                                 </td>
                             </tr>
                         </table>
