@@ -25,6 +25,13 @@
     --shadow-soft: 0 9px 22px rgba(0, 0, 0, 0.26);
 }
 
+@media (max-width: 640px) {
+    body .registration-hero h1 {
+        font-size: clamp(2.7rem, 13vw, 3.2rem) !important;
+        letter-spacing: -0.045em;
+    }
+}
+
 
 /* =========================
    RESET
@@ -1943,4 +1950,1082 @@ footer {
 
 :where(h1, h2, h3, p, a, button, span, small, div) {
     letter-spacing: 0 !important;
+}
+
+/* =========================================================
+   2026 REDESIGN — EDITORIAL FIELD SYSTEM
+   Visual-only layer. Existing markup, copy and behaviour stay intact.
+========================================================= */
+
+:root {
+    --field-ink: #151713;
+    --field-ink-soft: #292d26;
+    --field-paper: #f3f1e9;
+    --field-paper-warm: #e9e4d8;
+    --field-surface: #fffdf7;
+    --field-olive: #59644e;
+    --field-signal: #f25c35;
+    --field-signal-dark: #bd3d20;
+    --field-lime: #d7ee62;
+    --field-line: rgba(21, 23, 19, 0.16);
+    --field-line-strong: rgba(21, 23, 19, 0.34);
+    --field-shadow: 0 24px 70px rgba(30, 32, 26, 0.14);
+    --field-shadow-soft: 0 12px 34px rgba(30, 32, 26, 0.1);
+    --field-radius: 20px;
+    --field-radius-lg: 32px;
+    --field-content: 1240px;
+
+    --mc-sand: var(--field-signal);
+    --mc-khaki: #d6c7a8;
+    --mc-olive: var(--field-olive);
+    --mc-olive-dark: #242a20;
+    --mc-rust: var(--field-signal-dark);
+    --bg: var(--field-paper);
+    --bg2: var(--field-paper-warm);
+    --bg3: #dfdbcf;
+    --surface: var(--field-surface);
+    --surface-strong: #dfdbcf;
+    --text: var(--field-ink);
+    --text-soft: #4e554c;
+    --text-muted: #72786f;
+    --border: var(--field-line);
+    --border-strong: var(--field-line-strong);
+    --shadow: var(--field-shadow);
+    --shadow-soft: var(--field-shadow-soft);
+}
+
+html {
+    scroll-padding-top: 92px;
+    background: var(--field-paper);
+}
+
+body,
+body[style] {
+    color: var(--field-ink);
+    background:
+        linear-gradient(rgba(21, 23, 19, 0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(21, 23, 19, 0.035) 1px, transparent 1px),
+        var(--field-paper) !important;
+    background-size: 34px 34px !important;
+    font-size: 17px;
+}
+
+::selection {
+    color: var(--field-ink);
+    background: var(--field-lime);
+}
+
+/* Floating glass navigation */
+
+header {
+    top: 14px;
+    left: 50%;
+    width: min(calc(100% - 28px), 1380px);
+    height: auto;
+    min-height: 70px;
+    padding: 8px 12px 8px 18px;
+    transform: translateX(-50%);
+    color: var(--field-ink);
+    background: rgba(243, 241, 233, 0.46);
+    border: 1px solid rgba(255, 255, 255, 0.38);
+    border-radius: 18px;
+    box-shadow: 0 16px 48px rgba(11, 13, 10, 0.16);
+    backdrop-filter: blur(24px) saturate(145%);
+}
+
+.logo img {
+    width: 54px;
+    height: 54px;
+    object-fit: contain;
+}
+
+.logo img:hover {
+    transform: rotate(-3deg) scale(1.04);
+}
+
+header nav {
+    gap: 6px;
+}
+
+header nav a,
+header .dropbtn {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 14px;
+    color: var(--field-ink-soft);
+    border-radius: 12px;
+    font-size: 0.86rem;
+    transition: color 0.18s ease, background 0.18s ease, transform 0.18s ease;
+}
+
+header nav a::after,
+header .dropbtn::after {
+    display: none;
+}
+
+header nav a:hover,
+header .dropbtn:hover,
+header nav a:focus-visible,
+header .dropbtn:focus-visible {
+    color: var(--field-ink);
+    background: var(--field-lime);
+    transform: translateY(-1px);
+}
+
+header nav > a:first-child {
+    color: #fff;
+    background: var(--field-ink);
+}
+
+header nav > a:first-child:hover,
+header nav > a:first-child:focus-visible {
+    color: var(--field-ink);
+    background: var(--field-signal);
+}
+
+header .dropdown-content {
+    top: calc(100% + 12px);
+    min-width: 250px;
+    padding: 8px;
+    background: rgba(255, 253, 247, 0.98);
+    border-color: var(--field-line);
+    border-radius: 16px;
+    box-shadow: var(--field-shadow);
+}
+
+header .dropdown-content a {
+    color: var(--field-ink-soft);
+    border-radius: 10px;
+}
+
+header .dropdown-content a:hover,
+header .dropdown-content a:focus-visible {
+    color: var(--field-ink);
+    background: var(--field-lime);
+}
+
+.menu-toggle {
+    color: #fff;
+    background: var(--field-ink);
+    border: 0;
+    border-radius: 12px;
+}
+
+/* Immersive photo-led hero */
+
+body .hero {
+    min-height: min(900px, 100svh);
+    align-items: end;
+    justify-content: flex-start;
+    padding: 160px max(6vw, 28px) 116px;
+    background:
+        linear-gradient(90deg, rgba(13, 15, 12, 0.94) 0%, rgba(13, 15, 12, 0.76) 38%, rgba(13, 15, 12, 0.1) 76%),
+        linear-gradient(180deg, rgba(13, 15, 12, 0.08), rgba(13, 15, 12, 0.62)),
+        url("./images/Principal/mosco9.jpeg") center 38% / cover no-repeat !important;
+}
+
+body .hero::before {
+    content: "" !important;
+    inset: 0;
+    background:
+        linear-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.06) 1px, transparent 1px) !important;
+    background-size: 56px 56px !important;
+    opacity: 0.38 !important;
+}
+
+body .hero::after {
+    right: clamp(24px, 5vw, 78px);
+    bottom: 0;
+    left: auto;
+    width: min(34vw, 460px);
+    height: 8px;
+    background: var(--field-signal);
+}
+
+.overlay {
+    background: radial-gradient(circle at 75% 35%, rgba(215, 238, 98, 0.14), transparent 28%);
+}
+
+.hero-content {
+    width: min(820px, 100%);
+    margin: 0;
+    text-align: left;
+}
+
+.hero-content::before {
+    width: 88px;
+    height: 8px;
+    margin: 0 0 28px;
+    background: var(--field-signal);
+    border-radius: 999px;
+}
+
+body .hero h1 {
+    max-width: 900px;
+    color: #fff !important;
+    font-size: clamp(4.4rem, 10vw, 9.7rem) !important;
+    line-height: 0.82 !important;
+    letter-spacing: -0.055em !important;
+    text-align: left;
+    text-shadow: 0 18px 50px rgba(0, 0, 0, 0.42) !important;
+}
+
+.hero p {
+    max-width: 680px;
+    margin: 24px 0 0;
+    color: rgba(255, 255, 255, 0.82);
+    font-size: clamp(1.05rem, 1.8vw, 1.38rem);
+}
+
+body .hero-badges {
+    justify-content: flex-start !important;
+    margin: 0 0 26px !important;
+}
+
+body .hero-badges span {
+    padding: 9px 14px !important;
+    color: var(--field-ink) !important;
+    background: var(--field-lime) !important;
+    border: 0 !important;
+    border-radius: 999px;
+    font-size: 0.76rem !important;
+}
+
+.hero-buttons {
+    justify-content: flex-start;
+    margin-top: 34px;
+}
+
+body .hero-buttons .btn + .btn {
+    color: #fff !important;
+    background: rgba(255, 255, 255, 0.08) !important;
+    border-color: rgba(255, 255, 255, 0.42) !important;
+    backdrop-filter: blur(10px);
+}
+
+body .hero-buttons .btn + .btn:hover {
+    color: var(--field-ink) !important;
+    background: #fff !important;
+}
+
+.registration-hero {
+    min-height: 62svh !important;
+}
+
+/* Buttons */
+
+.btn,
+.whatsapp,
+.instagram,
+.galeria-btn {
+    min-height: 54px;
+    padding: 14px 24px;
+    color: #fff;
+    background: var(--field-signal);
+    border: 1px solid var(--field-signal);
+    border-radius: 999px;
+    box-shadow: 0 12px 28px rgba(189, 61, 32, 0.22);
+    font-size: 0.92rem;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease, color 0.18s ease;
+}
+
+.btn {
+    margin-top: 26px;
+}
+
+.btn:hover,
+.whatsapp:hover,
+.instagram:hover,
+.galeria-btn:hover {
+    color: #fff;
+    background: var(--field-signal-dark);
+    border-color: var(--field-signal-dark);
+    box-shadow: 0 16px 34px rgba(189, 61, 32, 0.3);
+    transform: translateY(-3px);
+}
+
+.instagram,
+.registration-secondary {
+    color: var(--field-ink);
+    background: transparent;
+    border-color: var(--field-line-strong);
+    box-shadow: none;
+}
+
+.instagram:hover,
+.registration-secondary:hover {
+    color: #fff;
+    background: var(--field-ink);
+    border-color: var(--field-ink);
+}
+
+.btn:focus-visible,
+.whatsapp:focus-visible,
+.instagram:focus-visible,
+.galeria-btn:focus-visible,
+.menu-toggle:focus-visible,
+.calendar-header button:focus-visible,
+header a:focus-visible,
+header button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+.signature-canvas:focus-visible {
+    outline: 3px solid var(--field-lime);
+    outline-offset: 4px;
+}
+
+/* Editorial sections and cards */
+
+main {
+    background: transparent;
+}
+
+section {
+    padding: clamp(78px, 9vw, 132px) max(6vw, 24px);
+}
+
+main > section:not(.hero) {
+    border-top-color: var(--field-line);
+}
+
+h2 {
+    width: min(var(--field-content), 100%);
+    margin: 0 auto 50px;
+    color: var(--field-ink);
+    font-size: clamp(2.7rem, 6vw, 5.5rem);
+    line-height: 0.94;
+    letter-spacing: -0.045em !important;
+    text-align: left;
+    text-shadow: none;
+}
+
+h2::after {
+    width: 72px;
+    height: 7px;
+    margin: 20px 0 0;
+    background: var(--field-signal);
+    border-radius: 999px;
+}
+
+.eventos,
+.calendario {
+    background:
+        radial-gradient(circle at 90% 8%, rgba(215, 238, 98, 0.28), transparent 22%),
+        var(--field-paper);
+}
+
+.eventos {
+    gap: 24px;
+}
+
+[data-event-list] {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 22px;
+    width: min(var(--field-content), 100%);
+    margin: 0 auto;
+}
+
+.card {
+    isolation: isolate;
+    width: min(100%, var(--field-content));
+    max-width: var(--field-content);
+    padding: clamp(28px, 5vw, 52px);
+    color: var(--field-ink);
+    background: rgba(255, 253, 247, 0.94);
+    border-color: var(--field-line);
+    border-radius: var(--field-radius-lg);
+    box-shadow: var(--field-shadow-soft);
+    text-align: left;
+}
+
+body .card::before {
+    content: "" !important;
+    display: block !important;
+    width: 54px;
+    height: 8px;
+    margin: 0 0 26px !important;
+    background: var(--field-lime) !important;
+    border-radius: 999px;
+}
+
+body .card::after {
+    z-index: -1;
+    top: -70px;
+    right: -70px;
+    bottom: auto;
+    left: auto;
+    width: 210px;
+    height: 210px;
+    background: repeating-linear-gradient(135deg, rgba(242, 92, 53, 0.1) 0 12px, transparent 12px 24px);
+    border: 0;
+    border-radius: 50%;
+}
+
+.card:hover {
+    border-color: var(--field-line-strong);
+    box-shadow: var(--field-shadow);
+    transform: translateY(-4px);
+}
+
+.card h2 {
+    width: auto;
+    margin: 0 0 14px;
+    color: var(--field-ink);
+    font-size: clamp(1.8rem, 3vw, 2.7rem);
+}
+
+.card h2::after {
+    display: none;
+}
+
+.card h3 {
+    color: var(--field-ink);
+    font-size: clamp(1.7rem, 3vw, 2.45rem);
+    line-height: 1.05;
+}
+
+.card p {
+    color: var(--text-soft);
+    font-size: 1.1rem;
+}
+
+.event-empty {
+    grid-column: 1 / -1;
+}
+
+.boton-galeria {
+    width: min(var(--field-content), 100%);
+    margin: 0 auto;
+    text-align: left;
+}
+
+/* Numeric blocks */
+
+.stats {
+    color: #fff;
+    background: var(--field-ink);
+}
+
+body .stats > div {
+    min-width: 190px !important;
+    padding: 24px 30px !important;
+    background: rgba(255, 255, 255, 0.06) !important;
+    border-color: rgba(255, 255, 255, 0.14) !important;
+    border-radius: var(--field-radius) !important;
+}
+
+.stats span,
+.time-box span {
+    color: var(--field-lime);
+}
+
+.countdown {
+    justify-content: flex-start;
+}
+
+.time-box {
+    color: #fff;
+    background: var(--field-ink) !important;
+    border-color: rgba(255, 255, 255, 0.14);
+    border-radius: 16px;
+}
+
+/* Gallery becomes a cinematic mosaic */
+
+.galeria {
+    background: var(--field-ink-soft);
+}
+
+.galeria > h2 {
+    color: #fff;
+}
+
+.gallery-grid {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    grid-auto-flow: dense;
+    grid-auto-rows: 150px;
+    gap: 12px;
+    max-width: 1380px;
+}
+
+.gallery-grid img,
+.gallery-grid video {
+    grid-column: span 4;
+    grid-row: span 2;
+    width: 100%;
+    height: 100%;
+    aspect-ratio: auto;
+    border-color: rgba(255, 255, 255, 0.1);
+    border-radius: var(--field-radius);
+    transition: transform 0.22s ease, filter 0.22s ease, opacity 0.25s ease;
+}
+
+.gallery-grid img:nth-child(7n + 1),
+.gallery-grid video:nth-child(7n + 1) {
+    grid-column: span 6;
+    grid-row: span 3;
+}
+
+.gallery-grid img:nth-child(7n + 4),
+.gallery-grid video:nth-child(7n + 4) {
+    grid-column: span 5;
+}
+
+.gallery-grid img:nth-child(7n + 6),
+.gallery-grid video:nth-child(7n + 6) {
+    grid-column: span 3;
+}
+
+.gallery-grid img:hover,
+.gallery-grid video:hover {
+    z-index: 2;
+    filter: saturate(1.08) contrast(1.03);
+    transform: scale(1.015);
+}
+
+.gallery-grid .event-empty {
+    grid-column: 1 / -1;
+}
+
+.gallery-download {
+    min-height: 38px;
+    padding: 8px 13px;
+    color: #fff;
+    background: rgba(21, 23, 19, 0.78);
+    border-color: rgba(255, 255, 255, 0.28);
+    border-radius: 999px;
+    backdrop-filter: blur(8px);
+}
+
+.gallery-loader {
+    border-top-color: var(--field-lime);
+}
+
+.modal {
+    background: rgba(12, 14, 11, 0.97);
+}
+
+#modal-img {
+    border-radius: var(--field-radius);
+    box-shadow: 0 30px 90px rgba(0, 0, 0, 0.52);
+}
+
+.close,
+.prev,
+.next {
+    border-color: rgba(255, 255, 255, 0.22);
+    border-radius: 50%;
+}
+
+.close:hover,
+.prev:hover,
+.next:hover {
+    color: var(--field-ink);
+    background: var(--field-lime);
+}
+
+/* Contact and statement strip */
+
+.contacto {
+    color: #fff;
+    background:
+        radial-gradient(circle at 10% 20%, rgba(215, 238, 98, 0.18), transparent 28%),
+        var(--field-ink);
+    text-align: left;
+}
+
+.contacto h2 {
+    color: #fff;
+}
+
+.contacto p {
+    width: min(var(--field-content), 100%);
+    margin: 0 auto 22px;
+    color: rgba(255, 255, 255, 0.72);
+    font-size: 1.22rem;
+}
+
+.contacto > a:first-of-type {
+    margin-left: max(6vw, calc((100vw - var(--field-content)) / 2));
+}
+
+.contacto .instagram {
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+body .mission-strip {
+    gap: 16px !important;
+    padding: 22px max(6vw, 24px) !important;
+    color: var(--field-ink) !important;
+    background: var(--field-lime) !important;
+    border: 0 !important;
+}
+
+/* Registration */
+
+.registration-section {
+    background:
+        radial-gradient(circle at 90% 6%, rgba(242, 92, 53, 0.12), transparent 24%),
+        var(--field-paper);
+}
+
+.registration-layout {
+    grid-template-columns: minmax(280px, 0.72fr) minmax(360px, 1.28fr);
+    gap: 26px;
+    width: min(var(--field-content), 100%);
+}
+
+.registration-event,
+.registration-form,
+.registration-waitlist,
+.registration-result {
+    color: var(--field-ink);
+    background: rgba(255, 253, 247, 0.96);
+    border-color: var(--field-line);
+    border-radius: var(--field-radius-lg);
+    box-shadow: var(--field-shadow-soft);
+}
+
+.registration-event {
+    top: 106px;
+    color: #fff;
+    background: var(--field-ink);
+}
+
+.registration-kicker,
+.registration-event .registration-legal-card strong {
+    color: var(--field-lime);
+}
+
+.registration-event h2 {
+    color: #fff;
+}
+
+.registration-event-details div {
+    border-bottom-color: rgba(255, 255, 255, 0.12);
+}
+
+.registration-event-details dt {
+    color: rgba(255, 255, 255, 0.58);
+}
+
+.registration-legal-card,
+.registration-legal {
+    background: rgba(215, 238, 98, 0.1);
+    border-color: rgba(215, 238, 98, 0.28);
+    border-radius: var(--field-radius);
+}
+
+.registration-legal-card p {
+    color: rgba(255, 255, 255, 0.72);
+}
+
+.registration-form {
+    padding: clamp(24px, 4vw, 42px);
+}
+
+.registration-waitlist h2,
+.registration-event h2,
+.registration-result h2 {
+    width: auto;
+    text-align: left;
+}
+
+.registration-form legend {
+    color: var(--field-ink);
+    font-size: 1.45rem;
+}
+
+.form-field span,
+.registration-consent p,
+.registration-rules span {
+    color: var(--field-ink);
+}
+
+.form-field input,
+.form-field select {
+    min-height: 52px;
+    color: var(--field-ink);
+    background-color: var(--field-paper);
+    border-color: var(--field-line-strong);
+    border-radius: 12px;
+}
+
+.form-field select {
+    background-image:
+        linear-gradient(45deg, transparent 50%, var(--field-ink) 50%),
+        linear-gradient(135deg, var(--field-ink) 50%, transparent 50%);
+}
+
+.registration-consent label,
+.registration-rules {
+    background: var(--field-paper);
+    border-color: var(--field-line);
+    border-radius: 14px;
+}
+
+.registration-consent input,
+.registration-rules input {
+    accent-color: var(--field-signal);
+}
+
+.registration-legal p,
+.signature-help {
+    color: var(--text-soft);
+}
+
+.signature-box,
+.signature-preview {
+    background: #fff;
+    border-color: var(--field-line-strong);
+    border-radius: 16px;
+}
+
+.registration-event .registration-secondary {
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.28);
+}
+
+.registration-result {
+    width: min(var(--field-content), 100%);
+}
+
+/* Calendar */
+
+.calendar-header {
+    justify-content: space-between;
+    width: min(var(--field-content), 100%);
+    padding: 16px;
+    background: var(--field-ink);
+    border-radius: var(--field-radius);
+}
+
+.calendar-header h2 {
+    width: auto;
+    color: #fff;
+}
+
+.calendar-header button {
+    color: var(--field-ink);
+    background: var(--field-lime);
+    border: 0;
+    border-radius: 14px;
+}
+
+.calendar-header button:hover {
+    background: var(--field-signal);
+}
+
+.calendar-grid {
+    gap: 8px;
+    max-width: var(--field-content);
+}
+
+.day-name {
+    color: var(--field-olive);
+    text-transform: uppercase;
+}
+
+.day {
+    min-height: 96px;
+    color: var(--text-soft);
+    background: rgba(255, 253, 247, 0.84);
+    border-color: var(--field-line);
+    border-radius: 14px;
+    box-shadow: 0 6px 16px rgba(30, 32, 26, 0.05);
+    text-align: left;
+}
+
+.empty {
+    opacity: 0.35;
+    background: transparent;
+    border-style: dashed;
+}
+
+.event-day {
+    color: #fff;
+    background: var(--field-ink);
+    border-color: var(--field-ink);
+}
+
+.event-title {
+    color: var(--field-lime);
+}
+
+/* Legal area inherits the new system while its content stays untouched. */
+
+body .me-legal {
+    --legal-bg: var(--field-paper);
+    --legal-surface: var(--field-surface);
+    --legal-ink: var(--field-ink);
+    --legal-muted: var(--text-soft);
+    --legal-line: var(--field-line);
+    --legal-accent: var(--field-signal);
+    --legal-accent-soft: rgba(242, 92, 53, 0.1);
+    --legal-warning: var(--field-signal-dark);
+    --legal-warning-bg: rgba(242, 92, 53, 0.09);
+    color: var(--field-ink);
+    background: var(--field-paper);
+    font-family: "Rajdhani", ui-sans-serif, system-ui, sans-serif;
+}
+
+body .me-legal .me-legal__hero {
+    padding: 156px 24px 64px !important;
+    color: #fff !important;
+    background:
+        linear-gradient(90deg, rgba(13, 15, 12, 0.95), rgba(13, 15, 12, 0.48)),
+        url("./images/Principal/mosco9.jpeg") center 42% / cover no-repeat !important;
+}
+
+body .me-legal .me-legal__nav-wrap {
+    background: rgba(255, 253, 247, 0.94);
+    border-color: var(--field-line);
+    backdrop-filter: blur(14px);
+}
+
+body .me-legal .me-legal__nav a {
+    color: var(--field-ink);
+}
+
+body .me-legal .me-legal__layout {
+    padding-top: 70px;
+}
+
+body .me-legal .me-legal__document,
+body .me-legal .me-legal__aside,
+body .me-legal .me-legal__toc {
+    background: var(--field-surface);
+    border-color: var(--field-line);
+    border-radius: var(--field-radius);
+    box-shadow: var(--field-shadow-soft);
+}
+
+footer,
+body .me-legal .me-legal__footer {
+    color: rgba(255, 255, 255, 0.58);
+    background: #10120f;
+    border-top-color: rgba(255, 255, 255, 0.08);
+}
+
+@media (max-width: 1040px) {
+    [data-event-list] {
+        grid-template-columns: 1fr;
+    }
+
+    .registration-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .registration-event {
+        position: static;
+    }
+
+    .gallery-grid {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+    }
+
+    .gallery-grid img,
+    .gallery-grid video,
+    .gallery-grid img:nth-child(7n + 1),
+    .gallery-grid video:nth-child(7n + 1),
+    .gallery-grid img:nth-child(7n + 4),
+    .gallery-grid video:nth-child(7n + 4),
+    .gallery-grid img:nth-child(7n + 6),
+    .gallery-grid video:nth-child(7n + 6) {
+        grid-column: span 3;
+        grid-row: span 2;
+    }
+}
+
+@media (max-width: 900px) {
+    html {
+        scroll-padding-top: 72px;
+    }
+
+    header {
+        top: 8px;
+        width: calc(100% - 16px);
+        height: auto;
+        min-height: 60px;
+        padding: 6px 8px 6px 12px;
+        background: rgba(243, 241, 233, 0.58);
+        border-radius: 15px;
+    }
+
+    .logo img {
+        width: 46px;
+        height: 46px;
+    }
+
+    .menu-toggle {
+        width: 46px;
+        height: 46px;
+    }
+
+    header nav {
+        top: calc(100% + 8px);
+        padding: 10px;
+        gap: 4px;
+        background: rgba(255, 253, 247, 0.98);
+        border: 1px solid var(--field-line);
+        border-radius: 16px;
+    }
+
+    header nav a,
+    header .dropbtn {
+        min-height: 42px;
+        padding: 8px 10px;
+        color: var(--field-ink-soft);
+    }
+
+    header .dropdown-content {
+        margin-top: 4px;
+        background: var(--field-paper-warm);
+        border: 0;
+    }
+
+    body .hero {
+        min-height: 88svh;
+        padding: 130px 24px 82px;
+        background:
+            linear-gradient(90deg, rgba(13, 15, 12, 0.93), rgba(13, 15, 12, 0.48)),
+            linear-gradient(180deg, transparent, rgba(13, 15, 12, 0.62)),
+            url("./images/Principal/mosco9.jpeg") 62% center / cover no-repeat !important;
+    }
+
+    body .hero h1 {
+        font-size: clamp(4rem, 16vw, 7.5rem) !important;
+    }
+
+    .registration-hero {
+        min-height: 52svh !important;
+    }
+
+    section {
+        padding: 76px 22px;
+    }
+}
+
+@media (max-width: 640px) {
+    body {
+        font-size: 16px;
+    }
+
+    body .hero {
+        min-height: 82svh;
+        padding: 118px 18px 68px;
+    }
+
+    body .hero h1 {
+        font-size: clamp(3.35rem, 18vw, 5.4rem) !important;
+    }
+
+    .hero p {
+        font-size: 1.02rem;
+    }
+
+    .hero-buttons {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .btn,
+    .whatsapp,
+    .instagram,
+    .galeria-btn {
+        width: 100%;
+        min-height: 52px;
+        padding: 13px 18px;
+    }
+
+    h2 {
+        margin-bottom: 38px;
+        font-size: clamp(2.45rem, 13vw, 4rem);
+    }
+
+    .card {
+        padding: 28px 22px;
+        border-radius: 22px;
+    }
+
+    .gallery-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        grid-auto-rows: auto;
+    }
+
+    .gallery-grid img,
+    .gallery-grid video,
+    .gallery-grid img:nth-child(n),
+    .gallery-grid video:nth-child(n) {
+        grid-column: 1;
+        grid-row: auto;
+        height: auto;
+        aspect-ratio: 4 / 3;
+    }
+
+    .contacto > a:first-of-type {
+        margin-left: 0;
+    }
+
+    .contacto .whatsapp,
+    .contacto .instagram {
+        margin: 10px 0 0;
+    }
+
+    .registration-fields,
+    .registration-receipt div {
+        grid-template-columns: 1fr;
+    }
+
+    .registration-form,
+    .registration-event,
+    .registration-waitlist,
+    .registration-result {
+        padding: 20px;
+        border-radius: 22px;
+    }
+
+    .registration-event-details div {
+        grid-template-columns: 92px minmax(0, 1fr);
+        gap: 8px;
+    }
+
+    .calendar-header {
+        gap: 8px;
+        padding: 10px;
+    }
+
+    .calendar-header button {
+        min-width: 42px;
+        padding: 8px 12px;
+    }
+
+    .calendar-grid {
+        gap: 4px;
+    }
+
+    .day-name {
+        padding: 6px 1px;
+        font-size: 0.72rem;
+    }
+
+    .day {
+        min-height: 58px;
+        padding: 6px 4px;
+        border-radius: 8px;
+        font-size: 0.86rem;
+    }
+
+    .event-title {
+        font-size: 0.66rem;
+    }
+
+    body .me-legal .me-legal__hero {
+        padding: 130px 18px 46px !important;
+    }
 }
