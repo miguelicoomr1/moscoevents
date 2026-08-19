@@ -4,7 +4,11 @@ const CONFIG = {
     SPREADSHEET_NAME: "Inscripciones Mosco Events",
     SIGNATURES_FOLDER_NAME: "Firmas inscripciones",
     MAX_REGISTRATIONS_PER_EVENT: 20,
-    RESERVATIONS_SHEET_NAME: "Reservas"
+    RESERVATIONS_SHEET_NAME: "Reservas",
+    WEBSITE_URL: "https://www.moscoevents.com",
+    LOGO_URL: "https://www.moscoevents.com/images/base%20web/logo-header.webp",
+    WHATSAPP_NUMBER: "34698125932",
+    WHATSAPP_DISPLAY: "+34 698 125 932"
 };
 
 const HEADERS = [
@@ -396,9 +400,20 @@ function sendEmails_(record, spreadsheetUrl, signatureUrl) {
 }
 
 function buildPlainBody_(record, spreadsheetUrl, signatureUrl, includeAdminLinks) {
-    const lines = [
-        "Inscripcion Mosco Events",
+    const lines = includeAdminLinks ? [
+        "Nueva inscripcion Mosco Events",
         "",
+        "Se ha recibido una nueva inscripcion.",
+        ""
+    ] : [
+        "Gracias por apuntarte a Mosco Events",
+        "",
+        `Hola ${record.nombre}, hemos recibido correctamente tu inscripcion para ${record.evento}.`,
+        "Guarda este correo como comprobante de tu registro.",
+        "",
+    ];
+
+    lines.push(
         `Referencia: ${record.referencia}`,
         `Evento: ${record.evento}`,
         `Fecha evento: ${record.fechaEvento}`,
@@ -415,23 +430,35 @@ function buildPlainBody_(record, spreadsheetUrl, signatureUrl, includeAdminLinks
         `Normas leidas: ${record.normasLeidas}`,
         `Texto legal firmado: ${record.textoLegalFirmado}`,
         "Firma legal: recibida"
-    ];
+    );
 
     if (includeAdminLinks) {
         lines.push("", `Google Sheets: ${spreadsheetUrl}`, `Firma: ${signatureUrl || "No guardada"}`);
+    } else {
+        lines.push(
+            "",
+            "Si tienes cualquier problema o necesitas modificar algun dato, escribenos por WhatsApp:",
+            `WhatsApp: ${CONFIG.WHATSAPP_DISPLAY}`,
+            `https://wa.me/${CONFIG.WHATSAPP_NUMBER}`,
+            "",
+            "Nos vemos en la partida.",
+            "Equipo Mosco Events"
+        );
     }
 
     return lines.join("\n");
 }
 
 function buildHtmlBody_(record, spreadsheetUrl, signatureUrl, includeAdminLinks) {
-    const rows = [
+    const eventRows = [
         ["Referencia", record.referencia],
         ["Evento", record.evento],
         ["Fecha evento", record.fechaEvento],
         ["Ubicacion", record.ubicacion],
         ["Horario", record.horario],
-        ["Precio", record.precio],
+        ["Precio", record.precio]
+    ];
+    const participantRows = [
         ["Nombre", record.nombre],
         ["Equipo", record.equipo],
         ["Equipamiento", record.equipamiento],
@@ -444,20 +471,112 @@ function buildHtmlBody_(record, spreadsheetUrl, signatureUrl, includeAdminLinks)
     ];
 
     if (includeAdminLinks) {
-        rows.push(["Google Sheets", spreadsheetUrl], ["Firma", signatureUrl || "No guardada"]);
+        participantRows.push(["Google Sheets", spreadsheetUrl], ["Firma", signatureUrl || "No guardada"]);
     }
 
-    const table = rows.map(([label, value]) => (
-        `<tr><th>${escapeHtml_(label)}</th><td>${linkOrText_(value)}</td></tr>`
-    )).join("");
+    const renderRows = rows => rows.map(([label, value], index) => {
+        const border = index === rows.length - 1 ? "" : "border-bottom:1px solid #e5e8e1;";
+
+        return `
+            <tr>
+                <td width="36%" valign="top" style="padding:12px 14px;${border}color:#667061;font-size:13px;font-weight:700;line-height:1.35">
+                    ${escapeHtml_(label)}
+                </td>
+                <td valign="top" style="padding:12px 14px;${border}color:#171c15;font-size:14px;line-height:1.35;word-break:break-word">
+                    ${linkOrText_(value)}
+                </td>
+            </tr>
+        `;
+    }).join("");
+
+    const title = includeAdminLinks ? "Nueva inscripci&oacute;n recibida" : "&iexcl;Gracias por apuntarte!";
+    const intro = includeAdminLinks
+        ? `Se ha registrado una nueva inscripci&oacute;n para <strong>${escapeHtml_(record.evento)}</strong>.`
+        : `Hola <strong>${escapeHtml_(record.nombre)}</strong>, hemos recibido correctamente tu inscripci&oacute;n para <strong>${escapeHtml_(record.evento)}</strong>.`;
+    const whatsappText = encodeURIComponent(`Hola Mosco Events, tengo una consulta sobre mi inscripcion ${record.referencia}.`);
+    const whatsappUrl = `https://wa.me/${CONFIG.WHATSAPP_NUMBER}?text=${whatsappText}`;
+    const helpBlock = includeAdminLinks ? "" : `
+        <tr>
+            <td style="padding:0 28px 28px">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f3f6ef;border:1px solid #dce3d5;border-radius:12px">
+                    <tr>
+                        <td style="padding:20px;text-align:center">
+                            <p style="margin:0 0 7px;color:#171c15;font-size:16px;font-weight:700">&iquest;Necesitas ayuda?</p>
+                            <p style="margin:0 0 16px;color:#65705f;font-size:14px;line-height:1.55">Si tienes cualquier problema o necesitas modificar alg&uacute;n dato, escr&iacute;benos por WhatsApp.</p>
+                            <a href="${escapeHtml_(whatsappUrl)}" style="display:inline-block;background:#25d366;color:#ffffff;text-decoration:none;font-size:14px;font-weight:700;padding:12px 22px;border-radius:8px">CONTACTAR POR WHATSAPP</a>
+                            <p style="margin:12px 0 0;color:#65705f;font-size:13px;font-weight:700">${escapeHtml_(CONFIG.WHATSAPP_DISPLAY)}</p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    `;
 
     return `
-        <div style="font-family:Arial,sans-serif;color:#1c2119">
-            <h2>Inscripcion Mosco Events</h2>
-            <table cellpadding="8" cellspacing="0" style="border-collapse:collapse;border:1px solid #ddd">
-                ${table}
+        <!doctype html>
+        <html lang="es">
+        <head>
+            <meta name="viewport" content="width=device-width,initial-scale=1">
+            <meta name="color-scheme" content="light">
+        </head>
+        <body style="margin:0;padding:0;background:#eef0eb;font-family:Arial,Helvetica,sans-serif;color:#171c15">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="width:100%;background:#eef0eb">
+                <tr>
+                    <td align="center" style="padding:28px 12px">
+                        <table role="presentation" width="620" cellpadding="0" cellspacing="0" style="width:100%;max-width:620px;background:#ffffff;border:1px solid #dfe3dc;border-radius:18px;overflow:hidden;box-shadow:0 8px 28px rgba(23,28,21,0.08)">
+                            <tr>
+                                <td style="padding:26px 28px;background:#11170f;border-bottom:4px solid #d6b96f">
+                                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                                        <tr>
+                                            <td width="82" valign="middle">
+                                                <img src="${escapeHtml_(CONFIG.LOGO_URL)}" width="68" height="68" alt="Mosco Events" style="display:block;width:68px;height:68px;border:0;border-radius:50%">
+                                            </td>
+                                            <td valign="middle">
+                                                <p style="margin:0 0 4px;color:#d6b96f;font-size:12px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase">Mosco Events</p>
+                                                <p style="margin:0;color:#ffffff;font-size:22px;font-weight:800;line-height:1.2">Confirmaci&oacute;n de inscripci&oacute;n</p>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding:30px 28px 22px;text-align:center">
+                                    <span style="display:inline-block;margin-bottom:14px;padding:7px 12px;background:#edf5e8;border:1px solid #cfe0c5;border-radius:999px;color:#3d6131;font-size:12px;font-weight:800;letter-spacing:.5px">&#10003;&nbsp; INSCRIPCI&Oacute;N REGISTRADA</span>
+                                    <h1 style="margin:0 0 12px;color:#171c15;font-size:28px;line-height:1.2">${title}</h1>
+                                    <p style="margin:0 auto;max-width:500px;color:#596255;font-size:15px;line-height:1.65">${intro}</p>
+                                    <p style="margin:18px 0 0;color:#7a8276;font-size:12px;text-transform:uppercase;letter-spacing:1px">Referencia</p>
+                                    <p style="margin:5px 0 0;color:#171c15;font-family:Consolas,Monaco,monospace;font-size:18px;font-weight:800">${escapeHtml_(record.referencia)}</p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding:0 28px 22px">
+                                    <p style="margin:0 0 9px;color:#778070;font-size:12px;font-weight:800;letter-spacing:1.1px;text-transform:uppercase">Datos de la partida</p>
+                                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #dfe3dc;border-radius:12px;border-collapse:separate;border-spacing:0;overflow:hidden">
+                                        ${renderRows(eventRows)}
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding:0 28px 24px">
+                                    <p style="margin:0 0 9px;color:#778070;font-size:12px;font-weight:800;letter-spacing:1.1px;text-transform:uppercase">Datos del jugador</p>
+                                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #dfe3dc;border-radius:12px;border-collapse:separate;border-spacing:0;overflow:hidden">
+                                        ${renderRows(participantRows)}
+                                    </table>
+                                </td>
+                            </tr>
+                            ${helpBlock}
+                            <tr>
+                                <td style="padding:22px 28px;background:#171c15;text-align:center">
+                                    <p style="margin:0 0 7px;color:#ffffff;font-size:14px;font-weight:700">Nos vemos en la partida.</p>
+                                    <p style="margin:0;color:#aeb7a8;font-size:12px;line-height:1.5">Equipo Mosco Events &middot; <a href="${escapeHtml_(CONFIG.WEBSITE_URL)}" style="color:#d6b96f;text-decoration:none">moscoevents.com</a></p>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
             </table>
-        </div>
+        </body>
+        </html>
     `;
 }
 
