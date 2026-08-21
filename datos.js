@@ -30,7 +30,7 @@
             ubicacion: "Laser Counter - Pedrola",
             plazas: "26 participantes",
             horario: "09:00 a 14:30",
-            precio: "18\u20ac",
+            precio: "18\u20ac en efectivo en el campo",
             inscripcionUrl: "/registro.html?id=sabado-29-08-2026",
             normasUrl: INFO_NORMAS_URL,
             seccion: "proximos",
