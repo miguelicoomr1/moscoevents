@@ -677,7 +677,8 @@ function html_(title, message) {
             </body>
             </html>
         `)
-        .setTitle(title);
+        .setTitle(title)
+        .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
 }
 
 function sheetName_(value) {
