@@ -430,7 +430,11 @@
 
         if (!imagenes.length) {
             const tarjeta = crearElemento("div", "card event-empty");
-            tarjeta.appendChild(crearElemento("p", "", "Galer\u00eda preparada para cuando se a\u00f1adan fotograf\u00edas."));
+            tarjeta.appendChild(crearElemento(
+                "p",
+                "",
+                galeria.mensajeVacio || "Galer\u00eda preparada para cuando se a\u00f1adan fotograf\u00edas."
+            ));
             contenedor.replaceChildren(tarjeta);
             return;
         }

@@ -18,6 +18,34 @@
 
     const eventos = [
         {
+            id: "sabado-29-08-2026",
+            titulo: "S\u00e1bado 29 de agosto de 2026",
+            tituloListado: "S\u00e1bado 29-08-2026",
+            tituloCalendario: "Partida 29-08-2026",
+            fecha: "2026-08-29",
+            fechaTexto: "29 de agosto de 2026",
+            fechaCorta: "29/08/2026",
+            subtitulo: "Evento oficial de Mosco Events",
+            resumen: "Laser Counter - Pedrola.",
+            ubicacion: "Laser Counter - Pedrola",
+            plazas: "26 participantes",
+            horario: "09:00 a 14:30",
+            precio: "18\u20ac",
+            inscripcionUrl: "/registro.html?id=sabado-29-08-2026",
+            normasUrl: INFO_NORMAS_URL,
+            seccion: "proximos",
+            url: "/Proximos%20Eventos/sabado29082026.html",
+            galeria: {
+                activa: true,
+                titulo: "GALER\u00cdA",
+                descripcion: "Fotograf\u00edas de Mosco Events en la PARTIDA del 29-08-2026",
+                url: "/Galeria/galeria-sabado29082026.html",
+                botonListado: "FOTOS EVENTO 29-08-2026 \u2192",
+                mensajeVacio: "a\u00fan no hay fotos",
+                imagenes: []
+            }
+        },
+        {
             id: "operacion-verano-2026",
             titulo: "Operaci\u00f3n Verano",
             tituloListado: "Operaci\u00f3n Verano",

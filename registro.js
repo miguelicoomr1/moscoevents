@@ -148,7 +148,7 @@
                     finish({
                         full: Boolean(payload.full),
                         count: Number(payload.count) || 0,
-                        limit: Number(payload.limit) || 20
+                        limit: Number(payload.limit) || 26
                     });
                 };
 

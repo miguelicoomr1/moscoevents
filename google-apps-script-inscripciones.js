@@ -3,7 +3,7 @@ const CONFIG = {
     DRIVE_FOLDER_NAME: "MoscoEvents",
     SPREADSHEET_NAME: "Inscripciones Mosco Events",
     SIGNATURES_FOLDER_NAME: "Firmas inscripciones",
-    MAX_REGISTRATIONS_PER_EVENT: 20,
+    MAX_REGISTRATIONS_PER_EVENT: 26,
     RESERVATIONS_SHEET_NAME: "Reservas",
     WEBSITE_URL: "https://www.moscoevents.com",
     LOGO_URL: "https://www.moscoevents.com/images/base%20web/logo-header.webp",
@@ -72,7 +72,7 @@ function doPost(e) {
         if (registrationCount_(sheet) >= CONFIG.MAX_REGISTRATIONS_PER_EVENT) {
             return html_(
                 "Partida llena",
-                "La partida ya ha alcanzado el limite de 20 inscripciones. Vuelve al formulario para apuntarte a reservas."
+                `La partida ya ha alcanzado el limite de ${CONFIG.MAX_REGISTRATIONS_PER_EVENT} inscripciones. Vuelve al formulario para apuntarte a reservas.`
             );
         }
 
