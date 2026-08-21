@@ -101,6 +101,81 @@
         }
     }
 
+    function submitThroughHiddenFrame(action, formData) {
+        return new Promise((resolve, reject) => {
+            const requestId = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+            const frame = document.createElement("iframe");
+            const relay = document.createElement("form");
+            const frameName = `mosco-submission-${requestId}`;
+            let submitted = false;
+            let settled = false;
+            let timeoutId = null;
+
+            function cleanup() {
+                window.clearTimeout(timeoutId);
+                relay.remove();
+                frame.remove();
+            }
+
+            function finish(callback) {
+                if (settled) {
+                    return;
+                }
+
+                settled = true;
+                cleanup();
+                callback();
+            }
+
+            frame.name = frameName;
+            frame.hidden = true;
+            frame.setAttribute("aria-hidden", "true");
+            frame.title = "Confirmación del envío";
+            relay.action = action;
+            relay.method = "POST";
+            relay.target = frameName;
+            relay.hidden = true;
+
+            formData.forEach((value, name) => {
+                if (typeof value !== "string") {
+                    return;
+                }
+
+                const input = document.createElement("input");
+
+                input.type = "hidden";
+                input.name = name;
+                input.value = value;
+                relay.appendChild(input);
+            });
+
+            frame.addEventListener("load", () => {
+                if (!submitted) {
+                    submitted = true;
+
+                    try {
+                        HTMLFormElement.prototype.submit.call(relay);
+                    } catch (error) {
+                        finish(() => reject(error));
+                    }
+
+                    return;
+                }
+
+                finish(resolve);
+            });
+            frame.addEventListener("error", () => {
+                finish(() => reject(new Error("No se ha podido completar el envío.")));
+            });
+
+            document.body.append(frame, relay);
+            timeoutId = window.setTimeout(() => {
+                finish(() => reject(new Error("El envío ha superado el tiempo de espera.")));
+            }, 45000);
+            frame.srcdoc = "<!doctype html><html><body></body></html>";
+        });
+    }
+
     function checkEventCapacity(evento) {
         if (!evento || !appsScriptUrl) {
             return Promise.resolve(null);
@@ -737,15 +812,7 @@
         result.scrollIntoView({ behavior: "smooth", block: "start" });
 
         try {
-            const response = await window.fetch(submissionAction(), {
-                method: "POST",
-                body: reservationData,
-                mode: "no-cors"
-            });
-
-            if (response.type !== "opaque" && !response.ok) {
-                throw new Error("Reservation request failed");
-            }
+            await submitThroughHiddenFrame(submissionAction(), reservationData);
 
             reservationName.value = "";
             reservationPhone.value = "";
@@ -850,22 +917,13 @@
         submissionTimer = window.setTimeout(showSubmissionDelay, 45000);
 
         try {
-            const response = await window.fetch(form.action, {
-                method: "POST",
-                body: new FormData(form),
-                mode: "no-cors"
-            });
+            await submitThroughHiddenFrame(form.action, new FormData(form));
 
             if (!isSubmitting || pendingRecord?.referencia !== record.referencia) {
                 return;
             }
 
-            if (response.type === "opaque" || response.ok) {
-                finishSubmission(record);
-                return;
-            }
-
-            showSubmissionDelay("El servidor no ha aceptado el registro. Inténtalo de nuevo dentro de unos minutos.");
+            finishSubmission(record);
         } catch (error) {
             window.clearTimeout(submissionTimer);
             showSubmissionDelay("No se ha podido conectar con el sistema de inscripciones. Comprueba tu conexión e inténtalo de nuevo.");
