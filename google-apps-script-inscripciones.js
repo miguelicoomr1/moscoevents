@@ -4,6 +4,9 @@ const CONFIG = {
     SPREADSHEET_NAME: "Inscripciones Mosco Events",
     SIGNATURES_FOLDER_NAME: "Firmas inscripciones",
     MAX_REGISTRATIONS_PER_EVENT: 26,
+    EVENT_SHEET_NAMES: {
+        "sabado-29-08-2026": "29-08-2026"
+    },
     RESERVATIONS_SHEET_NAME: "Reservas",
     WEBSITE_URL: "https://www.moscoevents.com",
     LOGO_URL: "https://www.moscoevents.com/images/base%20web/logo-header.webp",
@@ -67,7 +70,7 @@ function doPost(e) {
 
         const folder = getOrCreateFolder_(CONFIG.DRIVE_FOLDER_NAME);
         const spreadsheet = getOrCreateSpreadsheet_(folder);
-        const sheet = getOrCreateSheet_(spreadsheet, record.evento);
+        const sheet = getOrCreateSheet_(spreadsheet, record.evento, record.eventoId);
 
         if (registrationCount_(sheet) >= CONFIG.MAX_REGISTRATIONS_PER_EVENT) {
             return html_(
@@ -162,7 +165,7 @@ function capacityStatusResponse_(params) {
     if (eventName) {
         const folder = getOrCreateFolder_(CONFIG.DRIVE_FOLDER_NAME);
         const spreadsheet = getOrCreateSpreadsheet_(folder);
-        const sheet = spreadsheet.getSheetByName(sheetName_(eventName));
+        const sheet = spreadsheet.getSheetByName(eventSheetName_(eventName, eventId));
 
         count = registrationCount_(sheet);
     }
@@ -220,7 +223,9 @@ function saveReservation_(payload) {
 
     const folder = getOrCreateFolder_(CONFIG.DRIVE_FOLDER_NAME);
     const spreadsheet = getOrCreateSpreadsheet_(folder);
-    const eventSheet = spreadsheet.getSheetByName(sheetName_(reservation.evento));
+    const eventSheet = spreadsheet.getSheetByName(
+        eventSheetName_(reservation.evento, reservation.eventoId)
+    );
 
     if (registrationCount_(eventSheet) < CONFIG.MAX_REGISTRATIONS_PER_EVENT) {
         throw new Error("La partida todavia tiene plazas disponibles.");
@@ -292,8 +297,8 @@ function getOrCreateSpreadsheet_(folder) {
     return spreadsheet;
 }
 
-function getOrCreateSheet_(spreadsheet, eventName) {
-    const name = sheetName_(eventName);
+function getOrCreateSheet_(spreadsheet, eventName, eventId) {
+    const name = eventSheetName_(eventName, eventId);
 
     return getOrCreateNamedSheet_(spreadsheet, name, HEADERS);
 }
@@ -682,6 +687,10 @@ function sheetName_(value) {
         .trim();
 
     return (name || "Sin evento").slice(0, 90);
+}
+
+function eventSheetName_(eventName, eventId) {
+    return CONFIG.EVENT_SHEET_NAMES[value_(eventId)] || sheetName_(eventName);
 }
 
 function value_(value) {

@@ -226,6 +226,7 @@
             fechaTexto: evento?.fechaTexto || "Pendiente de seleccionar",
             ubicacion: evento?.ubicacion || "-",
             horario: evento?.horario || "-",
+            plazas: evento?.plazas || "-",
             precio: evento?.precio || "-"
         };
     }
@@ -238,6 +239,7 @@
             ["[data-registration-event-date]", details.fechaTexto],
             ["[data-registration-event-location]", details.ubicacion],
             ["[data-registration-event-time]", details.horario],
+            ["[data-registration-event-capacity]", details.plazas],
             ["[data-registration-event-price]", details.precio],
             ["[data-registration-event-id]", details.id],
             ["[data-registration-event-name]", details.titulo]

@@ -2613,6 +2613,10 @@ body .mission-strip {
     color: rgba(255, 255, 255, 0.58);
 }
 
+.registration-event-details dd {
+    color: #fff;
+}
+
 .registration-legal-card,
 .registration-legal {
     background: rgba(215, 238, 98, 0.1);
