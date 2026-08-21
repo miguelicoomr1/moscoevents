@@ -1,6 +1,6 @@
 (function () {
     const INFO_NORMAS_URL =
-        "https://drive.google.com/file/d/1wOOu050V8u65RLv40-WRyz-POMSNgBfT/view?usp=sharing";
+        "https://drive.google.com/file/d/16wq9zk_kPDmea1O83lBgBRN1R4EVqurj/view?usp=drive_link";
 
     function crearGaleria({ carpeta, prefijo, extension, desde = 1, hasta = 0, excluir = [] }) {
         const omitidos = new Set(excluir);
