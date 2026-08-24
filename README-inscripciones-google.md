@@ -1,11 +1,11 @@
 # Automatizacion de inscripciones en Google Sheets
 
-Este proyecto ya deja el formulario preparado para enviar cada inscripcion a Google Apps Script. El script crea o reutiliza una hoja de calculo llamada `Inscripciones Mosco Events` dentro de la carpeta `MoscoEvents`, crea una pestana por partida y guarda ahi todas las respuestas.
+Este proyecto ya deja el formulario preparado para enviar cada inscripcion a Google Apps Script. El script crea o reutiliza una hoja de calculo llamada `Inscripciones Mosco Events` dentro de la carpeta `📝 Inscripciones — Mosco Events`, crea una pestana por partida y guarda ahi todas las respuestas.
 
 ## Activacion
 
 1. Entra con la cuenta de MoscoEvents en Google Drive.
-2. Crea o abre la carpeta `MoscoEvents`.
+2. Crea o abre la carpeta `📝 Inscripciones — Mosco Events`.
 3. Pulsa `Nuevo` > `Mas` > `Google Apps Script`.
 4. Borra el contenido inicial y pega el codigo de `google-apps-script-inscripciones.js`.
 5. Pulsa `Implementar` > `Nueva implementacion`.
@@ -23,5 +23,7 @@ Cuando `appsScriptUrl` tenga la URL de Apps Script, cada envio del formulario:
 - Guardara la firma en una carpeta `Firmas inscripciones`.
 - Enviara el aviso a `moscoeventes@gmail.com`.
 - Enviara una copia de las respuestas al correo del participante.
+
+El valor `SPREADSHEET_ID` de `google-apps-script-inscripciones.js` fija la hoja activa para evitar que una carpeta renombrada o una hoja duplicada desvie nuevas inscripciones y el contador de plazas.
 
 Si `appsScriptUrl` esta vacio, la web conserva el envio anterior por FormSubmit como respaldo.
