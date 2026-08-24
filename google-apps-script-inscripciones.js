@@ -1,7 +1,8 @@
 const CONFIG = {
     OWNER_EMAIL: "moscoeventes@gmail.com",
-    DRIVE_FOLDER_NAME: "MoscoEvents",
+    DRIVE_FOLDER_NAME: "\ud83d\udcdd Inscripciones \u2014 Mosco Events",
     SPREADSHEET_NAME: "Inscripciones Mosco Events",
+    SPREADSHEET_ID: "1kfS5Ky3S9mTcE6Tp-PDCR3OzjLhf3l2u5KvWQznp4OM",
     SIGNATURES_FOLDER_NAME: "Firmas inscripciones",
     MAX_REGISTRATIONS_PER_EVENT: 26,
     EVENT_SHEET_NAMES: {
@@ -273,6 +274,10 @@ function getOrCreateChildFolder_(parent, name) {
 }
 
 function getOrCreateSpreadsheet_(folder) {
+    if (CONFIG.SPREADSHEET_ID) {
+        return SpreadsheetApp.openById(CONFIG.SPREADSHEET_ID);
+    }
+
     const files = folder.getFilesByName(CONFIG.SPREADSHEET_NAME);
 
     while (files.hasNext()) {
