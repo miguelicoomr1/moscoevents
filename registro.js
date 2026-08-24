@@ -74,6 +74,7 @@
     let selectedEventFull = false;
     let capacityChecking = false;
     let capacityRequestId = 0;
+    let silentCapacityChecking = false;
 
     function isUpcomingEvent(evento) {
         if (evento.seccion) {
@@ -234,13 +235,77 @@
         }
 
         capacityChecking = false;
+        updateEventOptionLabel(evento, status);
         setRegistrationFull(Boolean(status?.full));
 
         return status;
     }
 
-    function formatEventLabel(evento) {
-        return `${evento.tituloListado || evento.titulo} - ${evento.fechaCorta || evento.fechaTexto}`;
+    async function refreshSelectedEventCapacitySilently() {
+        if (
+            silentCapacityChecking ||
+            capacityChecking ||
+            isSubmitting ||
+            isSubmittingReservation ||
+            !selectedEvent ||
+            document.visibilityState === "hidden"
+        ) {
+            return;
+        }
+
+        const eventAtRequest = selectedEvent;
+
+        silentCapacityChecking = true;
+
+        try {
+            const status = await checkEventCapacity(eventAtRequest);
+
+            if (!status || selectedEvent?.id !== eventAtRequest.id) {
+                return;
+            }
+
+            updateEventOptionLabel(eventAtRequest, status);
+            setRegistrationFull(Boolean(status.full));
+        } finally {
+            silentCapacityChecking = false;
+        }
+    }
+
+    function availablePlaces(evento, status) {
+        const total = Number(status?.limit ?? evento?.plazasTotales);
+        const reservations = Number(status?.count ?? evento?.reservasIniciales);
+
+        if (!Number.isFinite(total) || !Number.isFinite(reservations)) {
+            return null;
+        }
+
+        return Math.max(0, Math.trunc(total - reservations));
+    }
+
+    function formatEventLabel(evento, status) {
+        const label = `${evento.tituloListado || evento.titulo} - ${evento.fechaCorta || evento.fechaTexto}`;
+        const freePlaces = availablePlaces(evento, status);
+
+        if (freePlaces === null) {
+            return label;
+        }
+
+        const availability = freePlaces === 1 ? "1 plaza libre" : `${freePlaces} plazas libres`;
+
+        return `${label} - ${availability}`;
+    }
+
+    function updateEventOptionLabel(evento, status) {
+        if (!evento) {
+            return;
+        }
+
+        const option = Array.from(eventSelect.options)
+            .find((item) => item.value === evento.id);
+
+        if (option) {
+            option.textContent = formatEventLabel(evento, status);
+        }
     }
 
     function eventDetails(evento) {
@@ -712,6 +777,23 @@
     showSentNotice();
     prepareCanvas();
 
+    const capacityRefreshInterval = window.setInterval(
+        refreshSelectedEventCapacitySilently,
+        15000
+    );
+
+    document.addEventListener("visibilitychange", () => {
+        if (document.visibilityState === "visible") {
+            refreshSelectedEventCapacitySilently();
+        }
+    });
+    window.addEventListener("focus", refreshSelectedEventCapacitySilently);
+    window.addEventListener(
+        "pagehide",
+        () => window.clearInterval(capacityRefreshInterval),
+        { once: true }
+    );
+
     reservationSubmit.addEventListener("click", async () => {
         if (!selectedEvent || !selectedEventFull || isSubmittingReservation) {
             return;
@@ -810,6 +892,7 @@
         const capacityStatus = await checkEventCapacity(eventToSubmit);
 
         capacityChecking = false;
+        updateEventOptionLabel(eventToSubmit, capacityStatus);
 
         if (selectedEvent?.id !== eventToSubmit.id) {
             await refreshEventCapacity(selectedEvent);
