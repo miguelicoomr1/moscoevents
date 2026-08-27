@@ -32,7 +32,12 @@ const HEADERS = [
     "Consentimiento imagenes",
     "Normas leidas",
     "Texto legal firmado",
-    "Firma URL"
+    "Firma URL",
+    "Metodo de pago",
+    "Importe del pago",
+    "Estado del pago",
+    "Destino PayPal",
+    "Enlace de pago"
 ];
 
 const RESERVATION_HEADERS = [
@@ -135,7 +140,12 @@ function normalizeRegistration_(payload) {
         normasLeidas: value_(payload.normasLeidas || payload["Normas leidas y aceptadas"]),
         textoLegalFirmado: value_(payload["Texto legal firmado"]) ||
             "Acepta normas, condiciones de participacion, aviso legal y politica de privacidad de Mosco Events.",
-        firmaLegal: value_(payload.firmaLegal)
+        firmaLegal: value_(payload.firmaLegal),
+        pagoMetodo: value_(payload["Metodo de pago"]) || "PayPal",
+        pagoImporte: paymentAmount_(payload["Importe del pago"] || payload.importePago),
+        pagoEstado: value_(payload["Estado del pago"]) || "Pendiente de verificacion en PayPal",
+        pagoDestino: value_(payload["Destino PayPal"]) || "@martinlopezmoscoso",
+        pagoEnlace: value_(payload["Enlace de pago"])
     };
 }
 
@@ -149,6 +159,7 @@ function validateRegistration_(record) {
     if (!record.telefono) missing.push("Telefono");
     if (!record.correo) missing.push("Correo electronico");
     if (!record.consentimientoImagenes) missing.push("Consentimiento imagenes");
+    if (!record.pagoImporte) missing.push("Importe del pago");
     if (record.normasLeidas !== "Si") missing.push("Normas leidas");
     if (!record.firmaLegal) missing.push("Firma");
 
@@ -322,11 +333,12 @@ function getOrCreateNamedSheet_(spreadsheet, name, headers) {
 }
 
 function ensureHeaders_(sheet, headers) {
-    if (sheet.getLastRow() > 0) {
-        return;
+    if (sheet.getLastRow() === 0) {
+        sheet.appendRow(headers);
+    } else {
+        sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
     }
 
-    sheet.appendRow(headers);
     sheet.setFrozenRows(1);
     sheet.getRange(1, 1, 1, headers.length)
         .setFontWeight("bold")
@@ -366,7 +378,12 @@ function buildSheetRow_(record, signatureUrl) {
         safeCell_(record.consentimientoImagenes),
         safeCell_(record.normasLeidas),
         safeCell_(record.textoLegalFirmado),
-        safeCell_(signatureUrl)
+        safeCell_(signatureUrl),
+        safeCell_(record.pagoMetodo),
+        safeCell_(record.pagoImporte),
+        safeCell_(record.pagoEstado),
+        safeCell_(record.pagoDestino),
+        safeCell_(record.pagoEnlace)
     ];
 }
 
@@ -430,6 +447,11 @@ function buildPlainBody_(record, spreadsheetUrl, signatureUrl, includeAdminLinks
         `Ubicacion: ${record.ubicacion}`,
         `Horario: ${record.horario}`,
         `Precio: ${record.precio}`,
+        `Metodo de pago: ${record.pagoMetodo}`,
+        `Importe del pago: ${record.pagoImporte}`,
+        `Estado del pago: ${record.pagoEstado}`,
+        `Destino PayPal: ${record.pagoDestino}`,
+        `Enlace de pago: ${record.pagoEnlace}`,
         "",
         `Nombre: ${record.nombre}`,
         `Equipo: ${record.equipo}`,
@@ -466,7 +488,12 @@ function buildHtmlBody_(record, spreadsheetUrl, signatureUrl, includeAdminLinks)
         ["Fecha evento", record.fechaEvento],
         ["Ubicacion", record.ubicacion],
         ["Horario", record.horario],
-        ["Precio", record.precio]
+        ["Precio", record.precio],
+        ["Metodo de pago", record.pagoMetodo],
+        ["Importe del pago", record.pagoImporte],
+        ["Estado del pago", record.pagoEstado],
+        ["Destino PayPal", record.pagoDestino],
+        ["Enlace de pago", record.pagoEnlace]
     ];
     const participantRows = [
         ["Nombre", record.nombre],
@@ -701,6 +728,20 @@ function eventSheetName_(eventName, eventId) {
 
 function value_(value) {
     return String(value || "").trim();
+}
+
+function paymentAmount_(value) {
+    const normalized = value_(value)
+        .replace(/\s/g, "")
+        .replace("€", "")
+        .replace(",", ".");
+    const amount = Number(normalized);
+
+    if (!Number.isFinite(amount) || amount < 0.01 || amount > 9999.99) {
+        return "";
+    }
+
+    return `${amount.toFixed(2)} €`;
 }
 
 function safeCell_(value) {
