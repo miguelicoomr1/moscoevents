@@ -36,7 +36,7 @@ const HEADERS = [
     "Metodo de pago",
     "Importe del pago",
     "Estado del pago",
-    "Destino PayPal",
+    "Destino del pago",
     "Enlace de pago"
 ];
 
@@ -122,6 +122,9 @@ function doPost(e) {
 }
 
 function normalizeRegistration_(payload) {
+    const paymentMethod = value_(payload["Metodo de pago"] || payload.metodoPago);
+    const isPaypal = paymentMethod === "PayPal";
+
     return {
         fechaRegistro: new Date(),
         referencia: value_(payload.referencia) || `MOSCO-${Utilities.getUuid().slice(0, 8).toUpperCase()}`,
@@ -141,11 +144,13 @@ function normalizeRegistration_(payload) {
         textoLegalFirmado: value_(payload["Texto legal firmado"]) ||
             "Acepta normas, condiciones de participacion, aviso legal y politica de privacidad de Mosco Events.",
         firmaLegal: value_(payload.firmaLegal),
-        pagoMetodo: value_(payload["Metodo de pago"]) || "PayPal",
-        pagoImporte: paymentAmount_(payload["Importe del pago"] || payload.importePago),
-        pagoEstado: value_(payload["Estado del pago"]) || "Pendiente de verificacion en PayPal",
-        pagoDestino: value_(payload["Destino PayPal"]) || "@martinlopezmoscoso",
-        pagoEnlace: value_(payload["Enlace de pago"])
+        pagoMetodo: paymentMethod,
+        pagoImporte: "18.00 €",
+        pagoEstado: isPaypal
+            ? "Pendiente de verificacion en PayPal"
+            : "Pendiente de pago en el campo",
+        pagoDestino: isPaypal ? "@martinlopezmoscoso" : "Pago presencial en el campo",
+        pagoEnlace: isPaypal ? "https://paypal.me/martinlopezmoscoso/18EUR" : ""
     };
 }
 
@@ -159,6 +164,7 @@ function validateRegistration_(record) {
     if (!record.telefono) missing.push("Telefono");
     if (!record.correo) missing.push("Correo electronico");
     if (!record.consentimientoImagenes) missing.push("Consentimiento imagenes");
+    if (!["Efectivo en el campo", "PayPal"].includes(record.pagoMetodo)) missing.push("Metodo de pago");
     if (!record.pagoImporte) missing.push("Importe del pago");
     if (record.normasLeidas !== "Si") missing.push("Normas leidas");
     if (!record.firmaLegal) missing.push("Firma");
@@ -450,8 +456,8 @@ function buildPlainBody_(record, spreadsheetUrl, signatureUrl, includeAdminLinks
         `Metodo de pago: ${record.pagoMetodo}`,
         `Importe del pago: ${record.pagoImporte}`,
         `Estado del pago: ${record.pagoEstado}`,
-        `Destino PayPal: ${record.pagoDestino}`,
-        `Enlace de pago: ${record.pagoEnlace}`,
+        `Destino del pago: ${record.pagoDestino}`,
+        `Enlace de pago: ${record.pagoEnlace || "No aplica"}`,
         "",
         `Nombre: ${record.nombre}`,
         `Equipo: ${record.equipo}`,
@@ -492,7 +498,7 @@ function buildHtmlBody_(record, spreadsheetUrl, signatureUrl, includeAdminLinks)
         ["Metodo de pago", record.pagoMetodo],
         ["Importe del pago", record.pagoImporte],
         ["Estado del pago", record.pagoEstado],
-        ["Destino PayPal", record.pagoDestino],
+        ["Destino del pago", record.pagoDestino],
         ["Enlace de pago", record.pagoEnlace]
     ];
     const participantRows = [
