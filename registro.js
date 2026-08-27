@@ -20,10 +20,11 @@
     const reservationEventId = document.querySelector("[data-reservation-event-id]");
     const reservationEventName = document.querySelector("[data-reservation-event-name]");
     const reservationDate = document.querySelector("[data-reservation-date]");
-    const paymentAmount = document.getElementById("paypal-amount");
     const paymentButton = document.getElementById("paypal-payment-button");
     const paymentButtonLabel = paymentButton?.querySelector("[data-paypal-button-label]");
-    const paymentError = document.querySelector("[data-paypal-payment-error]");
+    const paymentMethodInputs = Array.from(form?.querySelectorAll("[name='Metodo de pago']") || []);
+    const paypalPaymentInput = form?.querySelector("[name='Metodo de pago'][value='PayPal']");
+    const paymentMethodError = document.querySelector("[data-payment-method-error]");
     const submissionConfig = window.MOSCO_INSCRIPCIONES_CONFIG || {};
     const fallbackAction = submissionConfig.fallbackAction || "https://formsubmit.co/moscoeventes@gmail.com";
     const appsScriptUrl = String(submissionConfig.appsScriptUrl || "").trim();
@@ -40,8 +41,6 @@
         location: document.querySelector("[data-mail-location]"),
         time: document.querySelector("[data-mail-time]"),
         price: document.querySelector("[data-mail-price]"),
-        paymentAmount: document.querySelector("[data-mail-payment-amount]"),
-        paymentLink: document.querySelector("[data-mail-payment-link]"),
         rules: document.querySelector("[data-mail-rules]"),
         legalText: document.querySelector("[data-mail-legal-text]")
     };
@@ -63,10 +62,11 @@
         !reservationEventId ||
         !reservationEventName ||
         !reservationDate ||
-        !paymentAmount ||
         !paymentButton ||
         !paymentButtonLabel ||
-        !paymentError
+        paymentMethodInputs.length !== 2 ||
+        !paypalPaymentInput ||
+        !paymentMethodError
     ) {
         return;
     }
@@ -86,16 +86,7 @@
     let capacityRequestId = 0;
     let silentCapacityChecking = false;
     const paypalHandle = "martinlopezmoscoso";
-
-    function parsePaymentAmount() {
-        const amount = Number.parseFloat(String(paymentAmount.value || "").replace(",", "."));
-
-        if (!Number.isFinite(amount) || amount < 0.01 || amount > 9999.99) {
-            return null;
-        }
-
-        return Math.round(amount * 100) / 100;
-    }
+    const paymentAmountValue = 18;
 
     function formatPaymentAmount(amount) {
         return new Intl.NumberFormat("es-ES", {
@@ -106,18 +97,64 @@
         }).format(amount);
     }
 
-    function paypalPaymentUrl(amount) {
-        const paypalAmount = amount.toFixed(2).replace(/\.00$/, "");
+    function paypalPaymentUrl() {
+        const paypalAmount = paymentAmountValue.toFixed(2).replace(/\.00$/, "");
 
         return `https://paypal.me/${paypalHandle}/${paypalAmount}EUR`;
     }
 
-    function syncPaypalPayment() {
-        const amount = parsePaymentAmount();
-        const hasEvent = Boolean(selectedEvent);
-        const isReady = hasEvent && amount !== null && !capacityChecking && !selectedEventFull;
+    function selectedPaymentMethod() {
+        return String(form.elements["Metodo de pago"]?.value || "");
+    }
 
-        paymentError.hidden = amount !== null;
+    function paymentDetails(method = selectedPaymentMethod()) {
+        const amount = formatPaymentAmount(paymentAmountValue);
+
+        if (method === "Efectivo en el campo") {
+            return {
+                metodo: method,
+                importe: amount,
+                estado: "Pendiente de pago en el campo",
+                destino: "Pago presencial en el campo",
+                enlace: ""
+            };
+        }
+
+        if (method === "PayPal") {
+            return {
+                metodo: method,
+                importe: amount,
+                estado: "Pendiente de verificación en PayPal",
+                destino: `@${paypalHandle}`,
+                enlace: paypalPaymentUrl()
+            };
+        }
+
+        return {
+            metodo: "",
+            importe: amount,
+            estado: "Pendiente de seleccionar método de pago",
+            destino: "",
+            enlace: ""
+        };
+    }
+
+    function syncPaymentMethod() {
+        const details = paymentDetails();
+
+        document.querySelectorAll("[data-payment-option]").forEach((option) => {
+            option.classList.toggle("is-selected", option.dataset.paymentOption === details.metodo);
+        });
+
+        if (details.metodo) {
+            paymentMethodError.hidden = true;
+        }
+    }
+
+    function syncPaypalPayment() {
+        const hasEvent = Boolean(selectedEvent);
+        const isReady = hasEvent && !capacityChecking && !selectedEventFull;
+
         paymentButton.classList.toggle("is-disabled", !isReady);
         paymentButton.setAttribute("aria-disabled", String(!isReady));
 
@@ -130,16 +167,11 @@
         } else if (capacityChecking) {
             paymentButton.removeAttribute("href");
             paymentButtonLabel.textContent = "COMPROBANDO PLAZAS...";
-        } else if (amount === null) {
-            paymentButton.removeAttribute("href");
-            paymentButtonLabel.textContent = "INTRODUCE UN IMPORTE VÁLIDO";
         } else {
-            const paymentUrl = paypalPaymentUrl(amount);
+            const paymentUrl = paypalPaymentUrl();
 
             paymentButton.href = paymentUrl;
-            paymentButtonLabel.textContent = `PAGAR ${formatPaymentAmount(amount)} CON PAYPAL`;
-            setMailValue(mailFields.paymentAmount, formatPaymentAmount(amount));
-            setMailValue(mailFields.paymentLink, paymentUrl);
+            paymentButtonLabel.textContent = `PAGAR ${formatPaymentAmount(paymentAmountValue)} CON PAYPAL`;
         }
     }
 
@@ -626,8 +658,6 @@
         setMailValue(mailFields.location, record.evento.ubicacion);
         setMailValue(mailFields.time, record.evento.horario);
         setMailValue(mailFields.price, record.evento.precio);
-        setMailValue(mailFields.paymentAmount, record.pago.importe);
-        setMailValue(mailFields.paymentLink, record.pago.enlace);
         setMailValue(mailFields.rules, record.normasLeidas);
         setMailValue(mailFields.legalText, legalText);
     }
@@ -776,6 +806,7 @@
         form.reset();
         selectedEvent = null;
         updateEventSummary(null);
+        syncPaymentMethod();
         clearSignature();
         renderResult(record);
         updateSubmitAvailability();
@@ -837,13 +868,19 @@
     canvas.addEventListener("pointerup", stopDrawing);
     canvas.addEventListener("pointercancel", stopDrawing);
     clearButton?.addEventListener("click", clearSignature);
-    paymentAmount.addEventListener("input", syncPaypalPayment);
-    paymentAmount.addEventListener("change", syncPaypalPayment);
+    paymentMethodInputs.forEach((input) => {
+        input.addEventListener("change", syncPaymentMethod);
+    });
     paymentButton.addEventListener("click", (event) => {
         if (paymentButton.getAttribute("aria-disabled") === "true") {
             event.preventDefault();
-            paymentAmount.focus();
+            eventSelect.focus();
+            return;
         }
+
+        paypalPaymentInput.checked = true;
+        syncPaymentMethod();
+        updateSubmitAvailability();
     });
     form.addEventListener("input", updateSubmitAvailability);
     form.addEventListener("change", updateSubmitAvailability);
@@ -857,6 +894,7 @@
     clearExpiredReference();
     setRegistrationFull(false);
     populateEventSelect();
+    syncPaymentMethod();
     updateSubmitAvailability();
     showSentNotice();
     prepareCanvas();
@@ -959,6 +997,14 @@
             return;
         }
 
+        if (!selectedPaymentMethod()) {
+            paymentMethodError.hidden = false;
+            paymentMethodInputs[0].focus();
+            form.reportValidity();
+            updateSubmitAvailability();
+            return;
+        }
+
         if (!hasSignature || !signatureInput.value) {
             signatureError.hidden = false;
         }
@@ -992,14 +1038,8 @@
         updateSubmitAvailability();
 
         const formData = new FormData(form);
-        const paypalAmount = parsePaymentAmount();
+        const paymentMethod = selectedPaymentMethod();
         const now = new Date();
-
-        if (paypalAmount === null) {
-            paymentError.hidden = false;
-            paymentAmount.focus();
-            return;
-        }
 
         const record = {
             referencia: `MOSCO-${now.getTime().toString(36).toUpperCase()}`,
@@ -1021,13 +1061,7 @@
             },
             consentimientoImagenes: formData.get("consentimientoImagenes"),
             normasLeidas: formData.get("normasLeidas"),
-            pago: {
-                metodo: "PayPal",
-                importe: formatPaymentAmount(paypalAmount),
-                estado: "Pendiente de verificación en PayPal",
-                destino: `@${paypalHandle}`,
-                enlace: paypalPaymentUrl(paypalAmount)
-            },
+            pago: paymentDetails(paymentMethod),
             textoLegalFirmado:
                 "Acepta normas, condiciones de participacion, aviso legal y politica de privacidad de Mosco Events.",
             firmaLegal: signatureInput.value

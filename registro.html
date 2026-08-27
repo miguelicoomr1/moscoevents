@@ -26,7 +26,7 @@
 
     <link
         rel="stylesheet"
-        href="/style.css?v=21"
+        href="/style.css?v=23"
     >
 
     <link
@@ -148,11 +148,7 @@
                 <input type="hidden" name="Ubicacion" data-mail-location>
                 <input type="hidden" name="Horario" data-mail-time>
                 <input type="hidden" name="Precio" data-mail-price>
-                <input type="hidden" name="Metodo de pago" value="PayPal">
-                <input type="hidden" name="Importe del pago" data-mail-payment-amount>
-                <input type="hidden" name="Estado del pago" value="Pendiente de verificacion en PayPal">
-                <input type="hidden" name="Destino PayPal" value="@martinlopezmoscoso">
-                <input type="hidden" name="Enlace de pago" data-mail-payment-link>
+                <input type="hidden" name="Importe del pago" value="18.00 EUR">
                 <input type="hidden" name="Normas leidas y aceptadas" data-mail-rules>
                 <input type="hidden" name="Texto legal firmado" data-mail-legal-text>
 
@@ -231,69 +227,6 @@
                         </button>
                     </div>
                 </section>
-
-                <fieldset class="registration-payment" data-registration-participant>
-                    <legend>Pago de la inscripci&oacute;n</legend>
-
-                    <div class="registration-payment-card">
-                        <div class="registration-payment-heading">
-                            <div>
-                                <span class="registration-payment-eyebrow">M&eacute;todo de pago</span>
-                                <strong>PayPal</strong>
-                            </div>
-                            <span class="registration-payment-paypal" aria-hidden="true">PayPal</span>
-                        </div>
-
-                        <label class="form-field registration-payment-amount" for="paypal-amount">
-                            <span>Importe a pagar</span>
-                            <span class="registration-payment-input">
-                                <input
-                                    type="number"
-                                    name="importePago"
-                                    id="paypal-amount"
-                                    value="8.00"
-                                    min="0.01"
-                                    max="9999.99"
-                                    step="0.01"
-                                    inputmode="decimal"
-                                    aria-describedby="paypal-payment-help paypal-payment-error"
-                                    required
-                                >
-                                <span aria-hidden="true">&euro;</span>
-                            </span>
-                        </label>
-
-                        <p class="registration-payment-help" id="paypal-payment-help">
-                            La cantidad es modificable. PayPal se abrir&aacute; en una pesta&ntilde;a nueva
-                            para enviar el pago a <strong>@martinlopezmoscoso</strong>.
-                        </p>
-
-                        <p
-                            class="form-error"
-                            id="paypal-payment-error"
-                            data-paypal-payment-error
-                            hidden
-                        >
-                            Introduce un importe v&aacute;lido superior a 0 &euro;.
-                        </p>
-
-                        <a
-                            class="btn paypal-payment-button is-disabled"
-                            id="paypal-payment-button"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            aria-disabled="true"
-                        >
-                            <span class="paypal-payment-button-mark" aria-hidden="true">P</span>
-                            <span data-paypal-button-label>SELECCIONA UNA PARTIDA</span>
-                        </a>
-
-                        <p class="registration-payment-status">
-                            El pago quedar&aacute; pendiente de verificaci&oacute;n en PayPal.
-                            Indica tu nombre completo al realizarlo para poder identificarlo.
-                        </p>
-                    </div>
-                </fieldset>
 
                 <fieldset data-registration-participant>
                     <legend>Datos del participante</legend>
@@ -413,6 +346,77 @@
                     </div>
                 </fieldset>
 
+                <fieldset class="registration-payment" data-registration-participant>
+                    <legend>Pago de la inscripci&oacute;n</legend>
+
+                    <p class="registration-payment-intro">
+                        Elige c&oacute;mo quieres abonar los 18 &euro; de la partida.
+                    </p>
+
+                    <div class="registration-payment-options">
+                        <label
+                            class="registration-payment-option registration-payment-cash"
+                            data-payment-option="Efectivo en el campo"
+                        >
+                            <input
+                                type="radio"
+                                name="Metodo de pago"
+                                value="Efectivo en el campo"
+                                required
+                            >
+                            <span class="registration-payment-option-copy">
+                                <strong>En efectivo en el campo</strong>
+                                <small>Paga al llegar a la partida.</small>
+                            </span>
+                            <span class="registration-payment-price">18 &euro;</span>
+                        </label>
+
+                        <div
+                            class="registration-payment-card registration-payment-paypal-card"
+                            data-payment-option="PayPal"
+                        >
+                            <label class="registration-payment-option registration-payment-option-paypal">
+                                <input
+                                    type="radio"
+                                    name="Metodo de pago"
+                                    value="PayPal"
+                                    required
+                                >
+                                <span class="registration-payment-option-copy">
+                                    <strong>PayPal</strong>
+                                    <small>Pago online a @martinlopezmoscoso.</small>
+                                </span>
+                                <span class="registration-payment-paypal" aria-hidden="true">PayPal</span>
+                            </label>
+
+                            <a
+                                class="btn paypal-payment-button is-disabled"
+                                id="paypal-payment-button"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                aria-disabled="true"
+                            >
+                                <span class="paypal-payment-button-mark" aria-hidden="true">P</span>
+                                <span data-paypal-button-label>SELECCIONA UNA PARTIDA</span>
+                            </a>
+
+                            <p class="registration-payment-status">
+                                PayPal se abrir&aacute; en una pesta&ntilde;a nueva. Indica tu nombre
+                                completo para poder identificar el pago.
+                            </p>
+                        </div>
+                    </div>
+
+                    <p
+                        class="form-error"
+                        id="registration-payment-error"
+                        data-payment-method-error
+                        hidden
+                    >
+                        Selecciona una forma de pago para completar la inscripci&oacute;n.
+                    </p>
+                </fieldset>
+
                 <fieldset data-registration-participant>
                     <legend>Firma del participante</legend>
 
@@ -468,9 +472,9 @@
     <p>Mosco Events &copy; 2026 - Todos los derechos reservados</p>
 </footer>
 
-<script src="/datos.js?v=11"></script>
+<script src="/datos.js?v=12"></script>
 <script src="/inscripciones-config.js?v=2"></script>
-<script src="/registro.js?v=16"></script>
+<script src="/registro.js?v=19"></script>
 
 </body>
 </html>
