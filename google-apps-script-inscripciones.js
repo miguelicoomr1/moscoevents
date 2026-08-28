@@ -190,8 +190,6 @@ function capacityStatusResponse_(params) {
 
     const payload = {
         eventId: eventId,
-        count: count,
-        limit: CONFIG.MAX_REGISTRATIONS_PER_EVENT,
         full: count >= CONFIG.MAX_REGISTRATIONS_PER_EVENT
     };
     const content = callback
@@ -266,7 +264,7 @@ function saveReservation_(payload) {
 
     return html_(
         "Reserva recibida",
-        "Te hemos anadido a la lista de reservas. Contactaremos contigo cuando quede una plaza libre."
+        "Te hemos anadido a la lista de reservas. Contactaremos contigo si podemos confirmar tu participacion."
     );
 }
 
