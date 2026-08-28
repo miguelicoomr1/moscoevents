@@ -280,149 +280,11 @@
         return parrafo;
     }
 
-    function textoDisponibilidad(reservas, total) {
-        const plazasLibres = Math.max(0, total - reservas);
-        const textoReservas = reservas === 1 ? "1 reserva" : `${reservas} reservas`;
-        const textoLibres = plazasLibres === 1
-            ? "1 plaza libre"
-            : `${plazasLibres} plazas libres`;
-
-        return `${textoReservas} \u00b7 ${textoLibres}`;
-    }
-
-    function textoPlazas(evento) {
-        const total = Number(evento.plazasTotales);
-        const reservas = Number(evento.reservasIniciales);
-
-        if (Number.isFinite(total) && Number.isFinite(reservas)) {
-            return textoDisponibilidad(reservas, total);
-        }
-
-        return evento.plazas;
-    }
-
-    function consultarDisponibilidad(evento) {
-        const config = window.MOSCO_INSCRIPCIONES_CONFIG || {};
-        const appsScriptUrl = String(config.appsScriptUrl || "").trim();
-
-        if (!appsScriptUrl || !evento?.contadorInscripciones) {
-            return Promise.resolve(null);
-        }
-
-        return new Promise((resolve) => {
-            const callbackName = `moscoEventCapacity${Date.now()}${Math.random().toString(36).slice(2)}`;
-            const script = document.createElement("script");
-            const timeout = window.setTimeout(() => finish(null), 8000);
-            let completed = false;
-
-            function finish(status) {
-                if (completed) {
-                    return;
-                }
-
-                completed = true;
-                window.clearTimeout(timeout);
-                script.remove();
-
-                try {
-                    delete window[callbackName];
-                } catch (error) {
-                    window[callbackName] = undefined;
-                }
-
-                resolve(status);
-            }
-
-            try {
-                const url = new URL(appsScriptUrl, window.location.href);
-
-                url.searchParams.set("action", "status");
-                url.searchParams.set("eventId", evento.id);
-                url.searchParams.set("eventName", evento.titulo);
-                url.searchParams.set("callback", callbackName);
-                url.searchParams.set("_", String(Date.now()));
-
-                window[callbackName] = (payload) => {
-                    if (!payload || payload.eventId !== evento.id) {
-                        finish(null);
-                        return;
-                    }
-
-                    const count = Number(payload.count);
-                    const limit = Number(payload.limit);
-
-                    if (!Number.isFinite(count) || !Number.isFinite(limit) || limit <= 0) {
-                        finish(null);
-                        return;
-                    }
-
-                    finish({
-                        reservas: Math.max(0, Math.min(count, limit)),
-                        total: limit
-                    });
-                };
-
-                script.async = true;
-                script.src = url.toString();
-                script.onerror = () => finish(null);
-                document.head.appendChild(script);
-            } catch (error) {
-                finish(null);
-            }
-        });
-    }
-
-    function iniciarContadorInscripciones(evento) {
-        const valor = document.querySelector("[data-event-capacity]");
-
-        if (!valor || !evento.contadorInscripciones) {
-            return;
-        }
-
-        valor.parentElement?.setAttribute("aria-live", "polite");
-
-        let consulting = false;
-
-        async function actualizar() {
-            if (consulting || document.visibilityState === "hidden") {
-                return;
-            }
-
-            consulting = true;
-
-            try {
-                const status = await consultarDisponibilidad(evento);
-
-                if (status) {
-                    valor.textContent = textoDisponibilidad(status.reservas, status.total);
-                }
-            } finally {
-                consulting = false;
-            }
-        }
-
-        actualizar();
-
-        const interval = window.setInterval(actualizar, 15000);
-
-        document.addEventListener("visibilitychange", () => {
-            if (document.visibilityState === "visible") {
-                actualizar();
-            }
-        });
-        window.addEventListener("focus", actualizar);
-        window.addEventListener("pagehide", () => window.clearInterval(interval), { once: true });
-    }
-
     function detallesEvento(evento) {
         return [
             crearDetalle("Ubicaci\u00f3n", evento.ubicacion),
             crearDetalle("Fecha", evento.fechaTexto),
-            crearDetalle(
-                "Plazas",
-                textoPlazas(evento),
-                evento.contadorInscripciones ? "eventCapacity" : ""
-            ),
+            crearDetalle("Participantes", evento.participantes),
             crearDetalle("Horario", evento.horario),
             crearDetalle("Duraci\u00f3n", evento.duracion),
             crearDetalle("Premios", evento.premios),
@@ -528,7 +390,6 @@
         }
 
         contenedor.replaceChildren(tarjeta);
-        iniciarContadorInscripciones(evento);
     }
 
     function renderizarGaleriaNoEncontrada() {

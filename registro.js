@@ -166,7 +166,7 @@
             paymentButtonLabel.textContent = "PARTIDA LLENA";
         } else if (capacityChecking) {
             paymentButton.removeAttribute("href");
-            paymentButtonLabel.textContent = "COMPROBANDO PLAZAS...";
+            paymentButtonLabel.textContent = "COMPROBANDO DISPONIBILIDAD...";
         } else {
             const paymentUrl = paypalPaymentUrl();
 
@@ -269,11 +269,7 @@
                         return;
                     }
 
-                    finish({
-                        full: Boolean(payload.full),
-                        count: Number(payload.count) || 0,
-                        limit: Number(payload.limit) || 26
-                    });
+                    finish({ full: Boolean(payload.full) });
                 };
 
                 script.async = true;
@@ -334,7 +330,6 @@
         }
 
         capacityChecking = false;
-        updateEventOptionLabel(evento, status);
         setRegistrationFull(Boolean(status?.full));
 
         return status;
@@ -363,48 +358,14 @@
                 return;
             }
 
-            updateEventOptionLabel(eventAtRequest, status);
             setRegistrationFull(Boolean(status.full));
         } finally {
             silentCapacityChecking = false;
         }
     }
 
-    function availablePlaces(evento, status) {
-        const total = Number(status?.limit ?? evento?.plazasTotales);
-        const reservations = Number(status?.count ?? evento?.reservasIniciales);
-
-        if (!Number.isFinite(total) || !Number.isFinite(reservations)) {
-            return null;
-        }
-
-        return Math.max(0, Math.trunc(total - reservations));
-    }
-
-    function formatEventLabel(evento, status) {
-        const label = `${evento.tituloListado || evento.titulo} - ${evento.fechaCorta || evento.fechaTexto}`;
-        const freePlaces = availablePlaces(evento, status);
-
-        if (freePlaces === null) {
-            return label;
-        }
-
-        const availability = freePlaces === 1 ? "1 plaza libre" : `${freePlaces} plazas libres`;
-
-        return `${label} - ${availability}`;
-    }
-
-    function updateEventOptionLabel(evento, status) {
-        if (!evento) {
-            return;
-        }
-
-        const option = Array.from(eventSelect.options)
-            .find((item) => item.value === evento.id);
-
-        if (option) {
-            option.textContent = formatEventLabel(evento, status);
-        }
+    function formatEventLabel(evento) {
+        return `${evento.tituloListado || evento.titulo} - ${evento.fechaCorta || evento.fechaTexto}`;
     }
 
     function eventDetails(evento) {
@@ -414,7 +375,7 @@
             fechaTexto: evento?.fechaTexto || "Pendiente de seleccionar",
             ubicacion: evento?.ubicacion || "-",
             horario: evento?.horario || "-",
-            plazas: evento?.plazas || "-",
+            participantes: evento?.participantes || "-",
             precio: evento?.precio || "-"
         };
     }
@@ -427,7 +388,7 @@
             ["[data-registration-event-date]", details.fechaTexto],
             ["[data-registration-event-location]", details.ubicacion],
             ["[data-registration-event-time]", details.horario],
-            ["[data-registration-event-capacity]", details.plazas],
+            ["[data-registration-event-participants]", details.participantes],
             ["[data-registration-event-price]", details.precio],
             ["[data-registration-event-id]", details.id],
             ["[data-registration-event-name]", details.titulo]
@@ -505,7 +466,7 @@
         submitButton.textContent = isSubmitting
             ? "ENVIANDO..."
             : capacityChecking
-                ? "COMPROBANDO PLAZAS..."
+                ? "COMPROBANDO DISPONIBILIDAD..."
                 : "ENVIAR INSCRIPCIÓN";
 
         if (rulesInput.checked && rulesError) {
@@ -839,7 +800,7 @@
 
         title.textContent = "Reserva registrada";
         message.textContent =
-            "Te hemos añadido a la lista de reservas. Te contactaremos cuando quede una plaza libre.";
+            "Te hemos añadido a la lista de reservas. Te contactaremos si podemos confirmar tu participación.";
         details.className = "registration-receipt";
         details.appendChild(createRow("Evento", record.evento));
         details.appendChild(createRow("Nombre", record.nombre));
@@ -1022,8 +983,6 @@
         const capacityStatus = await checkEventCapacity(eventToSubmit);
 
         capacityChecking = false;
-        updateEventOptionLabel(eventToSubmit, capacityStatus);
-
         if (selectedEvent?.id !== eventToSubmit.id) {
             await refreshEventCapacity(selectedEvent);
             return;
