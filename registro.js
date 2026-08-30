@@ -64,7 +64,7 @@
         !reservationDate ||
         !paymentButton ||
         !paymentButtonLabel ||
-        paymentMethodInputs.length !== 2 ||
+        paymentMethodInputs.length !== 1 ||
         !paypalPaymentInput ||
         !paymentMethodError
     ) {
@@ -109,16 +109,6 @@
 
     function paymentDetails(method = selectedPaymentMethod()) {
         const amount = formatPaymentAmount(paymentAmountValue);
-
-        if (method === "Efectivo en el campo") {
-            return {
-                metodo: method,
-                importe: amount,
-                estado: "Pendiente de pago en el campo",
-                destino: "Pago presencial en el campo",
-                enlace: ""
-            };
-        }
 
         if (method === "PayPal") {
             return {

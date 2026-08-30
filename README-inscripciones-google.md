@@ -24,7 +24,7 @@ Cuando `appsScriptUrl` tenga la URL de Apps Script, cada envio del formulario:
 - Enviara el aviso a `moscoeventes@gmail.com`.
 - Enviara una copia de las respuestas al correo del participante.
 - Guardara el metodo, importe y estado del pago seleccionado.
-- Permitira elegir entre pago en efectivo en el campo o pago online de 18 euros por PayPal.
+- Registrara exclusivamente el pago online de 18 euros mediante PayPal.
 
 Cuando cambie `google-apps-script-inscripciones.js`, crea una nueva version del despliegue
 desde `Implementar` > `Gestionar implementaciones` para que la aplicacion web use los cambios.
