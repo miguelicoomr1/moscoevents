@@ -26,7 +26,7 @@
 
     <link
         rel="stylesheet"
-        href="/style.css?v=23"
+        href="/style.css?v=24"
     >
 
     <link
@@ -350,27 +350,10 @@
                     <legend>Pago de la inscripci&oacute;n</legend>
 
                     <p class="registration-payment-intro">
-                        Elige c&oacute;mo quieres abonar los 18 &euro; de la partida.
+                        El pago de los 18 &euro; de la partida se realiza exclusivamente mediante PayPal.
                     </p>
 
                     <div class="registration-payment-options">
-                        <label
-                            class="registration-payment-option registration-payment-cash"
-                            data-payment-option="Efectivo en el campo"
-                        >
-                            <input
-                                type="radio"
-                                name="Metodo de pago"
-                                value="Efectivo en el campo"
-                                required
-                            >
-                            <span class="registration-payment-option-copy">
-                                <strong>En efectivo en el campo</strong>
-                                <small>Paga al llegar a la partida.</small>
-                            </span>
-                            <span class="registration-payment-price">18 &euro;</span>
-                        </label>
-
                         <div
                             class="registration-payment-card registration-payment-paypal-card"
                             data-payment-option="PayPal"
@@ -380,6 +363,7 @@
                                     type="radio"
                                     name="Metodo de pago"
                                     value="PayPal"
+                                    checked
                                     required
                                 >
                                 <span class="registration-payment-option-copy">
@@ -413,7 +397,7 @@
                         data-payment-method-error
                         hidden
                     >
-                        Selecciona una forma de pago para completar la inscripci&oacute;n.
+                        El pago mediante PayPal es obligatorio para completar la inscripci&oacute;n.
                     </p>
                 </fieldset>
 
@@ -472,9 +456,9 @@
     <p>Mosco Events &copy; 2026 - Todos los derechos reservados</p>
 </footer>
 
-<script src="/datos.js?v=14"></script>
+<script src="/datos.js?v=16"></script>
 <script src="/inscripciones-config.js?v=2"></script>
-<script src="/registro.js?v=20"></script>
+<script src="/registro.js?v=21"></script>
 
 </body>
 </html>

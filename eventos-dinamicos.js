@@ -280,6 +280,28 @@
         return parrafo;
     }
 
+    function crearDetallePago(evento) {
+        if (!evento.precio) {
+            return null;
+        }
+
+        const parrafo = crearElemento("p");
+        const fuerte = crearElemento("strong", "", "Precio partida: ");
+
+        parrafo.appendChild(fuerte);
+
+        if (evento.pagoUrl) {
+            const enlace = crearEnlace(evento.pagoUrl, "event-payment-link", evento.precio);
+            enlace.target = "_blank";
+            enlace.rel = "noopener noreferrer";
+            parrafo.appendChild(enlace);
+        } else {
+            parrafo.appendChild(crearElemento("span", "", evento.precio));
+        }
+
+        return parrafo;
+    }
+
     function detallesEvento(evento) {
         return [
             crearDetalle("Ubicaci\u00f3n", evento.ubicacion),
@@ -288,7 +310,7 @@
             crearDetalle("Horario", evento.horario),
             crearDetalle("Duraci\u00f3n", evento.duracion),
             crearDetalle("Premios", evento.premios),
-            crearDetalle("Precio partida", evento.precio)
+            crearDetallePago(evento)
         ].filter(Boolean);
     }
 
