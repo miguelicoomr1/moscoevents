@@ -1453,6 +1453,49 @@ h2::after {
     font-size: 0.9rem;
 }
 
+.registration-payment-confirm {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin: 0 18px 10px;
+    padding: 14px;
+    border: 1px solid rgba(0, 112, 186, 0.3);
+    border-radius: 10px;
+    background: rgba(0, 112, 186, 0.06);
+    cursor: pointer;
+}
+
+.registration-payment-confirm input {
+    flex: 0 0 auto;
+    width: 20px;
+    height: 20px;
+    margin-top: 2px;
+    accent-color: #0070ba;
+}
+
+.registration-payment-confirm input:disabled {
+    cursor: not-allowed;
+}
+
+.registration-payment-confirm:has(input:disabled) {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+.registration-payment-confirm span {
+    color: var(--field-ink);
+    font-size: 0.92rem;
+    line-height: 1.45;
+}
+
+.registration-payment-confirm-help {
+    margin: 0;
+    padding: 0 18px 18px;
+    color: var(--text-soft);
+    font-size: 0.85rem;
+    font-style: italic;
+}
+
 .registration-legal-link {
     width: 100%;
     margin-top: 16px;

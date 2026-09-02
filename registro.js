@@ -25,6 +25,9 @@
     const paymentMethodInputs = Array.from(form?.querySelectorAll("[name='Metodo de pago']") || []);
     const paypalPaymentInput = form?.querySelector("[name='Metodo de pago'][value='PayPal']");
     const paymentMethodError = document.querySelector("[data-payment-method-error]");
+    const paymentConfirmInput = document.getElementById("payment-confirmed");
+    const paymentConfirmAmount = document.querySelector("[data-payment-confirm-amount]");
+    const paymentConfirmHelp = document.querySelector("[data-payment-confirm-help]");
     const submissionConfig = window.MOSCO_INSCRIPCIONES_CONFIG || {};
     const fallbackAction = submissionConfig.fallbackAction || "https://formsubmit.co/moscoeventes@gmail.com";
     const appsScriptUrl = String(submissionConfig.appsScriptUrl || "").trim();
@@ -73,7 +76,9 @@
         !paymentButtonLabel ||
         paymentMethodInputs.length !== 1 ||
         !paypalPaymentInput ||
-        !paymentMethodError
+        !paymentMethodError ||
+        !paymentConfirmInput ||
+        !paymentConfirmHelp
     ) {
         return;
     }
@@ -90,6 +95,10 @@
     let capacityChecking = false;
     let capacityRequestId = 0;
     let silentCapacityChecking = false;
+    // URL de PayPal que el participante realmente abrio. Si el importe
+    // cambia despues (otro evento, alquiler...) deja de coincidir y hay
+    // que pulsar "PAGAR CON PAYPAL" otra vez antes de poder confirmar.
+    let paypalOpenedForUrl = "";
     const paypalHandle = window.MOSCO_PAYPAL_HANDLE || "martinlopezmoscoso";
     // Suplemento por alquilar equipo. Se suma al precio de la partida.
     const RENTAL_SURCHARGE = 20;
@@ -145,9 +154,12 @@
                 metodo: method,
                 importe: amount,
                 desglose: breakdown,
-                estado: "Pendiente de verificación en PayPal",
+                estado: isPaymentConfirmed()
+                    ? "Confirmado por el participante (pendiente de verificación manual en PayPal)"
+                    : "Pendiente de confirmar el pago en PayPal",
                 destino: `@${paypalHandle}`,
-                enlace: paypalPaymentUrl()
+                enlace: paypalPaymentUrl(),
+                confirmado: isPaymentConfirmed() ? "Si" : "No"
             };
         }
 
@@ -159,7 +171,8 @@
                 ? "Pendiente de seleccionar método de pago"
                 : "Pendiente de seleccionar partida",
             destino: "",
-            enlace: ""
+            enlace: "",
+            confirmado: "No"
         };
     }
 
@@ -204,7 +217,34 @@
             }
         }
 
+        syncPaymentConfirmation();
         syncPaymentFields();
+    }
+
+    // La casilla de confirmacion solo se desbloquea si el enlace que se
+    // acaba de pulsar es exactamente el que hay calculado ahora mismo. Si
+    // cambia el evento, el alquiler o el aforo, hay que pulsar "PAGAR CON
+    // PAYPAL" otra vez antes de poder confirmar el pago.
+    function syncPaymentConfirmation() {
+        const currentUrl = paymentButton.getAttribute("href") || "";
+        const isUnlocked = Boolean(currentUrl) && currentUrl === paypalOpenedForUrl;
+
+        paymentConfirmInput.disabled = !isUnlocked;
+
+        if (!isUnlocked) {
+            paymentConfirmInput.checked = false;
+        }
+
+        paymentConfirmHelp.hidden = isUnlocked;
+
+        if (paymentConfirmAmount) {
+            const amount = paymentAmount();
+            paymentConfirmAmount.textContent = amount ? formatPaymentAmount(amount) : "-";
+        }
+    }
+
+    function isPaymentConfirmed() {
+        return !paymentConfirmInput.disabled && paymentConfirmInput.checked;
     }
 
     // Vuelca el pago calculado en los campos ocultos que viajan al backend.
@@ -487,8 +527,11 @@
     }
 
     function updateSubmitAvailability() {
+        // La casilla de pago se valida aparte con isPaymentConfirmed(): al
+        // estar deshabilitada mientras no se abre PayPal, el bucle generico
+        // la saltaria sin exigirla.
         const requiredControls = Array.from(form.querySelectorAll("[required]"))
-            .filter((control) => !control.disabled);
+            .filter((control) => !control.disabled && control !== paymentConfirmInput);
         const requiredFieldsReady = requiredControls.every((control) => {
             if (control.type === "radio") {
                 return Boolean(form.elements[control.name]?.value);
@@ -506,6 +549,7 @@
             !selectedEventFull &&
             selectedEvent &&
             requiredFieldsReady &&
+            isPaymentConfirmed() &&
             hasSignature &&
             signatureInput.value
         );
@@ -900,7 +944,16 @@
 
         paypalPaymentInput.checked = true;
         syncPaymentMethod();
+        // Marca el enlace que se acaba de abrir para poder desbloquear la
+        // casilla de confirmacion con ese mismo importe.
+        paypalOpenedForUrl = paymentButton.getAttribute("href") || "";
+        syncPaymentConfirmation();
         updateSubmitAvailability();
+    });
+    paymentConfirmInput.addEventListener("change", () => {
+        if (paymentConfirmInput.checked) {
+            paymentMethodError.hidden = true;
+        }
     });
     form.addEventListener("input", updateSubmitAvailability);
     form.addEventListener("change", updateSubmitAvailability);
@@ -1024,6 +1077,15 @@
             paymentMethodError.hidden = false;
             paymentMethodInputs[0].focus();
             form.reportValidity();
+            updateSubmitAvailability();
+            return;
+        }
+
+        // Sin el pago confirmado (casilla desbloqueada solo tras abrir
+        // PayPal con el importe vigente) no se puede enviar la inscripcion.
+        if (!isPaymentConfirmed()) {
+            paymentMethodError.hidden = false;
+            paymentButton.scrollIntoView({ behavior: "smooth", block: "center" });
             updateSubmitAvailability();
             return;
         }

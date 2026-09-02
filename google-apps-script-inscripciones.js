@@ -40,7 +40,8 @@ const HEADERS = [
     "Desglose del pago",
     "Estado del pago",
     "Destino del pago",
-    "Enlace de pago"
+    "Enlace de pago",
+    "Pago confirmado por el participante"
 ];
 
 const RESERVATION_HEADERS = [
@@ -156,6 +157,10 @@ function normalizeRegistration_(payload) {
         pagoEstado: value_(payload["Estado del pago"]) || "Pendiente de verificacion en PayPal",
         pagoDestino: value_(payload["Destino del pago"]) || `@${CONFIG.PAYPAL_HANDLE}`,
         pagoEnlace: value_(payload["Enlace de pago"]),
+        // El formulario solo deja marcar esta casilla despues de abrir el
+        // enlace de PayPal con el importe vigente; se revalida aqui por si
+        // alguien intenta saltarse la comprobacion del navegador.
+        pagoConfirmado: value_(payload.pagoConfirmado),
         plazas: toPositiveInteger_(payload.Plazas)
     };
 }
@@ -190,6 +195,7 @@ function validateRegistration_(record) {
     if (!record.consentimientoImagenes) missing.push("Consentimiento imagenes");
     if (record.pagoMetodo !== "PayPal") missing.push("Metodo de pago PayPal");
     if (!record.pagoImporte) missing.push("Importe del pago");
+    if (record.pagoConfirmado !== "Si") missing.push("Confirmacion de pago en PayPal");
     if (record.normasLeidas !== "Si") missing.push("Normas leidas");
     if (!record.firmaLegal) missing.push("Firma");
 
@@ -418,7 +424,8 @@ function buildSheetRow_(record, signatureUrl) {
         safeCell_(record.pagoDesglose),
         safeCell_(record.pagoEstado),
         safeCell_(record.pagoDestino),
-        safeCell_(record.pagoEnlace)
+        safeCell_(record.pagoEnlace),
+        safeCell_(record.pagoConfirmado)
     ];
 }
 
@@ -488,6 +495,7 @@ function buildPlainBody_(record, spreadsheetUrl, signatureUrl, includeAdminLinks
         `Estado del pago: ${record.pagoEstado}`,
         `Destino del pago: ${record.pagoDestino}`,
         `Enlace de pago: ${record.pagoEnlace || "No aplica"}`,
+        `Pago confirmado por el participante: ${record.pagoConfirmado === "Si" ? "Si" : "No"}`,
         "",
         `Nombre: ${record.nombre}`,
         `Equipo: ${record.equipo}`,
@@ -530,7 +538,8 @@ function buildHtmlBody_(record, spreadsheetUrl, signatureUrl, includeAdminLinks)
         ["Desglose del pago", record.pagoDesglose || "Sin suplementos"],
         ["Estado del pago", record.pagoEstado],
         ["Destino del pago", record.pagoDestino],
-        ["Enlace de pago", record.pagoEnlace]
+        ["Enlace de pago", record.pagoEnlace],
+        ["Pago confirmado por el participante", record.pagoConfirmado === "Si" ? "Si" : "No"]
     ];
     const participantRows = [
         ["Nombre", record.nombre],
