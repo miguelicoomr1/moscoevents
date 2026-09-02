@@ -26,7 +26,7 @@
 
     <link
         rel="stylesheet"
-        href="/style.css?v=25"
+        href="/style.css?v=26"
     >
 
     <link
@@ -411,6 +411,26 @@
                                 PayPal se abrir&aacute; en una pesta&ntilde;a nueva. Indica tu nombre
                                 completo para poder identificar el pago.
                             </p>
+
+                            <label class="registration-payment-confirm" data-payment-confirm>
+                                <input
+                                    type="checkbox"
+                                    name="pagoConfirmado"
+                                    value="Si"
+                                    id="payment-confirmed"
+                                    required
+                                    disabled
+                                >
+                                <span>
+                                    He completado el pago de
+                                    <strong data-payment-confirm-amount>-</strong>
+                                    en PayPal.
+                                </span>
+                            </label>
+
+                            <p class="registration-payment-confirm-help" data-payment-confirm-help>
+                                Pulsa primero "PAGAR CON PAYPAL" para poder confirmar el pago.
+                            </p>
                         </div>
                     </div>
 
@@ -420,7 +440,7 @@
                         data-payment-method-error
                         hidden
                     >
-                        El pago mediante PayPal es obligatorio para completar la inscripci&oacute;n.
+                        El pago mediante PayPal es obligatorio: complétalo y confirma la casilla para poder enviar la inscripci&oacute;n.
                     </p>
                 </fieldset>
 
@@ -481,7 +501,7 @@
 
 <script src="/datos.js?v=17"></script>
 <script src="/inscripciones-config.js?v=2"></script>
-<script src="/registro.js?v=23"></script>
+<script src="/registro.js?v=24"></script>
 
 </body>
 </html>
