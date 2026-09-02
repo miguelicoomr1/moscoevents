@@ -1,0 +1,14 @@
+# Archivos que viven en el repositorio pero NO deben publicarse en la web.
+# El codigo del backend de inscripciones se servia en abierto en
+# https://www.moscoevents.com/google-apps-script-inscripciones.js
+exclude:
+  - google-apps-script-inscripciones.js
+  - README-inscripciones-google.md
+  - outputs
+  - eventos.js
+  - images/video-mina.mp4
+  - "images/base web/fondo.png"
+  - "images/base web/logo-png.png"
+  - "images/base web/2.jpeg"
+  - "images/base web/3.jpeg"
+  - "images/base web/4.jpeg"
