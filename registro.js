@@ -29,7 +29,8 @@
     const fallbackAction = submissionConfig.fallbackAction || "https://formsubmit.co/moscoeventes@gmail.com";
     const appsScriptUrl = String(submissionConfig.appsScriptUrl || "").trim();
     const referenceStorageKey = "moscoEventsRegistrationReference";
-    const referenceLifetime = 7 * 24 * 60 * 60 * 1000;
+    // Solo tiene que sobrevivir al salto al backend y la vuelta con ?enviado=1.
+    const referenceLifetime = 2 * 60 * 60 * 1000;
     const mailFields = {
         reference: document.querySelector("[data-mail-reference]"),
         subject: document.querySelector("[data-mail-subject]"),
@@ -41,6 +42,12 @@
         location: document.querySelector("[data-mail-location]"),
         time: document.querySelector("[data-mail-time]"),
         price: document.querySelector("[data-mail-price]"),
+        amount: document.querySelector("[data-mail-amount]"),
+        paymentBreakdown: document.querySelector("[data-mail-payment-breakdown]"),
+        paymentStatus: document.querySelector("[data-mail-payment-status]"),
+        paymentTarget: document.querySelector("[data-mail-payment-target]"),
+        paymentLink: document.querySelector("[data-mail-payment-link]"),
+        capacity: document.querySelector("[data-mail-capacity]"),
         rules: document.querySelector("[data-mail-rules]"),
         legalText: document.querySelector("[data-mail-legal-text]")
     };
@@ -79,14 +86,13 @@
     let selectedEvent = null;
     let isSubmitting = false;
     let isSubmittingReservation = false;
-    let pendingRecord = null;
-    let submissionTimer = null;
     let selectedEventFull = false;
     let capacityChecking = false;
     let capacityRequestId = 0;
     let silentCapacityChecking = false;
-    const paypalHandle = "martinlopezmoscoso";
-    const paymentAmountValue = 18;
+    const paypalHandle = window.MOSCO_PAYPAL_HANDLE || "martinlopezmoscoso";
+    // Suplemento por alquilar equipo. Se suma al precio de la partida.
+    const RENTAL_SURCHARGE = 20;
 
     function formatPaymentAmount(amount) {
         return new Intl.NumberFormat("es-ES", {
@@ -97,10 +103,29 @@
         }).format(amount);
     }
 
-    function paypalPaymentUrl() {
-        const paypalAmount = paymentAmountValue.toFixed(2).replace(/\.00$/, "");
+    function rentalSurcharge() {
+        return String(form.elements.equipamiento?.value || "").startsWith("Alquiler")
+            ? RENTAL_SURCHARGE
+            : 0;
+    }
 
-        return `https://paypal.me/${paypalHandle}/${paypalAmount}EUR`;
+    // El importe sale SIEMPRE del evento seleccionado, nunca de una constante fija.
+    function paymentAmount() {
+        if (typeof selectedEvent?.importe !== "number") {
+            return 0;
+        }
+
+        return selectedEvent.importe + rentalSurcharge();
+    }
+
+    function paypalPaymentUrl() {
+        const amount = paymentAmount();
+
+        if (!amount) {
+            return "";
+        }
+
+        return `https://paypal.me/${paypalHandle}/${amount.toFixed(2).replace(/\.00$/, "")}EUR`;
     }
 
     function selectedPaymentMethod() {
@@ -108,12 +133,18 @@
     }
 
     function paymentDetails(method = selectedPaymentMethod()) {
-        const amount = formatPaymentAmount(paymentAmountValue);
+        const value = paymentAmount();
+        const amount = value ? formatPaymentAmount(value) : "";
+        const surcharge = rentalSurcharge();
+        const breakdown = surcharge && selectedEvent
+            ? `${formatPaymentAmount(selectedEvent.importe)} partida + ${formatPaymentAmount(surcharge)} alquiler`
+            : "";
 
-        if (method === "PayPal") {
+        if (method === "PayPal" && value) {
             return {
                 metodo: method,
                 importe: amount,
+                desglose: breakdown,
                 estado: "Pendiente de verificación en PayPal",
                 destino: `@${paypalHandle}`,
                 enlace: paypalPaymentUrl()
@@ -121,9 +152,12 @@
         }
 
         return {
-            metodo: "",
+            metodo: method === "PayPal" ? method : "",
             importe: amount,
-            estado: "Pendiente de seleccionar método de pago",
+            desglose: breakdown,
+            estado: value
+                ? "Pendiente de seleccionar método de pago"
+                : "Pendiente de seleccionar partida",
             destino: "",
             enlace: ""
         };
@@ -159,10 +193,30 @@
             paymentButtonLabel.textContent = "COMPROBANDO DISPONIBILIDAD...";
         } else {
             const paymentUrl = paypalPaymentUrl();
+            const amount = paymentAmount();
 
-            paymentButton.href = paymentUrl;
-            paymentButtonLabel.textContent = `PAGAR ${formatPaymentAmount(paymentAmountValue)} CON PAYPAL`;
+            if (paymentUrl) {
+                paymentButton.href = paymentUrl;
+                paymentButtonLabel.textContent = `PAGAR ${formatPaymentAmount(amount)} CON PAYPAL`;
+            } else {
+                paymentButton.removeAttribute("href");
+                paymentButtonLabel.textContent = "PRECIO POR CONFIRMAR";
+            }
         }
+
+        syncPaymentFields();
+    }
+
+    // Vuelca el pago calculado en los campos ocultos que viajan al backend.
+    function syncPaymentFields() {
+        const details = paymentDetails();
+
+        setMailValue(mailFields.amount, details.importe);
+        setMailValue(mailFields.paymentBreakdown, details.desglose);
+        setMailValue(mailFields.paymentStatus, details.estado);
+        setMailValue(mailFields.paymentTarget, details.destino);
+        setMailValue(mailFields.paymentLink, details.enlace);
+        setMailValue(mailFields.capacity, selectedEvent?.plazas);
     }
 
     function isUpcomingEvent(evento) {
@@ -250,6 +304,12 @@
                 url.searchParams.set("action", "status");
                 url.searchParams.set("eventId", evento.id);
                 url.searchParams.set("eventName", evento.titulo);
+
+                // Aforo real de esta partida (20, 26...), no un tope global.
+                if (evento.plazas) {
+                    url.searchParams.set("capacity", String(evento.plazas));
+                }
+
                 url.searchParams.set("callback", callbackName);
                 url.searchParams.set("_", String(Date.now()));
 
@@ -578,14 +638,25 @@
         }
     }
 
-    function storeReference(reference) {
+    // Guardamos el registro completo para poder mostrar el comprobante y su
+    // descarga cuando el backend nos devuelva a esta pagina con ?enviado=1.
+    function storeReference(reference, record) {
         try {
             window.localStorage.setItem(referenceStorageKey, JSON.stringify({
                 referencia: reference,
+                registro: record || null,
                 expiresAt: Date.now() + referenceLifetime
             }));
         } catch (error) {
-            // La confirmacion y la descarga siguen disponibles aunque se bloquee el guardado local.
+            // La confirmacion sigue llegando por correo aunque se bloquee el guardado local.
+        }
+    }
+
+    function forgetReference() {
+        try {
+            window.localStorage.removeItem(referenceStorageKey);
+        } catch (error) {
+            // Sin almacenamiento local no hay nada que limpiar.
         }
     }
 
@@ -609,6 +680,12 @@
         setMailValue(mailFields.location, record.evento.ubicacion);
         setMailValue(mailFields.time, record.evento.horario);
         setMailValue(mailFields.price, record.evento.precio);
+        setMailValue(mailFields.amount, record.pago.importe);
+        setMailValue(mailFields.paymentBreakdown, record.pago.desglose);
+        setMailValue(mailFields.paymentStatus, record.pago.estado);
+        setMailValue(mailFields.paymentTarget, record.pago.destino);
+        setMailValue(mailFields.paymentLink, record.pago.enlace);
+        setMailValue(mailFields.capacity, record.evento.plazas);
         setMailValue(mailFields.rules, record.normasLeidas);
         setMailValue(mailFields.legalText, legalText);
     }
@@ -618,17 +695,25 @@
             return;
         }
 
+        const saved = clearExpiredReference();
+
+        // Con el registro guardado mostramos el comprobante completo y su descarga.
+        if (saved?.registro) {
+            renderResult(saved.registro);
+            forgetReference();
+            return;
+        }
+
         const title = document.createElement("h2");
         const message = document.createElement("p");
-        const savedReference = clearExpiredReference();
 
         title.textContent = "Inscripción enviada";
-        message.textContent =
-            savedReference?.referencia
-                ? `Hemos recibido la inscripción. Referencia: ${savedReference.referencia}.`
-                : "Hemos recibido la inscripción correctamente.";
+        message.textContent = saved?.referencia
+            ? `Hemos recibido la inscripción. Referencia: ${saved.referencia}.`
+            : "Hemos recibido la inscripción correctamente.";
         result.replaceChildren(title, message);
         result.hidden = false;
+        forgetReference();
     }
 
     function receiptData(record) {
@@ -641,6 +726,7 @@
             ["Precio", record.evento.precio],
             ["Método de pago", record.pago.metodo],
             ["Importe del pago", record.pago.importe],
+            ["Desglose del pago", record.pago.desglose],
             ["Estado del pago", record.pago.estado],
             ["Nombre", record.participante.nombre],
             ["Equipo", record.participante.equipo],
@@ -747,22 +833,6 @@
         result.scrollIntoView({ behavior: "smooth", block: "start" });
     }
 
-    function finishSubmission(record) {
-        window.clearTimeout(submissionTimer);
-        submissionTimer = null;
-        pendingRecord = null;
-        isSubmitting = false;
-
-        storeReference(record.referencia);
-        form.reset();
-        selectedEvent = null;
-        updateEventSummary(null);
-        syncPaymentMethod();
-        clearSignature();
-        renderResult(record);
-        updateSubmitAvailability();
-    }
-
     function showSubmissionDelay(customMessage) {
         if (!isSubmitting) {
             return;
@@ -772,7 +842,6 @@
         const message = document.createElement("p");
 
         isSubmitting = false;
-        pendingRecord = null;
         title.textContent = "No se ha podido confirmar el envío";
         message.textContent =
             customMessage ||
@@ -900,6 +969,9 @@
         reservationData.set("nombreReserva", record.nombre);
         reservationData.set("telefonoReserva", record.telefono);
         reservationData.set("fechaHoraRegistro", reservationDate.value);
+        // Aforo real de esta partida: el backend lo necesita para no rechazar
+        // reservas de eventos con menos plazas que el tope global.
+        reservationData.set("plazas", String(reservationEvent.plazas || ""));
         isSubmittingReservation = true;
         reservationSubmit.disabled = true;
         reservationSubmit.textContent = "ENVIANDO RESERVA...";
@@ -999,7 +1071,8 @@
                 fecha: selectedEvent.fechaTexto,
                 ubicacion: selectedEvent.ubicacion,
                 horario: selectedEvent.horario,
-                precio: selectedEvent.precio
+                precio: selectedEvent.precio,
+                plazas: selectedEvent.plazas
             },
             participante: {
                 nombre: formData.get("nombre"),
@@ -1018,17 +1091,15 @@
 
         prepareMailFields(record);
         configureSubmissionTarget();
-        pendingRecord = record;
         isSubmitting = true;
         renderSending(record);
         updateSubmitAvailability();
 
         try {
-            storeReference(record.referencia);
+            storeReference(record.referencia, record);
             submitWithPageNavigation(form.action, new FormData(form));
             return;
         } catch (error) {
-            window.clearTimeout(submissionTimer);
             showSubmissionDelay("No se ha podido conectar con el sistema de inscripciones. Comprueba tu conexión e inténtalo de nuevo.");
         }
     });

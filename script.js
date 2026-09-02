@@ -424,3 +424,10 @@ if (countdown && Object.values(countdownFields).every(Boolean)) {
     actualizarContador();
     setInterval(actualizarContador, 1000);
 }
+
+/* ===== AÑO DEL PIE DE PAGINA ===== */
+
+// Evita tener que tocar cada pagina cada 1 de enero.
+document.querySelectorAll("footer p").forEach((parrafo) => {
+    parrafo.textContent = parrafo.textContent.replace(/©\s*\d{4}/, `© ${new Date().getFullYear()}`);
+});

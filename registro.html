@@ -26,7 +26,7 @@
 
     <link
         rel="stylesheet"
-        href="/style.css?v=24"
+        href="/style.css?v=25"
     >
 
     <link
@@ -43,6 +43,24 @@
         rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&display=swap"
     >
+
+    <link rel="canonical" href="https://www.moscoevents.com/registro.html">
+
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Mosco Events">
+    <meta property="og:locale" content="es_ES">
+    <meta property="og:url" content="https://www.moscoevents.com/registro.html">
+    <meta property="og:title" content="INSCRIPCIONES | Mosco Events">
+    <meta property="og:description" content="Formulario de registro para partidas de Mosco Events.">
+    <meta property="og:image" content="https://www.moscoevents.com/images/base%20web/og-image.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Mosco Events - eventos de airsoft y simulaci&oacute;n t&aacute;ctica en Pedrola">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="INSCRIPCIONES | Mosco Events">
+    <meta name="twitter:description" content="Formulario de registro para partidas de Mosco Events.">
+    <meta name="twitter:image" content="https://www.moscoevents.com/images/base%20web/og-image.jpg">
 </head>
 
 <body data-registration-page>
@@ -148,7 +166,12 @@
                 <input type="hidden" name="Ubicacion" data-mail-location>
                 <input type="hidden" name="Horario" data-mail-time>
                 <input type="hidden" name="Precio" data-mail-price>
-                <input type="hidden" name="Importe del pago" value="18.00 EUR">
+                <input type="hidden" name="Importe del pago" data-mail-amount>
+                <input type="hidden" name="Desglose del pago" data-mail-payment-breakdown>
+                <input type="hidden" name="Estado del pago" data-mail-payment-status>
+                <input type="hidden" name="Destino del pago" data-mail-payment-target>
+                <input type="hidden" name="Enlace de pago" data-mail-payment-link>
+                <input type="hidden" name="Plazas" data-mail-capacity>
                 <input type="hidden" name="Normas leidas y aceptadas" data-mail-rules>
                 <input type="hidden" name="Texto legal firmado" data-mail-legal-text>
 
@@ -456,9 +479,9 @@
     <p>Mosco Events &copy; 2026 - Todos los derechos reservados</p>
 </footer>
 
-<script src="/datos.js?v=16"></script>
+<script src="/datos.js?v=17"></script>
 <script src="/inscripciones-config.js?v=2"></script>
-<script src="/registro.js?v=21"></script>
+<script src="/registro.js?v=23"></script>
 
 </body>
 </html>
