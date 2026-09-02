@@ -4,7 +4,6 @@ const CONFIG = {
     SPREADSHEET_NAME: "Inscripciones Mosco Events",
     SPREADSHEET_ID: "1kfS5Ky3S9mTcE6Tp-PDCR3OzjLhf3l2u5KvWQznp4OM",
     SIGNATURES_FOLDER_NAME: "Firmas inscripciones",
-    MAX_REGISTRATIONS_PER_EVENT: 26,
     EVENT_SHEET_NAMES: {
         "sabado-29-08-2026": "29-08-2026"
     },
@@ -84,7 +83,7 @@ function doPost(e) {
 
         const capacity = eventCapacity_(record.plazas);
 
-        if (registrationCount_(sheet) >= capacity) {
+        if (isEventFull_(registrationCount_(sheet), capacity)) {
             return html_(
                 "Partida llena",
                 `La partida ya ha alcanzado el limite de ${capacity} inscripciones. Vuelve al formulario para apuntarte a reservas.`
@@ -165,16 +164,15 @@ function normalizeRegistration_(payload) {
     };
 }
 
-// Aforo real de la partida. El formulario manda el del evento y aqui se
-// limita al tope global para que nadie pueda ampliarlo manipulando el envio.
+// Aforo real de la partida: el que manda el formulario segun datos.js.
+// Si el evento no define aforo (Plazas vacio), se considera sin limite:
+// esa partida nunca se marca como llena.
 function eventCapacity_(requested) {
-    const capacity = toPositiveInteger_(requested);
+    return toPositiveInteger_(requested) || null;
+}
 
-    if (!capacity) {
-        return CONFIG.MAX_REGISTRATIONS_PER_EVENT;
-    }
-
-    return Math.min(capacity, CONFIG.MAX_REGISTRATIONS_PER_EVENT);
+function isEventFull_(count, capacity) {
+    return capacity !== null && count >= capacity;
 }
 
 function toPositiveInteger_(value) {
@@ -221,9 +219,9 @@ function capacityStatusResponse_(params) {
     const capacity = eventCapacity_(params.capacity);
     const payload = {
         eventId: eventId,
-        capacity: capacity,
+        capacity: capacity, // null = sin limite de plazas
         count: count,
-        full: count >= capacity
+        full: isEventFull_(count, capacity)
     };
     const content = callback
         ? `${callback}(${JSON.stringify(payload)});`
@@ -278,7 +276,7 @@ function saveReservation_(payload) {
 
     const capacity = eventCapacity_(payload.plazas);
 
-    if (registrationCount_(eventSheet) < capacity) {
+    if (!isEventFull_(registrationCount_(eventSheet), capacity)) {
         throw new Error("La partida todavia tiene plazas disponibles.");
     }
 
