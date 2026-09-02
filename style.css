@@ -2455,6 +2455,23 @@ body .hero-buttons .btn + .btn:hover {
     border-color: var(--field-ink);
 }
 
+/* En contacto.html las tarjetas de contacto deben verse todas iguales,
+   asi que el boton de Instagram usa el mismo relleno que WhatsApp/email
+   en vez del estilo de boton secundario (contorno) que usa en el resto
+   del sitio. */
+.card .instagram {
+    color: #fff;
+    background: var(--field-signal);
+    border-color: var(--field-signal);
+    box-shadow: 0 12px 28px rgba(189, 61, 32, 0.22);
+}
+
+.card .instagram:hover {
+    color: #fff;
+    background: var(--field-signal-dark);
+    border-color: var(--field-signal-dark);
+}
+
 .btn:focus-visible,
 .whatsapp:focus-visible,
 .instagram:focus-visible,
