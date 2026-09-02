@@ -105,7 +105,8 @@
 
     function renderizarEnlacesGaleria() {
         document.querySelectorAll("[data-gallery-list]").forEach((contenedor) => {
-            const enlaces = ordenarPorFechaAscendente(eventos)
+            // Mas recientes primero, igual que el listado de eventos.
+            const enlaces = ordenarPorFechaDescendente(eventos)
                 .filter((evento) => evento.galeria?.activa)
                 .map((evento) => crearEnlace(
                     evento.galeria.url,
@@ -254,12 +255,32 @@
         }
     }
 
-    function actualizarMetaDescripcion(texto) {
-        const meta = document.querySelector('meta[name="description"]');
+    function actualizarMeta(selector, atributo, valor) {
+        const meta = document.querySelector(selector);
 
         if (meta) {
-            meta.setAttribute("content", texto);
+            meta.setAttribute(atributo, valor);
         }
+    }
+
+    function actualizarMetaDescripcion(texto) {
+        actualizarMeta('meta[name="description"]', "content", texto);
+        actualizarMeta('meta[property="og:description"]', "content", texto);
+        actualizarMeta('meta[name="twitter:description"]', "content", texto);
+    }
+
+    // Mantiene el titulo compartible y el canonical en sintonia con el evento
+    // que se esta mostrando en las paginas genericas.
+    function actualizarMetaTitulo(texto) {
+        actualizarMeta('meta[property="og:title"]', "content", texto);
+        actualizarMeta('meta[name="twitter:title"]', "content", texto);
+    }
+
+    function actualizarCanonical(ruta) {
+        const url = new URL(ruta, window.location.origin).toString();
+
+        actualizarMeta('link[rel="canonical"]', "href", url);
+        actualizarMeta('meta[property="og:url"]', "content", url);
     }
 
     function crearDetalle(etiqueta, valor, atributoValor) {
@@ -368,7 +389,9 @@
         }
 
         document.title = `${evento.titulo} | Mosco Events`;
+        actualizarMetaTitulo(`${evento.titulo} | Mosco Events`);
         actualizarMetaDescripcion(`Informaci\u00f3n e inscripci\u00f3n para ${evento.titulo} de Mosco Events.`);
+        actualizarCanonical(evento.url);
         actualizarTexto("[data-event-hero-title]", evento.titulo);
         actualizarTexto("[data-event-hero-subtitle]", evento.subtitulo || "Evento oficial de Mosco Events");
         actualizarTexto("[data-event-title]", (evento.tituloDetalle || evento.titulo).toUpperCase());
@@ -391,7 +414,9 @@
 
         detallesEvento(evento).forEach((detalle) => tarjeta.appendChild(detalle));
 
-        if (evento.inscripcionUrl) {
+        // No mostrar INSCRIBIRSE en partidas ya pasadas: registro.js solo
+        // lista eventos "proximos", asi que el enlace llevaria a un formulario vacio.
+        if (evento.inscripcionUrl && esSeccion(evento, "proximos")) {
             acciones.appendChild(crearEnlaceRegistro(evento));
         }
 
@@ -443,7 +468,9 @@
         }
 
         document.title = `${galeria.titulo} ${evento.fechaCorta} | Mosco Events`;
+        actualizarMetaTitulo(`${galeria.titulo} ${evento.fechaCorta} | Mosco Events`);
         actualizarMetaDescripcion(`Galer\u00eda oficial de Mosco Events para ${evento.titulo}.`);
+        actualizarCanonical(galeria.url);
         actualizarTexto("[data-gallery-hero-title]", galeria.titulo || "GALER\u00cdA");
         actualizarTexto("[data-gallery-hero-subtitle]", galeria.descripcion || `Fotograf\u00edas de ${evento.titulo}`);
         actualizarTexto("[data-gallery-title]", "GALER\u00cdA DE IM\u00c1GENES");

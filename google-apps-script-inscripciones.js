@@ -9,6 +9,7 @@ const CONFIG = {
         "sabado-29-08-2026": "29-08-2026"
     },
     RESERVATIONS_SHEET_NAME: "Reservas",
+    PAYPAL_HANDLE: "martinlopezmoscoso",
     WEBSITE_URL: "https://www.moscoevents.com",
     LOGO_URL: "https://www.moscoevents.com/images/base%20web/logo-header.webp",
     WHATSAPP_NUMBER: "34698125932",
@@ -33,8 +34,10 @@ const HEADERS = [
     "Normas leidas",
     "Texto legal firmado",
     "Firma URL",
+    "Plazas",
     "Metodo de pago",
     "Importe del pago",
+    "Desglose del pago",
     "Estado del pago",
     "Destino del pago",
     "Enlace de pago"
@@ -78,10 +81,12 @@ function doPost(e) {
         const spreadsheet = getOrCreateSpreadsheet_(folder);
         const sheet = getOrCreateSheet_(spreadsheet, record.evento, record.eventoId);
 
-        if (registrationCount_(sheet) >= CONFIG.MAX_REGISTRATIONS_PER_EVENT) {
+        const capacity = eventCapacity_(record.plazas);
+
+        if (registrationCount_(sheet) >= capacity) {
             return html_(
                 "Partida llena",
-                `La partida ya ha alcanzado el limite de ${CONFIG.MAX_REGISTRATIONS_PER_EVENT} inscripciones. Vuelve al formulario para apuntarte a reservas.`
+                `La partida ya ha alcanzado el limite de ${capacity} inscripciones. Vuelve al formulario para apuntarte a reservas.`
             );
         }
 
@@ -144,11 +149,33 @@ function normalizeRegistration_(payload) {
             "Acepta normas, condiciones de participacion, aviso legal y politica de privacidad de Mosco Events.",
         firmaLegal: value_(payload.firmaLegal),
         pagoMetodo: paymentMethod,
-        pagoImporte: "18.00 €",
-        pagoEstado: "Pendiente de verificacion en PayPal",
-        pagoDestino: "@martinlopezmoscoso",
-        pagoEnlace: "https://paypal.me/martinlopezmoscoso/18EUR"
+        // El importe llega calculado desde el formulario segun la partida
+        // elegida (y el suplemento de alquiler). Nunca es un valor fijo.
+        pagoImporte: value_(payload["Importe del pago"]),
+        pagoDesglose: value_(payload["Desglose del pago"]),
+        pagoEstado: value_(payload["Estado del pago"]) || "Pendiente de verificacion en PayPal",
+        pagoDestino: value_(payload["Destino del pago"]) || `@${CONFIG.PAYPAL_HANDLE}`,
+        pagoEnlace: value_(payload["Enlace de pago"]),
+        plazas: toPositiveInteger_(payload.Plazas)
     };
+}
+
+// Aforo real de la partida. El formulario manda el del evento y aqui se
+// limita al tope global para que nadie pueda ampliarlo manipulando el envio.
+function eventCapacity_(requested) {
+    const capacity = toPositiveInteger_(requested);
+
+    if (!capacity) {
+        return CONFIG.MAX_REGISTRATIONS_PER_EVENT;
+    }
+
+    return Math.min(capacity, CONFIG.MAX_REGISTRATIONS_PER_EVENT);
+}
+
+function toPositiveInteger_(value) {
+    const parsed = parseInt(value_(value), 10);
+
+    return Number.isFinite(parsed) && parsed > 0 ? parsed : 0;
 }
 
 function validateRegistration_(record) {
@@ -185,9 +212,12 @@ function capacityStatusResponse_(params) {
         count = registrationCount_(sheet);
     }
 
+    const capacity = eventCapacity_(params.capacity);
     const payload = {
         eventId: eventId,
-        full: count >= CONFIG.MAX_REGISTRATIONS_PER_EVENT
+        capacity: capacity,
+        count: count,
+        full: count >= capacity
     };
     const content = callback
         ? `${callback}(${JSON.stringify(payload)});`
@@ -240,7 +270,9 @@ function saveReservation_(payload) {
         eventSheetName_(reservation.evento, reservation.eventoId)
     );
 
-    if (registrationCount_(eventSheet) < CONFIG.MAX_REGISTRATIONS_PER_EVENT) {
+    const capacity = eventCapacity_(payload.plazas);
+
+    if (registrationCount_(eventSheet) < capacity) {
         throw new Error("La partida todavia tiene plazas disponibles.");
     }
 
@@ -380,8 +412,10 @@ function buildSheetRow_(record, signatureUrl) {
         safeCell_(record.normasLeidas),
         safeCell_(record.textoLegalFirmado),
         safeCell_(signatureUrl),
+        safeCell_(record.plazas || ""),
         safeCell_(record.pagoMetodo),
         safeCell_(record.pagoImporte),
+        safeCell_(record.pagoDesglose),
         safeCell_(record.pagoEstado),
         safeCell_(record.pagoDestino),
         safeCell_(record.pagoEnlace)
@@ -450,6 +484,7 @@ function buildPlainBody_(record, spreadsheetUrl, signatureUrl, includeAdminLinks
         `Precio: ${record.precio}`,
         `Metodo de pago: ${record.pagoMetodo}`,
         `Importe del pago: ${record.pagoImporte}`,
+        `Desglose del pago: ${record.pagoDesglose || "Sin suplementos"}`,
         `Estado del pago: ${record.pagoEstado}`,
         `Destino del pago: ${record.pagoDestino}`,
         `Enlace de pago: ${record.pagoEnlace || "No aplica"}`,
@@ -492,6 +527,7 @@ function buildHtmlBody_(record, spreadsheetUrl, signatureUrl, includeAdminLinks)
         ["Precio", record.precio],
         ["Metodo de pago", record.pagoMetodo],
         ["Importe del pago", record.pagoImporte],
+        ["Desglose del pago", record.pagoDesglose || "Sin suplementos"],
         ["Estado del pago", record.pagoEstado],
         ["Destino del pago", record.pagoDestino],
         ["Enlace de pago", record.pagoEnlace]
@@ -705,7 +741,7 @@ function html_(title, message) {
                 <main>
                     <h1>${escapeHtml_(title)}</h1>
                     <p>${escapeHtml_(message)}</p>
-                    <p style="margin-top:18px"><a href="https://www.moscoevents.com/registro.html">Volver a inscripciones</a></p>
+                    <p style="margin-top:18px"><a href="https://www.moscoevents.com/registro.html?enviado=1">Volver a inscripciones</a></p>
                 </main>
             </body>
             </html>

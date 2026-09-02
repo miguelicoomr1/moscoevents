@@ -30,16 +30,13 @@
             ubicacion: "Laser Counter - Pedrola",
             participantes: 26,
             horario: "09:00 a 14:30",
-            precio: "18\u20ac por PayPal",
-            pagoUrl: "https://paypal.me/martinlopezmoscoso/18EUR",
+            importe: 18,
             normasUrl: INFO_NORMAS_URL,
             seccion: "anteriores",
-            url: "/Eventos%20anteriores/sabado29082026.html",
             galeria: {
                 activa: true,
                 titulo: "GALER\u00cdA",
                 descripcion: "Fotograf\u00edas de Mosco Events en la PARTIDA del 29-08-2026",
-                url: "/Galeria/galeria-sabado29082026.html",
                 botonListado: "FOTOS EVENTO 29-08-2026 \u2192",
                 mensajeVacio: "a\u00fan no hay fotos",
                 imagenes: []
@@ -59,17 +56,14 @@
             participantes: 26,
             duracion: "6 horas",
             premios: "Sorteos y recompensas especiales",
-            precio: "25\u20ac por PayPal",
-            pagoUrl: "https://paypal.me/martinlopezmoscoso/25EUR",
+            importe: 25,
             inscripcionUrl: "/registro.html?id=operacion-verano-2026",
             normasUrl: INFO_NORMAS_URL,
             seccion: "anteriores",
-            url: "/Eventos%20anteriores/operaci%C3%B3n-verano.html",
             galeria: {
                 activa: true,
                 titulo: "GALER\u00cdA VERANO",
                 descripcion: "Fotograf\u00edas del evento del verano de Mosco Events",
-                url: "/Galeria/galeria-verano.html",
                 botonListado: "FOTOS EVENTO ESPECIAL VERANO \u2192",
                 imagenes: crearGaleria({
                     carpeta: "/images/optimized/evento-verano",
@@ -92,8 +86,7 @@
             ubicacion: "Laser Counter (Pedrola)",
             participantes: 26,
             horario: "10:00 - 15:00",
-            precio: "18\u20ac por PayPal",
-            pagoUrl: "https://paypal.me/martinlopezmoscoso/18EUR",
+            importe: 18,
             inscripcionUrl: "/registro.html?id=domingo-02-08-2026",
             normasUrl: INFO_NORMAS_URL,
             seccion: "anteriores",
@@ -124,8 +117,7 @@
             ubicacion: "Laser Counter (Pedrola)",
             participantes: 20,
             horario: "18:00 - 21:30",
-            precio: "15\u20ac por PayPal",
-            pagoUrl: "https://paypal.me/martinlopezmoscoso/15EUR",
+            importe: 15,
             inscripcionUrl: "/registro.html?id=jueves-30-07-2026",
             normasUrl: INFO_NORMAS_URL,
             seccion: "anteriores",
@@ -155,8 +147,7 @@
             ubicacion: "Laser Counter (Pedrola)",
             participantes: 20,
             duracion: "3 horas",
-            precio: "13\u20ac por PayPal",
-            pagoUrl: "https://paypal.me/martinlopezmoscoso/13EUR",
+            importe: 13,
             inscripcionUrl: "/registro.html?id=jueves-23-07-2026",
             normasUrl: INFO_NORMAS_URL,
             seccion: "anteriores",
@@ -187,8 +178,7 @@
             ubicacion: "Laser Counter (Pedrola)",
             participantes: 20,
             duracion: "3 horas",
-            precio: "13\u20ac por PayPal",
-            pagoUrl: "https://paypal.me/martinlopezmoscoso/13EUR",
+            importe: 13,
             inscripcionUrl: "/registro.html?id=jueves-16-07-2026",
             normasUrl: INFO_NORMAS_URL,
             seccion: "anteriores",
@@ -218,8 +208,7 @@
             ubicacion: "Laser Counter (Pedrola)",
             participantes: 20,
             duracion: "3 horas",
-            precio: "12\u20ac por PayPal",
-            pagoUrl: "https://paypal.me/martinlopezmoscoso/12EUR",
+            importe: 12,
             inscripcionUrl: "/registro.html?id=jueves-09-07-2026",
             normasUrl: INFO_NORMAS_URL,
             seccion: "anteriores",
@@ -288,13 +277,72 @@
         }
     ];
 
+    // Paginas dedicadas ya publicadas. Se mantienen para no romper enlaces
+    // antiguos; su contenido lo genera eventos-dinamicos.js a partir de aqui.
+    const PAGINAS_EVENTO = {
+        "sabado-29-08-2026": "/Eventos%20anteriores/sabado29082026.html",
+        "operacion-verano-2026": "/Eventos%20anteriores/operaci%C3%B3n-verano.html",
+        "domingo-02-08-2026": "/Eventos%20anteriores/domingo02082026.html",
+        "jueves-30-07-2026": "/Eventos%20anteriores/jueves30072026.html",
+        "jueves-23-07-2026": "/Eventos%20anteriores/jueves23072026.html",
+        "jueves-16-07-2026": "/Eventos%20anteriores/jueves16.html",
+        "jueves-09-07-2026": "/Eventos%20anteriores/jueves9.html"
+    };
+
+    const PAGINAS_GALERIA = {
+        "sabado-29-08-2026": "/Galeria/galeria-sabado29082026.html",
+        "operacion-verano-2026": "/Galeria/galeria-verano.html",
+        "domingo-02-08-2026": "/Galeria/galeria-domingo02082026.html",
+        "jueves-30-07-2026": "/Galeria/galeria-jueves30072026.html",
+        "jueves-23-07-2026": "/Galeria/galeria-jueves23072026.html",
+        "jueves-16-07-2026": "/Galeria/galeria-jueves16072026.html",
+        "jueves-09-07-2026": "/Galeria/galeria-jueves09072026.html",
+        "partida-23-05-2026": "/Galeria/23-05-2026.html",
+        "tcsim-16-04-2026": "/Galeria/TCSIM-16-04-2026.html"
+    };
+
+    const PAYPAL_HANDLE = "martinlopezmoscoso";
+
+    function formatearImporte(importe) {
+        return new Intl.NumberFormat("es-ES", {
+            style: "currency",
+            currency: "EUR",
+            minimumFractionDigits: Number.isInteger(importe) ? 0 : 2,
+            maximumFractionDigits: 2
+        }).format(importe);
+    }
+
+    function enlacePaypal(importe) {
+        const cantidad = Number(importe).toFixed(2).replace(/\.00$/, "");
+
+        return `https://paypal.me/${PAYPAL_HANDLE}/${cantidad}EUR`;
+    }
+
     eventos.forEach((evento) => {
-        evento.url = evento.url || `/evento.html?id=${encodeURIComponent(evento.id)}`;
+        // El importe numerico es la unica fuente de verdad del precio:
+        // el texto y el enlace de PayPal se derivan de el.
+        if (typeof evento.importe === "number") {
+            evento.precio = evento.precio || `${formatearImporte(evento.importe)} por PayPal`;
+            evento.pagoUrl = evento.pagoUrl || enlacePaypal(evento.importe);
+        }
+
+        // Aforo de la partida: lo usa el registro para comprobar plazas.
+        evento.plazas = evento.plazas
+            || (typeof evento.participantes === "number" ? evento.participantes : null);
+
+        evento.url = evento.url
+            || PAGINAS_EVENTO[evento.id]
+            || `/evento.html?id=${encodeURIComponent(evento.id)}`;
 
         if (evento.galeria?.activa) {
-            evento.galeria.url = evento.galeria.url || `/galeria-evento.html?id=${encodeURIComponent(evento.id)}`;
+            evento.galeria.url = evento.galeria.url
+                || PAGINAS_GALERIA[evento.id]
+                || `/galeria-evento.html?id=${encodeURIComponent(evento.id)}`;
         }
     });
 
     window.MOSCO_EVENTOS = eventos;
+    window.MOSCO_PAYPAL_HANDLE = PAYPAL_HANDLE;
+    window.MOSCO_FORMATEAR_IMPORTE = formatearImporte;
+    window.MOSCO_ENLACE_PAYPAL = enlacePaypal;
 })();
