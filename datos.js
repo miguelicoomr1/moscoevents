@@ -2,14 +2,15 @@
     const INFO_NORMAS_URL =
         "https://drive.google.com/file/d/16wq9zk_kPDmea1O83lBgBRN1R4EVqurj/view?usp=drive_link";
 
-    function crearGaleria({ carpeta, prefijo, extension, desde = 1, hasta = 0, excluir = [] }) {
+    function crearGaleria({ carpeta, prefijo, extension, desde = 1, hasta = 0, excluir = [], relleno = 0 }) {
         const omitidos = new Set(excluir);
         const carpetaLimpia = carpeta.replace(/\/$/, "");
         const imagenes = [];
 
         for (let numero = desde; numero <= hasta; numero += 1) {
             if (!omitidos.has(numero)) {
-                imagenes.push(encodeURI(`${carpetaLimpia}/${prefijo}${numero}.${extension}`));
+                const numeroArchivo = relleno > 0 ? String(numero).padStart(relleno, "0") : numero;
+                imagenes.push(encodeURI(`${carpetaLimpia}/${prefijo}${numeroArchivo}.${extension}`));
             }
         }
 
@@ -39,7 +40,13 @@
                 descripcion: "Fotograf\u00edas de Mosco Events en la PARTIDA del 29-08-2026",
                 botonListado: "FOTOS EVENTO 29-08-2026 \u2192",
                 mensajeVacio: "a\u00fan no hay fotos",
-                imagenes: []
+                imagenes: crearGaleria({
+                    carpeta: "/images/29-08-2026",
+                    prefijo: "2026-08-29_",
+                    extension: "jpeg",
+                    hasta: 31,
+                    relleno: 3
+                })
             }
         },
         {
