@@ -1,0 +1,11 @@
+{
+  "name": "mosco-events-apps-script",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Herramientas para desplegar google-apps-script-inscripciones.js al proyecto de Google Apps Script con clasp.",
+  "scripts": {
+    "sync": "node sync.js",
+    "push": "npm run sync && clasp push",
+    "deploy": "npm run push && node deploy.js"
+  }
+}

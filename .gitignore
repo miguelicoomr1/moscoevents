@@ -1,1 +1,10 @@
 outputs/
+
+# Herramientas locales de despliegue del Apps Script (clasp).
+# No son secretos, pero son configuracion de esta maquina, no del sitio.
+apps-script/node_modules/
+apps-script/.clasp.json
+apps-script/Código.js
+apps-script/deployment-id.txt
+apps-script/.clasprc.json
+
