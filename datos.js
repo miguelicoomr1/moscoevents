@@ -20,9 +20,9 @@
     const eventos = [
         {
             id: "miercoles-16-09-2026",
-            titulo: "Miércoles 16 de Septiembre",
-            tituloListado: "Miércoles Tarde 16-09-2026",
-            tituloCalendario: "Partida 16-09-2026",
+            titulo: "Privada Miércoles Tarde",
+            tituloListado: "Privada Miércoles Tarde 16-09-2026",
+            tituloCalendario: "Privada Miércoles Tarde 16-09-2026",
             fecha: "2026-09-16",
             fechaTexto: "16 de Septiembre de 2026",
             fechaCorta: "16/09/2026",
