@@ -8,6 +8,11 @@ const CONFIG = {
         "sabado-29-08-2026": "29-08-2026"
     },
     RESERVATIONS_SHEET_NAME: "Reservas",
+    // Partidas privadas que exigen contrasena para inscribirse o reservar.
+    // Debe coincidir con el campo "contrasena" del evento en datos.js.
+    EVENT_PASSWORDS: {
+        "miercoles-16-09-2026": "16sep26"
+    },
     PAYPAL_HANDLE: "martinlopezmoscoso",
     WEBSITE_URL: "https://www.moscoevents.com",
     LOGO_URL: "https://www.moscoevents.com/images/base%20web/logo-header.webp",
@@ -160,8 +165,14 @@ function normalizeRegistration_(payload) {
         // enlace de PayPal con el importe vigente; se revalida aqui por si
         // alguien intenta saltarse la comprobacion del navegador.
         pagoConfirmado: value_(payload.pagoConfirmado),
-        plazas: toPositiveInteger_(payload.Plazas)
+        plazas: toPositiveInteger_(payload.Plazas),
+        contrasenaEvento: value_(payload.contrasenaEvento)
     };
+}
+
+// Contrasena exigida para esta partida, o cadena vacia si es publica.
+function requiredEventPassword_(eventId) {
+    return value_(CONFIG.EVENT_PASSWORDS[value_(eventId)]);
 }
 
 // Aforo real de la partida: el que manda el formulario segun datos.js.
@@ -196,6 +207,12 @@ function validateRegistration_(record) {
     if (record.pagoConfirmado !== "Si") missing.push("Confirmacion de pago en PayPal");
     if (record.normasLeidas !== "Si") missing.push("Normas leidas");
     if (!record.firmaLegal) missing.push("Firma");
+
+    const requiredPassword = requiredEventPassword_(record.eventoId);
+
+    if (requiredPassword && record.contrasenaEvento !== requiredPassword) {
+        missing.push("Contrasena de la partida");
+    }
 
     if (missing.length) {
         throw new Error(`Faltan campos obligatorios: ${missing.join(", ")}`);
@@ -263,6 +280,12 @@ function saveReservation_(payload) {
     if (!reservation.evento) missing.push("Evento");
     if (!reservation.nombre) missing.push("Nombre");
     if (!reservation.telefono) missing.push("Telefono");
+
+    const requiredPassword = requiredEventPassword_(reservation.eventoId);
+
+    if (requiredPassword && value_(payload.contrasenaEvento) !== requiredPassword) {
+        missing.push("Contrasena de la partida");
+    }
 
     if (missing.length) {
         throw new Error(`Faltan campos obligatorios de la reserva: ${missing.join(", ")}`);
