@@ -1124,7 +1124,8 @@ h2::after {
 }
 
 .registration-waitlist[hidden],
-[data-registration-participant][hidden] {
+[data-registration-participant][hidden],
+.registration-event-password[hidden] {
     display: none !important;
 }
 

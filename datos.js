@@ -19,6 +19,97 @@
 
     const eventos = [
         {
+            id: "miercoles-16-09-2026",
+            titulo: "Miércoles 16 de Septiembre",
+            tituloListado: "Miércoles Tarde 16-09-2026",
+            tituloCalendario: "Partida 16-09-2026",
+            fecha: "2026-09-16",
+            fechaTexto: "16 de Septiembre de 2026",
+            fechaCorta: "16/09/2026",
+            subtitulo: "Evento oficial de Mosco Events",
+            resumen: "Laser Counter - Pedrola.",
+            ubicacion: "Laser Counter (Pedrola)",
+            participantes: 26,
+            horario: "18:00 - 21:30",
+            importe: 15,
+            contrasena: "16sep26",
+            inscripcionUrl: "/registro.html?id=miercoles-16-09-2026",
+            normasUrl: INFO_NORMAS_URL,
+            seccion: "proximos",
+            galeria: {
+                activa: true,
+                titulo: "GALERÍA",
+                descripcion: "Fotografías de Mosco Events en la PARTIDA del 16-09-2026",
+                botonListado: "FOTOS EVENTO 16-09-2026 →",
+                mensajeVacio: "aún no hay fotos",
+                imagenes: crearGaleria({
+                    carpeta: "/images/16-09-2026",
+                    prefijo: "16092026 ",
+                    extension: "jpeg"
+                })
+            }
+        },
+        {
+            id: "jueves-17-09-2026",
+            titulo: "Jueves 17 de Septiembre",
+            tituloListado: "Jueves Tarde 17-09-2026",
+            tituloCalendario: "Partida 17-09-2026",
+            fecha: "2026-09-17",
+            fechaTexto: "17 de Septiembre de 2026",
+            fechaCorta: "17/09/2026",
+            subtitulo: "Evento oficial de Mosco Events",
+            resumen: "Laser Counter - Pedrola.",
+            ubicacion: "Laser Counter (Pedrola)",
+            participantes: 26,
+            horario: "18:00 - 21:30",
+            importe: 15,
+            inscripcionUrl: "/registro.html?id=jueves-17-09-2026",
+            normasUrl: INFO_NORMAS_URL,
+            seccion: "proximos",
+            galeria: {
+                activa: true,
+                titulo: "GALERÍA",
+                descripcion: "Fotografías de Mosco Events en la PARTIDA del 17-09-2026",
+                botonListado: "FOTOS EVENTO 17-09-2026 →",
+                mensajeVacio: "aún no hay fotos",
+                imagenes: crearGaleria({
+                    carpeta: "/images/17-09-2026",
+                    prefijo: "17092026 ",
+                    extension: "jpeg"
+                })
+            }
+        },
+        {
+            id: "jueves-10-09-2026",
+            titulo: "Jueves 10 de Septiembre",
+            tituloListado: "Jueves Tarde 10-09-2026",
+            tituloCalendario: "Partida 10-09-2026",
+            fecha: "2026-09-10",
+            fechaTexto: "10 de Septiembre de 2026",
+            fechaCorta: "10/09/2026",
+            subtitulo: "Evento oficial de Mosco Events",
+            resumen: "Laser Counter - Pedrola.",
+            ubicacion: "Laser Counter (Pedrola)",
+            participantes: 26,
+            horario: "18:00 - 21:30",
+            importe: 15,
+            inscripcionUrl: "/registro.html?id=jueves-10-09-2026",
+            normasUrl: INFO_NORMAS_URL,
+            seccion: "proximos",
+            galeria: {
+                activa: true,
+                titulo: "GALERÍA",
+                descripcion: "Fotografías de Mosco Events en la PARTIDA del 10-09-2026",
+                botonListado: "FOTOS EVENTO 10-09-2026 →",
+                mensajeVacio: "aún no hay fotos",
+                imagenes: crearGaleria({
+                    carpeta: "/images/10-09-2026",
+                    prefijo: "10092026 ",
+                    extension: "jpeg"
+                })
+            }
+        },
+        {
             id: "sabado-29-08-2026",
             titulo: "S\u00e1bado 29 de agosto de 2026",
             tituloListado: "S\u00e1bado 29-08-2026",

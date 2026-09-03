@@ -6,6 +6,9 @@
     const signatureError = document.querySelector("[data-signature-error]");
     const eventSelect = document.getElementById("registration-event-select");
     const emptyMessage = document.querySelector("[data-registration-empty]");
+    const passwordField = document.querySelector("[data-registration-password-field]");
+    const passwordInput = document.getElementById("registration-event-password");
+    const passwordError = document.querySelector("[data-registration-password-error]");
     const rulesInput = form?.elements.normasLeidas;
     const rulesError = document.querySelector("[data-rules-error]");
     const submitButton = form?.querySelector('button[type="submit"][data-registration-participant]');
@@ -60,6 +63,9 @@
         !canvas ||
         !signatureInput ||
         !eventSelect ||
+        !passwordField ||
+        !passwordInput ||
+        !passwordError ||
         !rulesInput ||
         !submitButton ||
         !result ||
@@ -257,6 +263,33 @@
         setMailValue(mailFields.paymentTarget, details.destino);
         setMailValue(mailFields.paymentLink, details.enlace);
         setMailValue(mailFields.capacity, selectedEvent?.plazas);
+    }
+
+    // Algunas partidas son privadas y exigen una contrasena para inscribirse.
+    function requiredPassword(evento) {
+        return typeof evento?.contrasena === "string" ? evento.contrasena.trim() : "";
+    }
+
+    function isPasswordValid() {
+        const required = requiredPassword(selectedEvent);
+
+        if (!required) {
+            return true;
+        }
+
+        return String(passwordInput.value || "").trim() === required;
+    }
+
+    function syncPasswordField() {
+        const required = requiredPassword(selectedEvent);
+
+        passwordField.hidden = !required;
+        passwordInput.required = Boolean(required);
+        passwordError.hidden = true;
+
+        if (!required) {
+            passwordInput.value = "";
+        }
     }
 
     function isUpcomingEvent(evento) {
@@ -499,6 +532,7 @@
             element.textContent = value;
         });
 
+        syncPasswordField();
         syncPaypalPayment();
     }
 
@@ -549,6 +583,7 @@
             !selectedEventFull &&
             selectedEvent &&
             requiredFieldsReady &&
+            isPasswordValid() &&
             isPaymentConfirmed() &&
             hasSignature &&
             signatureInput.value
@@ -957,6 +992,9 @@
     });
     form.addEventListener("input", updateSubmitAvailability);
     form.addEventListener("change", updateSubmitAvailability);
+    passwordInput.addEventListener("input", () => {
+        passwordError.hidden = true;
+    });
     eventSelect.addEventListener("change", async () => {
         selectedEvent = upcomingEvents.find((evento) => evento.id === eventSelect.value) || null;
         updateEventSummary(selectedEvent);
@@ -994,6 +1032,12 @@
             return;
         }
 
+        if (!isPasswordValid()) {
+            passwordError.hidden = false;
+            passwordInput.focus();
+            return;
+        }
+
         const invalidControl = [reservationName, reservationPhone]
             .find((control) => !control.checkValidity() || !String(control.value || "").trim());
 
@@ -1025,6 +1069,7 @@
         // Aforo real de esta partida: el backend lo necesita para no rechazar
         // reservas de eventos con menos plazas que el tope global.
         reservationData.set("plazas", String(reservationEvent.plazas || ""));
+        reservationData.set("contrasenaEvento", String(passwordInput.value || ""));
         isSubmittingReservation = true;
         reservationSubmit.disabled = true;
         reservationSubmit.textContent = "ENVIANDO RESERVA...";
@@ -1068,6 +1113,14 @@
             }
 
             rulesInput.focus();
+            form.reportValidity();
+            updateSubmitAvailability();
+            return;
+        }
+
+        if (!isPasswordValid()) {
+            passwordError.hidden = false;
+            passwordInput.focus();
             form.reportValidity();
             updateSubmitAvailability();
             return;
