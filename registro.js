@@ -236,7 +236,12 @@
     // cambia el evento, el alquiler o el aforo, hay que pulsar "PAGAR CON
     // PAYPAL" otra vez antes de poder confirmar el pago.
     function syncPaymentConfirmation() {
-        const currentUrl = paymentButton.getAttribute("href") || "";
+        // Se compara con la URL calculada (no con el atributo href del boton),
+        // que se vacia temporalmente mientras se comprueba el aforo o el
+        // evento aparece lleno. Comparar contra el atributo desmarcaba la
+        // confirmacion de pago ya realizada justo antes de enviar el
+        // formulario, provocando que el backend la rechazase por incompleta.
+        const currentUrl = paypalPaymentUrl();
         const isUnlocked = Boolean(currentUrl) && currentUrl === paypalOpenedForUrl;
 
         paymentConfirmInput.disabled = !isUnlocked;
@@ -1167,6 +1172,18 @@
         if (capacityStatus?.full) {
             setRegistrationFull(true);
             waitlist.scrollIntoView({ behavior: "smooth", block: "start" });
+            return;
+        }
+
+        // La comprobacion de aforo es asincrona y, mientras esperaba,
+        // pudo recalcularse el estado de la confirmacion de pago. Se
+        // vuelve a comprobar aqui para no enviar al backend una
+        // inscripcion que ya no tiene el pago confirmado.
+        if (!isPaymentConfirmed() || !form.checkValidity()) {
+            updateSubmitAvailability();
+            paymentMethodError.hidden = false;
+            paymentButton.scrollIntoView({ behavior: "smooth", block: "center" });
+            form.reportValidity();
             return;
         }
 
