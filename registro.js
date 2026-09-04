@@ -57,6 +57,7 @@
         paymentStatus: document.querySelector("[data-mail-payment-status]"),
         paymentTarget: document.querySelector("[data-mail-payment-target]"),
         paymentLink: document.querySelector("[data-mail-payment-link]"),
+        paymentConfirmed: document.querySelector("[data-mail-payment-confirmed]"),
         capacity: document.querySelector("[data-mail-capacity]"),
         rules: document.querySelector("[data-mail-rules]"),
         legalText: document.querySelector("[data-mail-legal-text]")
@@ -236,6 +237,13 @@
     // cambia el evento, el alquiler o el aforo, hay que pulsar "PAGAR CON
     // PAYPAL" otra vez antes de poder confirmar el pago.
     function syncPaymentConfirmation() {
+        // Con el envio ya en marcha el pago esta validado: volver a
+        // bloquear la casilla aqui solo serviria para vaciar el campo
+        // que se acaba de mandar al backend.
+        if (isSubmitting) {
+            return;
+        }
+
         // Se compara con la URL calculada (no con el atributo href del boton),
         // que se vacia temporalmente mientras se comprueba el aforo o el
         // evento aparece lleno. Comparar contra el atributo desmarcaba la
@@ -271,6 +279,7 @@
         setMailValue(mailFields.paymentStatus, details.estado);
         setMailValue(mailFields.paymentTarget, details.destino);
         setMailValue(mailFields.paymentLink, details.enlace);
+        setMailValue(mailFields.paymentConfirmed, details.confirmado);
         setMailValue(mailFields.capacity, selectedEvent?.plazas);
     }
 
@@ -349,6 +358,39 @@
 
         document.body.appendChild(relay);
         HTMLFormElement.prototype.submit.call(relay);
+    }
+
+    // Envia el formulario con fetch en vez de una navegacion real de pagina.
+    // Es la causa raiz de las inscripciones duplicadas: sin navegacion no
+    // hay reintento de red silencioso ni dialogo nativo de "reenviar
+    // formulario" al volver atras/recargar, y la respuesta llega a esta
+    // misma pagina en vez de esperar a una vuelta con "?enviado=1". Lanza
+    // si la red falla, se agota el tiempo, o la respuesta no es JSON valido
+    // (por ejemplo si "ajax" no llegara a activarse en el backend); quien
+    // llama debe capturarlo y recurrir a submitWithPageNavigation.
+    // El backend real puede tardar 20s+ (Drive + Sheets + dos correos), asi
+    // que el tiempo de espera se deja con margen amplio para no recurrir a
+    // la navegacion de respaldo mientras el envio todavia iba a completarse
+    // por su cuenta.
+    async function submitWithFetch(action, formData, timeoutMs = 45000) {
+        const controller = new AbortController();
+        const timeout = window.setTimeout(() => controller.abort(), timeoutMs);
+
+        try {
+            const body = new URLSearchParams(formData);
+
+            body.set("ajax", "1");
+
+            const response = await fetch(action, {
+                method: "POST",
+                body,
+                signal: controller.signal
+            });
+
+            return await response.json();
+        } finally {
+            window.clearTimeout(timeout);
+        }
     }
 
     function checkEventCapacity(evento) {
@@ -773,6 +815,7 @@
         setMailValue(mailFields.paymentStatus, record.pago.estado);
         setMailValue(mailFields.paymentTarget, record.pago.destino);
         setMailValue(mailFields.paymentLink, record.pago.enlace);
+        setMailValue(mailFields.paymentConfirmed, record.pago.confirmado);
         setMailValue(mailFields.capacity, record.evento.plazas);
         setMailValue(mailFields.rules, record.normasLeidas);
         setMailValue(mailFields.legalText, legalText);
@@ -986,8 +1029,10 @@
         paypalPaymentInput.checked = true;
         syncPaymentMethod();
         // Marca el enlace que se acaba de abrir para poder desbloquear la
-        // casilla de confirmacion con ese mismo importe.
-        paypalOpenedForUrl = paymentButton.getAttribute("href") || "";
+        // casilla de confirmacion con ese mismo importe. Se guarda la URL
+        // calculada y no el atributo href, que queda vacio mientras se
+        // comprueba el aforo o la partida aparece llena.
+        paypalOpenedForUrl = paypalPaymentUrl();
         syncPaymentConfirmation();
         updateSubmitAvailability();
     });
@@ -1092,6 +1137,23 @@
         result.scrollIntoView({ behavior: "smooth", block: "start" });
 
         try {
+            if (appsScriptUrl) {
+                try {
+                    const outcome = await submitWithFetch(submissionAction(), reservationData);
+
+                    if (outcome?.ok) {
+                        renderReservationResult(record);
+                    } else {
+                        renderReservationError(t("registro.reservation.connection_error"));
+                    }
+
+                    return;
+                } catch (fetchError) {
+                    // Fetch fallido (red, tiempo agotado...): se recurre a la
+                    // navegacion real de siempre.
+                }
+            }
+
             submitWithPageNavigation(submissionAction(), reservationData);
             return;
         } catch (error) {
@@ -1187,10 +1249,12 @@
             return;
         }
 
-        updateSubmitAvailability();
-
-        const formData = new FormData(form);
+        // El pago se fotografia nada mas validarlo, antes de volver a
+        // repintar la interfaz, para que el comprobante y el envio usen
+        // el estado que acaba de aprobarse.
         const paymentMethod = selectedPaymentMethod();
+        const payment = paymentDetails(paymentMethod);
+        const formData = new FormData(form);
         const now = new Date();
 
         const record = {
@@ -1214,7 +1278,7 @@
             },
             consentimientoImagenes: formData.get("consentimientoImagenes"),
             normasLeidas: formData.get("normasLeidas"),
-            pago: paymentDetails(paymentMethod),
+            pago: payment,
             textoLegalFirmado:
                 "Acepta normas, condiciones de participacion, aviso legal y politica de privacidad de Mosco Events.",
             firmaLegal: signatureInput.value
@@ -1222,13 +1286,60 @@
 
         prepareMailFields(record);
         configureSubmissionTarget();
+
+        // Los datos que viajan al backend se congelan aqui, con el pago ya
+        // validado. Antes el FormData se reconstruia despues de repintar la
+        // interfaz, asi que cualquier recalculo posterior (aforo, foco,
+        // idioma...) podia bloquear la casilla y dejar la inscripcion sin
+        // "pagoConfirmado", que es justo lo que el backend rechaza.
+        const targetAction = form.action;
+        const submissionData = new FormData(form);
+
+        submissionData.set("Metodo de pago", record.pago.metodo);
+        submissionData.set("Importe del pago", record.pago.importe);
+        submissionData.set("Desglose del pago", record.pago.desglose);
+        submissionData.set("Estado del pago", record.pago.estado);
+        submissionData.set("Destino del pago", record.pago.destino);
+        submissionData.set("Enlace de pago", record.pago.enlace);
+        submissionData.set("pagoConfirmado", record.pago.confirmado);
+
         isSubmitting = true;
         renderSending(record);
         updateSubmitAvailability();
 
         try {
             storeReference(record.referencia, record);
-            submitWithPageNavigation(form.action, new FormData(form));
+
+            if (appsScriptUrl) {
+                try {
+                    const outcome = await submitWithFetch(targetAction, submissionData);
+
+                    if (outcome?.ok) {
+                        isSubmitting = false;
+                        forgetReference();
+                        renderResult(record);
+                        updateSubmitAvailability();
+                    } else if (outcome?.code === "full") {
+                        isSubmitting = false;
+                        result.hidden = true;
+                        result.classList.remove("is-sending");
+                        setRegistrationFull(true);
+                        waitlist.scrollIntoView({ behavior: "smooth", block: "start" });
+                    } else {
+                        showSubmissionDelay();
+                    }
+
+                    return;
+                } catch (fetchError) {
+                    // Fetch fallido (red, tiempo agotado, respuesta no JSON):
+                    // se recurre a la navegacion real de siempre. isSubmitting
+                    // se queda a true porque la pagina va a navegar; si el
+                    // backend ya habia recibido el intento anterior, la
+                    // referencia identica evita que se duplique la inscripcion.
+                }
+            }
+
+            submitWithPageNavigation(targetAction, submissionData);
             return;
         } catch (error) {
             showSubmissionDelay(t("registro.delay.connection_error"));

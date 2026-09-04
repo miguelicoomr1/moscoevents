@@ -68,14 +68,16 @@ function doGet(e) {
 
 function doPost(e) {
     const lock = LockService.getScriptLock();
+    const payload = e && e.parameter ? e.parameter : {};
+    // El formulario envia esto via fetch() cuando quiere una respuesta en
+    // JSON en vez de la pagina HTML pensada para una navegacion real.
+    const wantsJson = value_(payload.ajax) === "1";
 
     try {
         lock.waitLock(30000);
 
-        const payload = e && e.parameter ? e.parameter : {};
-
         if (value_(payload.tipoRegistro) === "Reserva") {
-            return saveReservation_(payload);
+            return saveReservation_(payload, wantsJson);
         }
 
         const record = normalizeRegistration_(payload);
@@ -86,12 +88,25 @@ function doPost(e) {
         const spreadsheet = getOrCreateSpreadsheet_(folder);
         const sheet = getOrCreateSheet_(spreadsheet, record.evento, record.eventoId);
 
+        // El navegador puede reenviar el mismo POST (boton "Reintentar envio"
+        // tras una respuesta lenta, reintento de red, doble navegacion hacia
+        // atras/adelante). La referencia se genera una sola vez por intento
+        // de envio, asi que si ya existe una fila con esta referencia en la
+        // partida, se trata como la misma inscripcion y no se duplica.
+        if (referenceExists_(sheet, record.referencia)) {
+            return respond_(
+                wantsJson, true, "Inscripcion recibida",
+                "La inscripcion se ha registrado correctamente. Se ha enviado una copia al correo indicado."
+            );
+        }
+
         const capacity = eventCapacity_(record.plazas);
 
         if (isEventFull_(registrationCount_(sheet), capacity)) {
-            return html_(
-                "Partida llena",
-                `La partida ya ha alcanzado el limite de ${capacity} inscripciones. Vuelve al formulario para apuntarte a reservas.`
+            return respond_(
+                wantsJson, false, "Partida llena",
+                `La partida ya ha alcanzado el limite de ${capacity} inscripciones. Vuelve al formulario para apuntarte a reservas.`,
+                "full"
             );
         }
 
@@ -109,8 +124,8 @@ function doPost(e) {
             notifyError_(mailError, e);
         }
 
-        return html_(
-            "Inscripcion recibida",
+        return respond_(
+            wantsJson, true, "Inscripcion recibida",
             emailsSent
                 ? "La inscripcion se ha registrado correctamente. Se ha enviado una copia al correo indicado."
                 : "La inscripcion se ha registrado correctamente. Mosco Events revisara el envio de correo."
@@ -118,8 +133,8 @@ function doPost(e) {
     } catch (error) {
         notifyError_(error, e);
 
-        return html_(
-            "No se ha podido registrar",
+        return respond_(
+            wantsJson, false, "No se ha podido registrar",
             "Ha habido un problema al guardar la inscripcion. Contacta con Mosco Events para confirmarla."
         );
     } finally {
@@ -129,6 +144,24 @@ function doPost(e) {
             console.error(lockError);
         }
     }
+}
+
+// Devuelve JSON (para el envio por fetch) o la pagina HTML de siempre (para
+// la navegacion real, usada como respaldo si el fetch falla).
+function respond_(wantsJson, ok, title, message, code) {
+    if (wantsJson) {
+        const body = { ok: ok, title: title, message: message };
+
+        if (code) {
+            body.code = code;
+        }
+
+        return ContentService
+            .createTextOutput(JSON.stringify(body))
+            .setMimeType(ContentService.MimeType.JSON);
+    }
+
+    return html_(title, message);
 }
 
 function normalizeRegistration_(payload) {
@@ -149,7 +182,9 @@ function normalizeRegistration_(payload) {
         telefono: value_(payload.telefono),
         correo: value_(payload.email || payload._replyto),
         consentimientoImagenes: value_(payload.consentimientoImagenes),
-        normasLeidas: value_(payload.normasLeidas || payload["Normas leidas y aceptadas"]),
+        normasLeidas: affirmative_(payload.normasLeidas || payload["Normas leidas y aceptadas"])
+            ? "Si"
+            : "No",
         textoLegalFirmado: value_(payload["Texto legal firmado"]) ||
             "Acepta normas, condiciones de participacion, aviso legal y politica de privacidad de Mosco Events.",
         firmaLegal: value_(payload.firmaLegal),
@@ -164,7 +199,7 @@ function normalizeRegistration_(payload) {
         // El formulario solo deja marcar esta casilla despues de abrir el
         // enlace de PayPal con el importe vigente; se revalida aqui por si
         // alguien intenta saltarse la comprobacion del navegador.
-        pagoConfirmado: value_(payload.pagoConfirmado),
+        pagoConfirmado: affirmative_(payload.pagoConfirmado) ? "Si" : "No",
         plazas: toPositiveInteger_(payload.Plazas),
         contrasenaEvento: value_(payload.contrasenaEvento)
     };
@@ -266,7 +301,24 @@ function registrationCount_(sheet) {
     return Math.max(0, sheet.getLastRow() - 1);
 }
 
-function saveReservation_(payload) {
+function referenceExists_(sheet, referencia) {
+    if (!sheet || !referencia) {
+        return false;
+    }
+
+    const lastRow = sheet.getLastRow();
+
+    if (lastRow < 2) {
+        return false;
+    }
+
+    const refCol = HEADERS.indexOf("Referencia") + 1;
+    const values = sheet.getRange(2, refCol, lastRow - 1, 1).getValues();
+
+    return values.some((row) => String(row[0]).trim() === referencia);
+}
+
+function saveReservation_(payload, wantsJson) {
     const reservation = {
         fechaRegistro: new Date(),
         eventoId: value_(payload.eventoId),
@@ -318,8 +370,8 @@ function saveReservation_(payload) {
     ]);
     reservationSheet.autoResizeColumns(1, RESERVATION_HEADERS.length);
 
-    return html_(
-        "Reserva recibida",
+    return respond_(
+        wantsJson, true, "Reserva recibida",
         "Te hemos anadido a la lista de reservas. Contactaremos contigo si podemos confirmar tu participacion."
     );
 }
@@ -795,6 +847,13 @@ function eventSheetName_(eventName, eventId) {
 
 function value_(value) {
     return String(value || "").trim();
+}
+
+// Las casillas del formulario mandan "Si", pero se aceptan tambien las
+// variantes que puede generar el navegador o un idioma distinto para no
+// rechazar una inscripcion ya pagada por un detalle de formato.
+function affirmative_(value) {
+    return /^(si|sí|sim|yes|y|true|on|1)$/i.test(value_(value));
 }
 
 function paymentAmount_(value) {

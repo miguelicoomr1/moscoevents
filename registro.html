@@ -174,6 +174,7 @@
                 <input type="hidden" name="Estado del pago" data-mail-payment-status>
                 <input type="hidden" name="Destino del pago" data-mail-payment-target>
                 <input type="hidden" name="Enlace de pago" data-mail-payment-link>
+                <input type="hidden" name="pagoConfirmado" data-mail-payment-confirmed>
                 <input type="hidden" name="Plazas" data-mail-capacity>
                 <input type="hidden" name="Normas leidas y aceptadas" data-mail-rules>
                 <input type="hidden" name="Texto legal firmado" data-mail-legal-text>
@@ -441,9 +442,11 @@
                             </p>
 
                             <label class="registration-payment-confirm" data-payment-confirm>
+                                <!-- Casilla solo de interfaz: el valor que viaja al backend
+                                     es el campo oculto "pagoConfirmado", que no desaparece
+                                     del envio aunque la casilla se bloquee. -->
                                 <input
                                     type="checkbox"
-                                    name="pagoConfirmado"
                                     value="Si"
                                     id="payment-confirmed"
                                     required
@@ -533,7 +536,7 @@
 
 <script src="/datos.js?v=23"></script>
 <script src="/inscripciones-config.js?v=2"></script>
-<script src="/registro.js?v=28"></script>
+<script src="/registro.js?v=29"></script>
 
 </body>
 </html>
