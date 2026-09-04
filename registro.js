@@ -1,4 +1,8 @@
 (function () {
+    function t(key, vars) {
+        return window.MoscoI18n ? window.MoscoI18n.t(key, vars) : key;
+    }
+
     const form = document.getElementById("registration-form");
     const canvas = document.getElementById("signature-canvas");
     const clearButton = document.getElementById("clear-signature");
@@ -110,7 +114,7 @@
     const RENTAL_SURCHARGE = 20;
 
     function formatPaymentAmount(amount) {
-        return new Intl.NumberFormat("es-ES", {
+        return new Intl.NumberFormat(window.MoscoI18n?.getLocale() || "es-ES", {
             style: "currency",
             currency: "EUR",
             minimumFractionDigits: 2,
@@ -161,8 +165,8 @@
                 importe: amount,
                 desglose: breakdown,
                 estado: isPaymentConfirmed()
-                    ? "Confirmado por el participante (pendiente de verificación manual en PayPal)"
-                    : "Pendiente de confirmar el pago en PayPal",
+                    ? t("registro.payment.status_confirmed")
+                    : t("registro.payment.status_pending_paypal"),
                 destino: `@${paypalHandle}`,
                 enlace: paypalPaymentUrl(),
                 confirmado: isPaymentConfirmed() ? "Si" : "No"
@@ -174,8 +178,8 @@
             importe: amount,
             desglose: breakdown,
             estado: value
-                ? "Pendiente de seleccionar método de pago"
-                : "Pendiente de seleccionar partida",
+                ? t("registro.payment.status_pending_method")
+                : t("registro.payment.status_pending_event"),
             destino: "",
             enlace: "",
             confirmado: "No"
@@ -203,23 +207,23 @@
 
         if (!hasEvent) {
             paymentButton.removeAttribute("href");
-            paymentButtonLabel.textContent = "SELECCIONA UNA PARTIDA";
+            paymentButtonLabel.textContent = t("registro.payment.select_event");
         } else if (selectedEventFull) {
             paymentButton.removeAttribute("href");
-            paymentButtonLabel.textContent = "PARTIDA LLENA";
+            paymentButtonLabel.textContent = t("registro.payment.event_full");
         } else if (capacityChecking) {
             paymentButton.removeAttribute("href");
-            paymentButtonLabel.textContent = "COMPROBANDO DISPONIBILIDAD...";
+            paymentButtonLabel.textContent = t("registro.payment.checking");
         } else {
             const paymentUrl = paypalPaymentUrl();
             const amount = paymentAmount();
 
             if (paymentUrl) {
                 paymentButton.href = paymentUrl;
-                paymentButtonLabel.textContent = `PAGAR ${formatPaymentAmount(amount)} CON PAYPAL`;
+                paymentButtonLabel.textContent = t("registro.payment.pay_with_paypal", { amount: formatPaymentAmount(amount) });
             } else {
                 paymentButton.removeAttribute("href");
-                paymentButtonLabel.textContent = "PRECIO POR CONFIRMAR";
+                paymentButtonLabel.textContent = t("registro.payment.price_pending");
             }
         }
 
@@ -494,8 +498,8 @@
     function eventDetails(evento) {
         return {
             id: evento?.id || "",
-            titulo: evento?.titulo || "Selecciona una partida",
-            fechaTexto: evento?.fechaTexto || "Pendiente de seleccionar",
+            titulo: evento?.titulo || t("registro.summary.select_placeholder"),
+            fechaTexto: evento?.fechaTexto || t("registro.summary.date_pending"),
             ubicacion: evento?.ubicacion || "-",
             horario: evento?.horario || "-",
             participantes: evento?.participantes || "-",
@@ -593,10 +597,10 @@
         submitButton.setAttribute("aria-disabled", String(!canSubmit));
         submitButton.classList.toggle("is-disabled", !canSubmit);
         submitButton.textContent = isSubmitting
-            ? "ENVIANDO..."
+            ? t("registro.submit.sending")
             : capacityChecking
-                ? "COMPROBANDO DISPONIBILIDAD..."
-                : "ENVIAR INSCRIPCIÓN";
+                ? t("registro.payment.checking")
+                : t("registro.submit.default");
 
         if (rulesInput.checked && rulesError) {
             rulesError.hidden = true;
@@ -786,10 +790,10 @@
         const title = document.createElement("h2");
         const message = document.createElement("p");
 
-        title.textContent = "Inscripción enviada";
+        title.textContent = t("registro.sent.title");
         message.textContent = saved?.referencia
-            ? `Hemos recibido la inscripción. Referencia: ${saved.referencia}.`
-            : "Hemos recibido la inscripción correctamente.";
+            ? t("registro.sent.with_ref", { ref: saved.referencia })
+            : t("registro.sent.generic");
         result.replaceChildren(title, message);
         result.hidden = false;
         forgetReference();
@@ -797,24 +801,24 @@
 
     function receiptData(record) {
         return [
-            ["Referencia", record.referencia],
-            ["Evento", record.evento.titulo],
-            ["Fecha", record.evento.fecha],
-            ["Ubicación", record.evento.ubicacion],
-            ["Horario", record.evento.horario],
-            ["Precio", record.evento.precio],
-            ["Método de pago", record.pago.metodo],
-            ["Importe del pago", record.pago.importe],
-            ["Desglose del pago", record.pago.desglose],
-            ["Estado del pago", record.pago.estado],
-            ["Nombre", record.participante.nombre],
-            ["Equipo", record.participante.equipo],
-            ["Equipamiento", record.participante.equipamiento],
-            ["Teléfono", record.participante.telefono],
-            ["Correo electrónico", record.participante.correo],
-            ["Consentimiento de imágenes", record.consentimientoImagenes],
-            ["Normas leídas", record.normasLeidas],
-            ["Fecha de firma", record.fechaFirma]
+            [t("registro.receipt.reference"), record.referencia],
+            [t("registro.receipt.event"), record.evento.titulo],
+            [t("registro.receipt.date"), record.evento.fecha],
+            [t("registro.receipt.location"), record.evento.ubicacion],
+            [t("registro.receipt.schedule"), record.evento.horario],
+            [t("registro.receipt.price"), record.evento.precio],
+            [t("registro.receipt.payment_method"), record.pago.metodo],
+            [t("registro.receipt.payment_amount"), record.pago.importe],
+            [t("registro.receipt.payment_breakdown"), record.pago.desglose],
+            [t("registro.receipt.payment_status"), record.pago.estado],
+            [t("registro.receipt.name"), record.participante.nombre],
+            [t("registro.receipt.team"), record.participante.equipo],
+            [t("registro.receipt.equipment"), record.participante.equipamiento],
+            [t("registro.receipt.phone"), record.participante.telefono],
+            [t("registro.receipt.email"), record.participante.correo],
+            [t("registro.receipt.image_consent"), record.consentimientoImagenes],
+            [t("registro.receipt.rules_read"), record.normasLeidas],
+            [t("registro.receipt.signature_date"), record.fechaFirma]
         ];
     }
 
@@ -834,14 +838,14 @@
             ))
             .join("");
         const signature = String(record.firmaLegal || "").startsWith("data:image/png;base64,")
-            ? `<img src="${record.firmaLegal}" alt="Firma del participante">`
+            ? `<img src="${record.firmaLegal}" alt="${escapeHtml(t("registro.signature_alt"))}">`
             : "";
         const receipt = `<!doctype html>
-<html lang="es">
+<html lang="${window.MoscoI18n?.getLanguage() || "es"}">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Comprobante ${escapeHtml(record.referencia)}</title>
+    <title>${escapeHtml(t("registro.download.title", { ref: record.referencia }))}</title>
     <style>
         body{margin:0;padding:32px;background:#10150f;color:#f4efe4;font:16px Arial,sans-serif}
         main{max-width:760px;margin:auto;padding:28px;border:1px solid #d7c08b;background:#171d16}
@@ -853,8 +857,8 @@
 </head>
 <body>
     <main>
-        <h1>Comprobante de inscripción</h1>
-        <p>Conserva este documento como justificante de tu registro en Mosco Events.</p>
+        <h1>${escapeHtml(t("registro.download.heading"))}</h1>
+        <p>${escapeHtml(t("registro.download.intro"))}</p>
         <table>${rows}</table>
         ${signature}
     </main>
@@ -877,8 +881,8 @@
         const title = document.createElement("h2");
         const message = document.createElement("p");
 
-        title.textContent = "Enviando";
-        message.textContent = `Estamos registrando tu inscripción para ${record.evento.titulo}. No cierres esta página.`;
+        title.textContent = t("registro.sending.title");
+        message.textContent = t("registro.sending.message", { event: record.evento.titulo });
         result.replaceChildren(title, message);
         result.classList.add("is-sending");
         result.hidden = false;
@@ -892,18 +896,18 @@
         const signature = document.createElement("img");
         const download = document.createElement("button");
 
-        title.textContent = "Inscripción registrada";
-        intro.textContent = `Tu registro se ha enviado correctamente. Referencia: ${record.referencia}`;
+        title.textContent = t("registro.result.title");
+        intro.textContent = t("registro.result.intro", { ref: record.referencia });
         data.className = "registration-receipt";
         signature.className = "signature-preview";
-        signature.alt = "Firma del participante";
+        signature.alt = t("registro.signature_alt");
         signature.src = record.firmaLegal;
 
         receiptData(record).forEach(([label, value]) => data.appendChild(createRow(label, value)));
 
         download.className = "btn registration-secondary";
         download.type = "button";
-        download.textContent = "DESCARGAR COMPROBANTE";
+        download.textContent = t("registro.result.download_button");
         download.addEventListener("click", () => downloadRegistration(record));
 
         result.replaceChildren(title, intro, data, signature, download);
@@ -921,10 +925,8 @@
         const message = document.createElement("p");
 
         isSubmitting = false;
-        title.textContent = "No se ha podido confirmar el envío";
-        message.textContent =
-            customMessage ||
-            "La respuesta está tardando más de lo esperado. Antes de repetir la inscripción, contacta con Mosco Events para comprobarla.";
+        title.textContent = t("registro.delay.title");
+        message.textContent = customMessage || t("registro.delay.message");
         result.replaceChildren(title, message);
         result.classList.remove("is-sending");
         result.hidden = false;
@@ -936,14 +938,13 @@
         const message = document.createElement("p");
         const details = document.createElement("dl");
 
-        title.textContent = "Reserva registrada";
-        message.textContent =
-            "Te hemos añadido a la lista de reservas. Te contactaremos si podemos confirmar tu participación.";
+        title.textContent = t("registro.reservation_result.title");
+        message.textContent = t("registro.reservation_result.message");
         details.className = "registration-receipt";
-        details.appendChild(createRow("Evento", record.evento));
-        details.appendChild(createRow("Nombre", record.nombre));
-        details.appendChild(createRow("Teléfono", record.telefono));
-        details.appendChild(createRow("Fecha y hora", record.fechaHora));
+        details.appendChild(createRow(t("registro.receipt.event"), record.evento));
+        details.appendChild(createRow(t("registro.receipt.name"), record.nombre));
+        details.appendChild(createRow(t("registro.receipt.phone"), record.telefono));
+        details.appendChild(createRow(t("registro.receipt.datetime"), record.fechaHora));
 
         result.replaceChildren(title, message, details);
         result.classList.remove("is-sending");
@@ -955,7 +956,7 @@
         const title = document.createElement("h2");
         const message = document.createElement("p");
 
-        title.textContent = "No se ha podido guardar la reserva";
+        title.textContent = t("registro.reservation_error.title");
         message.textContent = messageText;
         result.replaceChildren(title, message);
         result.classList.remove("is-sending");
@@ -1053,7 +1054,7 @@
             evento: reservationEvent.titulo,
             nombre: String(reservationName.value || "").trim(),
             telefono: String(reservationPhone.value || "").trim(),
-            fechaHora: submittedAt.toLocaleString("es-ES")
+            fechaHora: submittedAt.toLocaleString(window.MoscoI18n?.getLocale() || "es-ES")
         };
         const reservationData = new FormData();
 
@@ -1072,14 +1073,14 @@
         reservationData.set("contrasenaEvento", String(passwordInput.value || ""));
         isSubmittingReservation = true;
         reservationSubmit.disabled = true;
-        reservationSubmit.textContent = "ENVIANDO RESERVA...";
+        reservationSubmit.textContent = t("registro.reservation.sending_button");
         eventSelect.disabled = true;
 
         const title = document.createElement("h2");
         const message = document.createElement("p");
 
-        title.textContent = "Enviando reserva";
-        message.textContent = "Estamos guardando tus datos en la lista de reservas.";
+        title.textContent = t("registro.reservation.sending_title");
+        message.textContent = t("registro.reservation.sending_message");
         result.replaceChildren(title, message);
         result.classList.add("is-sending");
         result.hidden = false;
@@ -1089,13 +1090,11 @@
             submitWithPageNavigation(submissionAction(), reservationData);
             return;
         } catch (error) {
-            renderReservationError(
-                "No se ha podido conectar con el sistema de reservas. Comprueba tu conexión e inténtalo de nuevo."
-            );
+            renderReservationError(t("registro.reservation.connection_error"));
         } finally {
             isSubmittingReservation = false;
             reservationSubmit.disabled = false;
-            reservationSubmit.textContent = "APUNTARME A RESERVAS";
+            reservationSubmit.textContent = t("registro.reservation.submit_button");
             eventSelect.disabled = !upcomingEvents.length;
         }
     });
@@ -1179,7 +1178,7 @@
 
         const record = {
             referencia: `MOSCO-${now.getTime().toString(36).toUpperCase()}`,
-            fechaFirma: now.toLocaleString("es-ES"),
+            fechaFirma: now.toLocaleString(window.MoscoI18n?.getLocale() || "es-ES"),
             evento: {
                 id: selectedEvent.id,
                 titulo: selectedEvent.titulo,
@@ -1215,9 +1214,26 @@
             submitWithPageNavigation(form.action, new FormData(form));
             return;
         } catch (error) {
-            showSubmissionDelay("No se ha podido conectar con el sistema de inscripciones. Comprueba tu conexión e inténtalo de nuevo.");
+            showSubmissionDelay(t("registro.delay.connection_error"));
         }
     });
 
     configureSubmissionTarget();
+
+    window.addEventListener("mosco:langchange", () => {
+        Array.from(eventSelect.options).forEach((option, index) => {
+            if (index === 0) {
+                return;
+            }
+
+            const evento = upcomingEvents.find((item) => item.id === option.value);
+
+            if (evento) {
+                option.textContent = formatEventLabel(evento);
+            }
+        });
+
+        updateEventSummary(selectedEvent);
+        updateSubmitAvailability();
+    });
 })();

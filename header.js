@@ -15,6 +15,7 @@
                 id="menu-toggle"
                 type="button"
                 aria-label="Abrir men\u00FA"
+                data-i18n-attr-aria-label="nav.open_menu"
                 aria-expanded="false"
                 aria-controls="menu"
             >
@@ -22,36 +23,36 @@
             </button>
 
             <nav id="menu">
-                <a href="/index.html">Inicio</a>
+                <a href="/index.html" data-i18n="nav.inicio">Inicio</a>
 
                 <div class="dropdown">
                     <button
                         class="dropbtn"
                         type="button"
                     >
-                        Eventos \u25BE
+                        <span data-i18n="nav.eventos">Eventos</span> \u25BE
                     </button>
 
                     <div class="dropdown-content">
-                        <a href="/Calendario/calendario.html">
+                        <a href="/Calendario/calendario.html" data-i18n="nav.calendario">
                             \uD83D\uDCC5\uFE0F Calendario
                         </a>
 
-                        <a href="/Proximos%20Eventos/proximos-eventos.html">
+                        <a href="/Proximos%20Eventos/proximos-eventos.html" data-i18n="nav.proximos">
                             \uD83D\uDD1C Pr\u00F3ximos Eventos
                         </a>
 
-                        <a href="/registro.html">
+                        <a href="/registro.html" data-i18n="nav.inscripciones">
                             \uD83D\uDCDD Inscripciones
                         </a>
 
-                        <a href="/Eventos%20anteriores/eventos-anteriores.html">
+                        <a href="/Eventos%20anteriores/eventos-anteriores.html" data-i18n="nav.anteriores">
                             \uD83D\uDD19 Eventos Anteriores
                         </a>
                     </div>
                 </div>
 
-                <a href="/Galeria/galeria.html">
+                <a href="/Galeria/galeria.html" data-i18n="nav.galeria">
                     Galer\u00EDa
                 </a>
 
@@ -60,21 +61,37 @@
                         class="dropbtn"
                         type="button"
                     >
-                        Informaci\u00F3n \u25BE
+                        <span data-i18n="nav.informacion">Informaci\u00F3n</span> \u25BE
                     </button>
 
                     <div class="dropdown-content">
-                        <a href="/normas.html">
+                        <a href="/normas.html" data-i18n="nav.normas">
                             \uD83D\uDCDC Normas
                         </a>
 
-                        <a href="/contacto.html">
+                        <a href="/contacto.html" data-i18n="nav.contacto">
                             \uD83D\uDCDE Contacto
                         </a>
 
-                        <a href="/legales-mosco-events.html">
+                        <a href="/legales-mosco-events.html" data-i18n="nav.legal">
                             \u2696\uFE0F Informaci\u00F3n legal
                         </a>
+                    </div>
+                </div>
+
+                <div class="dropdown">
+                    <button
+                        class="dropbtn"
+                        type="button"
+                    >
+                        \uD83C\uDF10 <span data-lang-current>ES</span> \u25BE
+                    </button>
+
+                    <div class="dropdown-content">
+                        <a href="#" data-lang="es">Espa\u00F1ol</a>
+                        <a href="#" data-lang="en">English</a>
+                        <a href="#" data-lang="fr">Fran\u00E7ais</a>
+                        <a href="#" data-lang="ca">Catal\u00E0</a>
                     </div>
                 </div>
             </nav>

@@ -1,4 +1,24 @@
 (function () {
+    function t(key, vars) {
+        return window.MoscoI18n ? window.MoscoI18n.t(key, vars) : key;
+    }
+
+    function formatearFechaLarga(evento) {
+        if (!evento.fecha) {
+            return evento.fechaTexto;
+        }
+
+        const fecha = new Date(`${evento.fecha}T00:00:00`);
+
+        if (Number.isNaN(fecha.getTime())) {
+            return evento.fechaTexto;
+        }
+
+        const locale = window.MoscoI18n?.getLocale() || "es-ES";
+
+        return new Intl.DateTimeFormat(locale, { day: "numeric", month: "long", year: "numeric" }).format(fecha);
+    }
+
     const eventos = Array.isArray(window.MOSCO_EVENTOS) ? window.MOSCO_EVENTOS : [];
     const eventosPorId = new Map(eventos.map((evento) => [evento.id, evento]));
     const GALLERY_PLACEHOLDER_SRC =
@@ -64,18 +84,18 @@
         return crearEnlace(
             href,
             "btn",
-            "INSCRIBIRSE"
+            t("eventos.register_button")
         );
     }
 
     function textoBotonEvento(evento) {
-        return evento.botonEvento || `VER EVENTO ${evento.fechaCorta}`;
+        return evento.botonEvento || t("eventos.view_event_button", { fecha: evento.fechaCorta });
     }
 
     function crearTarjetaEvento(evento) {
         const tarjeta = crearElemento("div", "card");
         const titulo = crearElemento("h2", "", evento.tituloListado || evento.titulo);
-        const resumen = crearElemento("p", "", evento.resumen || "Evento oficial de Mosco Events");
+        const resumen = crearElemento("p", "", evento.resumen || t("eventos.default_summary"));
         const enlace = crearEnlace(evento.url, "btn", textoBotonEvento(evento));
 
         tarjeta.append(titulo, resumen, enlace);
@@ -94,7 +114,7 @@
 
             if (!ordenada.length) {
                 const aviso = crearElemento("div", "card event-empty");
-                aviso.appendChild(crearElemento("p", "", "No hay eventos para mostrar."));
+                aviso.appendChild(crearElemento("p", "", t("eventos.empty_list")));
                 contenedor.replaceChildren(aviso);
                 return;
             }
@@ -111,12 +131,12 @@
                 .map((evento) => crearEnlace(
                     evento.galeria.url,
                     "galeria-btn",
-                    evento.galeria.botonListado || `FOTOS EVENTO ${evento.fechaCorta} \u2192`
+                    evento.galeria.botonListado || t("eventos.gallery_button", { fecha: evento.fechaCorta })
                 ));
 
             if (!enlaces.length) {
                 const aviso = crearElemento("div", "card event-empty");
-                aviso.appendChild(crearElemento("p", "", "No hay galer\u00edas para mostrar."));
+                aviso.appendChild(crearElemento("p", "", t("eventos.empty_gallery_list")));
                 contenedor.replaceChildren(aviso);
                 return;
             }
@@ -153,7 +173,9 @@
         const ampliada = obtenerImagenAmpliada(src);
 
         imagen.className = "zoomable";
-        imagen.alt = titulo ? `Foto ${index + 1} - ${titulo}` : `Foto ${index + 1}`;
+        imagen.alt = titulo
+            ? t("common.photo_alt_with_title", { n: index + 1, title: titulo })
+            : t("common.photo_alt", { n: index + 1 });
         imagen.loading = "lazy";
         imagen.decoding = "async";
         imagen.fetchPriority = "low";
@@ -307,7 +329,7 @@
         }
 
         const parrafo = crearElemento("p");
-        const fuerte = crearElemento("strong", "", "Precio partida: ");
+        const fuerte = crearElemento("strong", "", `${t("eventos.detail.price")} `);
 
         parrafo.appendChild(fuerte);
 
@@ -325,12 +347,12 @@
 
     function detallesEvento(evento) {
         return [
-            crearDetalle("Ubicaci\u00f3n", evento.ubicacion),
-            crearDetalle("Fecha", evento.fechaTexto),
-            crearDetalle("Participantes", evento.participantes),
-            crearDetalle("Horario", evento.horario),
-            crearDetalle("Duraci\u00f3n", evento.duracion),
-            crearDetalle("Premios", evento.premios),
+            crearDetalle(t("eventos.detail.location"), evento.ubicacion),
+            crearDetalle(t("eventos.detail.date"), formatearFechaLarga(evento)),
+            crearDetalle(t("eventos.detail.participants"), evento.participantes),
+            crearDetalle(t("eventos.detail.schedule"), evento.horario),
+            crearDetalle(t("eventos.detail.duration"), evento.duracion),
+            crearDetalle(t("eventos.detail.prizes"), evento.premios),
             crearDetallePago(evento)
         ].filter(Boolean);
     }
@@ -344,10 +366,10 @@
         cuentaAtras.dataset.countdownDate = evento.fechaHora;
 
         [
-            ["dias", "D\u00cdAS"],
-            ["horas", "HORAS"],
-            ["minutos", "MINUTOS"],
-            ["segundos", "SEGUNDOS"]
+            ["dias", t("eventos.countdown.days")],
+            ["horas", t("eventos.countdown.hours")],
+            ["minutos", t("eventos.countdown.minutes")],
+            ["segundos", t("eventos.countdown.seconds")]
         ].forEach(([id, etiqueta]) => {
             const caja = crearElemento("div", "time-box");
             const numero = crearElemento("span", "", "00");
@@ -362,16 +384,16 @@
     }
 
     function renderizarEventoNoEncontrado() {
-        actualizarTexto("[data-event-hero-title]", "Evento no encontrado");
-        actualizarTexto("[data-event-hero-subtitle]", "No se ha encontrado el evento solicitado.");
-        actualizarTexto("[data-event-title]", "EVENTO NO ENCONTRADO");
+        actualizarTexto("[data-event-hero-title]", t("eventos.not_found.hero_title"));
+        actualizarTexto("[data-event-hero-subtitle]", t("eventos.not_found.hero_subtitle"));
+        actualizarTexto("[data-event-title]", t("eventos.not_found.title"));
 
         const contenedor = document.querySelector("[data-event-details]");
 
         if (contenedor) {
             const tarjeta = crearElemento("div", "card event-empty");
-            tarjeta.appendChild(crearElemento("p", "", "Revisa el enlace del evento o vuelve al calendario."));
-            tarjeta.appendChild(crearEnlace("/Calendario/calendario.html", "btn", "VOLVER AL CALENDARIO"));
+            tarjeta.appendChild(crearElemento("p", "", t("eventos.not_found.message")));
+            tarjeta.appendChild(crearEnlace("/Calendario/calendario.html", "btn", t("eventos.not_found.back_button")));
             contenedor.replaceChildren(tarjeta);
         }
     }
@@ -390,10 +412,10 @@
 
         document.title = `${evento.titulo} | Mosco Events`;
         actualizarMetaTitulo(`${evento.titulo} | Mosco Events`);
-        actualizarMetaDescripcion(`Informaci\u00f3n e inscripci\u00f3n para ${evento.titulo} de Mosco Events.`);
+        actualizarMetaDescripcion(t("eventos.meta.event_description", { title: evento.titulo }));
         actualizarCanonical(evento.url);
         actualizarTexto("[data-event-hero-title]", evento.titulo);
-        actualizarTexto("[data-event-hero-subtitle]", evento.subtitulo || "Evento oficial de Mosco Events");
+        actualizarTexto("[data-event-hero-subtitle]", evento.subtitulo || t("eventos.default_summary"));
         actualizarTexto("[data-event-title]", (evento.tituloDetalle || evento.titulo).toUpperCase());
 
         const heroContent = document.querySelector("[data-event-hero-content]");
@@ -421,14 +443,14 @@
         }
 
         if (evento.normasUrl) {
-            acciones.appendChild(crearBotonExterno(evento.normasUrl, "INFO & NORMAS"));
+            acciones.appendChild(crearBotonExterno(evento.normasUrl, t("eventos.rules_button")));
         }
 
         if (evento.galeria?.activa) {
             acciones.appendChild(crearEnlace(
                 evento.galeria.url,
                 "galeria-btn",
-                evento.botonGaleria || `FOTOS EVENTO ${evento.fechaCorta} \u2192`
+                evento.botonGaleria || t("eventos.gallery_button", { fecha: evento.fechaCorta })
             ));
         }
 
@@ -440,16 +462,16 @@
     }
 
     function renderizarGaleriaNoEncontrada() {
-        actualizarTexto("[data-gallery-hero-title]", "GALER\u00cdA");
-        actualizarTexto("[data-gallery-hero-subtitle]", "No se ha encontrado la galer\u00eda solicitada.");
-        actualizarTexto("[data-gallery-title]", "GALER\u00cdA NO ENCONTRADA");
+        actualizarTexto("[data-gallery-hero-title]", t("eventos.gallery_not_found.hero_title"));
+        actualizarTexto("[data-gallery-hero-subtitle]", t("eventos.gallery_not_found.hero_subtitle"));
+        actualizarTexto("[data-gallery-title]", t("eventos.gallery_not_found.title"));
 
         const contenedor = document.querySelector("[data-gallery-grid]");
 
         if (contenedor) {
             const tarjeta = crearElemento("div", "card event-empty");
-            tarjeta.appendChild(crearElemento("p", "", "Revisa el enlace de la galer\u00eda o vuelve al listado."));
-            tarjeta.appendChild(crearEnlace("/Galeria/galeria.html", "btn", "VOLVER A GALER\u00cdA"));
+            tarjeta.appendChild(crearElemento("p", "", t("eventos.gallery_not_found.message")));
+            tarjeta.appendChild(crearEnlace("/Galeria/galeria.html", "btn", t("eventos.gallery_not_found.back_button")));
             contenedor.replaceChildren(tarjeta);
         }
     }
@@ -469,11 +491,11 @@
 
         document.title = `${galeria.titulo} ${evento.fechaCorta} | Mosco Events`;
         actualizarMetaTitulo(`${galeria.titulo} ${evento.fechaCorta} | Mosco Events`);
-        actualizarMetaDescripcion(`Galer\u00eda oficial de Mosco Events para ${evento.titulo}.`);
+        actualizarMetaDescripcion(t("eventos.meta.gallery_description", { title: evento.titulo }));
         actualizarCanonical(galeria.url);
-        actualizarTexto("[data-gallery-hero-title]", galeria.titulo || "GALER\u00cdA");
-        actualizarTexto("[data-gallery-hero-subtitle]", galeria.descripcion || `Fotograf\u00edas de ${evento.titulo}`);
-        actualizarTexto("[data-gallery-title]", "GALER\u00cdA DE IM\u00c1GENES");
+        actualizarTexto("[data-gallery-hero-title]", galeria.titulo || t("eventos.gallery.title_default"));
+        actualizarTexto("[data-gallery-hero-subtitle]", galeria.descripcion || t("eventos.gallery.description_default", { title: evento.titulo }));
+        actualizarTexto("[data-gallery-title]", t("eventos.gallery.detail_title"));
 
         const contenedor = document.querySelector("[data-gallery-grid]");
         const imagenes = Array.isArray(galeria.imagenes) ? galeria.imagenes : [];
@@ -487,7 +509,7 @@
             tarjeta.appendChild(crearElemento(
                 "p",
                 "",
-                galeria.mensajeVacio || "Galer\u00eda preparada para cuando se a\u00f1adan fotograf\u00edas."
+                galeria.mensajeVacio || t("eventos.gallery.empty_default")
             ));
             contenedor.replaceChildren(tarjeta);
             return;
@@ -508,9 +530,15 @@
         }))
     };
 
-    renderizarListados();
-    renderizarEnlacesGaleria();
+    function renderizarTodo() {
+        renderizarListados();
+        renderizarEnlacesGaleria();
+        renderizarPaginaEvento();
+        renderizarPaginaGaleria();
+    }
+
+    renderizarTodo();
     renderizarGaleriasAleatorias();
-    renderizarPaginaEvento();
-    renderizarPaginaGaleria();
+
+    window.addEventListener("mosco:langchange", renderizarTodo);
 })();

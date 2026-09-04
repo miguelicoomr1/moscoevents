@@ -144,7 +144,9 @@
 <body>
 
 
-<script src="/header.js?v=5"></script>
+<script src="/header.js?v=7"></script>
+<script src="/i18n-lang.js?v=2"></script>
+<script src="/i18n.js?v=2"></script>
 
     <main>
 
@@ -159,14 +161,14 @@
             <div class="hero-content">
 
                 <div class="hero-badges">
-                    <span>
+                    <span data-i18n="home.hero_badge">
                         PARTIDAS PRIVADAS · LIMITED SLOTS
                     </span>
                 </div>
 
                 <h1>MOSCO EVENTS</h1>
 
-                <p>
+                <p data-i18n="home.tagline">
                     TCSIM · SIMULACIÓN · EXPERIENCIAS ÚNICAS
                 </p>
 
@@ -175,6 +177,7 @@
     <a
         class="btn"
         href="./Proximos%20Eventos/proximos-eventos.html"
+        data-i18n="home.cta_upcoming"
     >
         VER PRÓXIMAS PARTIDAS
     </a>
@@ -184,6 +187,7 @@
         href="https://chat.whatsapp.com/JuC0zyC1NqU7v2ssUYmzIH"
         target="_blank"
         rel="noopener noreferrer"
+        data-i18n="home.cta_whatsapp_community"
     >
         UNIRSE A LA COMUNIDAD DE WHATSAPP
     </a>
@@ -193,6 +197,7 @@
         href="https://www.instagram.com/mosco.events/"
         target="_blank"
         rel="noopener noreferrer"
+        data-i18n="home.cta_instagram"
     >
         INSTAGRAM OFICIAL
     </a>
@@ -208,7 +213,7 @@
             id="eventos"
         >
 
-            <h2>PRÓXIMAS PARTIDAS</h2>
+            <h2 data-i18n="home.upcoming_heading">PRÓXIMAS PARTIDAS</h2>
 
             <div data-event-list="proximos">
 
@@ -225,7 +230,7 @@
             id="galeria"
         >
 
-            <h2>GALERÍA</h2>
+            <h2 data-i18n="common.gallery_heading">GALERÍA</h2>
 
             <div class="gallery-grid" data-random-gallery="10">
 
@@ -241,7 +246,7 @@
                 <button
                     class="close"
                     type="button"
-                    aria-label="Cerrar imagen"
+                    aria-label="Cerrar imagen" data-i18n-attr-aria-label="common.modal_close_aria"
                 >
                     ×
                 </button>
@@ -249,20 +254,20 @@
                 <button
                     class="prev"
                     type="button"
-                    aria-label="Imagen anterior"
+                    aria-label="Imagen anterior" data-i18n-attr-aria-label="common.modal_prev_aria"
                 >
                     ❮
                 </button>
 
                 <img
                     id="modal-img"
-                    alt="Imagen ampliada"
+                    alt="Imagen ampliada" data-i18n-attr-alt="common.modal_image_alt"
                 >
 
                 <button
                     class="next"
                     type="button"
-                    aria-label="Imagen siguiente"
+                    aria-label="Imagen siguiente" data-i18n-attr-aria-label="common.modal_next_aria"
                 >
                     ❯
                 </button>
@@ -276,9 +281,9 @@
             id="contacto"
         >
 
-            <h2>CONTACTO</h2>
+            <h2 data-i18n="common.contacto_titulo">CONTACTO</h2>
 
-            <p>
+            <p data-i18n="common.contacto_pregunta">
                 ¿Preparado para la siguiente partida?
             </p>
 
@@ -287,6 +292,7 @@
                 href="https://wa.me/34698125932?text=Hola,%20me%20interesa%20Mosco%20Events.%20%C2%BFC%C3%B3mo%20puedo%20participar%20en%20los%20pr%C3%B3ximos%20eventos%3F"
                 target="_blank"
                 rel="noopener noreferrer"
+                data-i18n="common.whatsapp"
             >
                 CONTACTAR POR WHATSAPP
             </a>
@@ -296,6 +302,7 @@
                 href="https://www.instagram.com/mosco.events/"
                 target="_blank"
                 rel="noopener noreferrer"
+                data-i18n="common.instagram"
             >
                 CONTACTAR POR INSTAGRAM
             </a>
@@ -317,14 +324,14 @@
     <footer>
 
         <p>
-            🪖 Mosco Events © 2026 - Todos los derechos reservados
+            🪖 Mosco Events © <span id="footer-year">2026</span> - <span data-i18n="footer.rights">Todos los derechos reservados</span>
         </p>
 
     </footer>
 
 <script src="/datos.js?v=23"></script>
-<script src="/eventos-dinamicos.js?v=17"></script>
-<script src="/script.js?v=13"></script>
+<script src="/eventos-dinamicos.js?v=18"></script>
+<script src="/script.js?v=14"></script>
 
 </body>
 </html>

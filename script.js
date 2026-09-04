@@ -1,5 +1,9 @@
 // GALERIA
 
+function t(key, vars) {
+    return window.MoscoI18n ? window.MoscoI18n.t(key, vars) : key;
+}
+
 const modal = document.getElementById("modal");
 const modalImg = document.getElementById("modal-img");
 const closeBtn = modal?.querySelector(".close");
@@ -55,9 +59,9 @@ function createDownloadButton() {
     const button = document.createElement("a");
 
     button.className = "gallery-download";
-    button.textContent = "Descargar";
-    button.setAttribute("aria-label", "Descargar imagen");
-    button.setAttribute("title", "Descargar imagen");
+    button.textContent = t("common.download");
+    button.setAttribute("aria-label", t("common.download_image_aria"));
+    button.setAttribute("title", t("common.download_image_aria"));
 
     button.addEventListener("click", (event) => {
         event.stopPropagation();
@@ -229,7 +233,7 @@ function setCurrentImage(index) {
     currentIndex = (index + images.length) % images.length;
 
     const image = images[currentIndex];
-    modalImg.alt = image.alt || `Imagen ampliada ${currentIndex + 1}`;
+    modalImg.alt = image.alt || t("common.enlarged_image_alt", { n: currentIndex + 1 });
     modalImg.src = getImageSource(image);
 
     if (modalDownload) {
@@ -327,6 +331,12 @@ if (modal && modalImg) {
     modalDownload.classList.add("modal-download");
     modal.appendChild(modalDownload);
 
+    window.addEventListener("mosco:langchange", () => {
+        modalDownload.textContent = t("common.download");
+        modalDownload.setAttribute("aria-label", t("common.download_image_aria"));
+        modalDownload.setAttribute("title", t("common.download_image_aria"));
+    });
+
     document.addEventListener("click", (event) => {
         const image = event.target.closest?.(".gallery-grid img.zoomable");
 
@@ -406,7 +416,7 @@ if (countdown && Object.values(countdownFields).every(Boolean)) {
 
         if (diferencia <= 0) {
             countdown.innerHTML =
-                "<div class='time-box'><span>&#128293;</span><small>&iexcl;EVENTO EN CURSO!</small></div>";
+                `<div class='time-box'><span>&#128293;</span><small>${t("common.event_in_progress")}</small></div>`;
             return;
         }
 
@@ -428,6 +438,6 @@ if (countdown && Object.values(countdownFields).every(Boolean)) {
 /* ===== AÑO DEL PIE DE PAGINA ===== */
 
 // Evita tener que tocar cada pagina cada 1 de enero.
-document.querySelectorAll("footer p").forEach((parrafo) => {
-    parrafo.textContent = parrafo.textContent.replace(/©\s*\d{4}/, `© ${new Date().getFullYear()}`);
+document.querySelectorAll("#footer-year").forEach((elemento) => {
+    elemento.textContent = String(new Date().getFullYear());
 });
