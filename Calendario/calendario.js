@@ -21,13 +21,28 @@ const eventosCalendario = (
 
 let currentDate = new Date();
 
-const meses = [
-    "Enero", "Febrero", "Marzo", "Abril",
-    "Mayo", "Junio", "Julio", "Agosto",
-    "Septiembre", "Octubre", "Noviembre", "Diciembre"
-];
+function capitalizar(texto) {
+    return texto.charAt(0).toUpperCase() + texto.slice(1);
+}
 
-const dayNames = ["Lun", "Mar", "Mi\u00e9", "Jue", "Vie", "S\u00e1b", "Dom"];
+function getLocale() {
+    return window.MoscoI18n?.getLocale() || "es-ES";
+}
+
+function monthName(month, year) {
+    return capitalizar(new Intl.DateTimeFormat(getLocale(), { month: "long" }).format(new Date(year, month, 1)));
+}
+
+function dayNames() {
+    // 2024-01-01 es lunes: usamos esa semana como referencia para los nombres cortos.
+    const lunes = new Date(2024, 0, 1);
+
+    return Array.from({ length: 7 }, (_, indice) => {
+        const dia = new Date(lunes);
+        dia.setDate(lunes.getDate() + indice);
+        return capitalizar(new Intl.DateTimeFormat(getLocale(), { weekday: "short" }).format(dia));
+    });
+}
 
 function createDayName(name) {
     const element = document.createElement("div");
@@ -75,9 +90,9 @@ function renderCalendar() {
     let firstDay = new Date(year, month, 1).getDay();
     firstDay = firstDay === 0 ? 6 : firstDay - 1;
 
-    monthYear.textContent = `${meses[month]} ${year}`;
+    monthYear.textContent = `${monthName(month, year)} ${year}`;
 
-    dayNames.forEach((dayName) => {
+    dayNames().forEach((dayName) => {
         fragment.appendChild(createDayName(dayName));
     });
 
@@ -104,5 +119,7 @@ document.getElementById("nextMonth")?.addEventListener("click", () => {
     currentDate.setMonth(currentDate.getMonth() + 1);
     renderCalendar();
 });
+
+window.addEventListener("mosco:langchange", renderCalendar);
 
 renderCalendar();

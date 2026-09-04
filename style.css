@@ -262,6 +262,11 @@ header .dropdown.open .dropdown-content {
     transform: translateY(0);
 }
 
+header .dropdown-content a.is-active-lang {
+    color: var(--mc-sand);
+    background: rgba(215, 192, 139, 0.1);
+}
+
 
 /* =========================
    HERO

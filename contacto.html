@@ -67,7 +67,9 @@
 <body>
 
 
-<script src="/header.js?v=5"></script>
+<script src="/header.js?v=7"></script>
+<script src="/i18n-lang.js?v=2"></script>
+<script src="/i18n.js?v=2"></script>
 
 <section class="hero" aria-label="Contacto">
 
@@ -75,9 +77,9 @@
 
 <div class="hero-content">
 
-    <h1>CONTACTO</h1>
+    <h1 data-i18n="common.contacto_titulo">CONTACTO</h1>
 
-    <p>
+    <p data-i18n="contact_page.hero_subtitle">
         Ponte en contacto con Mosco Events
     </p>
 
@@ -89,13 +91,13 @@
 
 <section class="eventos">
 
-<h2>CONTACTO</h2>
+<h2 data-i18n="common.contacto_titulo">CONTACTO</h2>
 
 <div class="card">
 
     <h3>WhatsApp</h3>
 
-    <p>
+    <p data-i18n="contact_page.whatsapp_card_text">
         ¿Tienes dudas sobre los eventos, inscripciones o normativa?
         Contacta directamente con nosotros por WhatsApp.
     </p>
@@ -104,7 +106,8 @@
         class="whatsapp"
         href="https://wa.me/34698125932?text=Hola,%20me%20interesa%20Mosco%20Events.%20%C2%BFC%C3%B3mo%20puedo%20participar%20en%20los%20pr%C3%B3ximos%20eventos%3F"
         target="_blank"
-        rel="noopener noreferrer">
+        rel="noopener noreferrer"
+        data-i18n="common.whatsapp">
 
         CONTACTAR POR WHATSAPP
 
@@ -114,9 +117,9 @@
 
 <div class="card">
 
-    <h3>Comunidad de WhatsApp</h3>
+    <h3 data-i18n="contact_page.community_card_title">Comunidad de WhatsApp</h3>
 
-    <p>
+    <p data-i18n="contact_page.community_card_text">
         Únete a nuestra comunidad de WhatsApp para recibir novedades,
         información sobre próximos eventos y avisos de Mosco Events.
     </p>
@@ -126,6 +129,7 @@
         href="https://chat.whatsapp.com/JuC0zyC1NqU7v2ssUYmzIH"
         target="_blank"
         rel="noopener noreferrer"
+        data-i18n="contact_page.community_button"
     >
         UNIRME A LA COMUNIDAD DE WHATSAPP
     </a>
@@ -136,7 +140,7 @@
 
     <h3>Instagram</h3>
 
-    <p>
+    <p data-i18n="contact_page.instagram_card_text">
         Sigue nuestras novedades, fotografías y anuncios oficiales a través de Instagram.
     </p>
 
@@ -144,7 +148,8 @@
         class="instagram"
         href="https://www.instagram.com/mosco.events/"
         target="_blank"
-        rel="noopener noreferrer">
+        rel="noopener noreferrer"
+        data-i18n="common.instagram">
 
         CONTACTAR POR INSTAGRAM
 
@@ -154,15 +159,16 @@
 
 <div class="card">
 
-    <h3>Correo de Contacto</h3>
+    <h3 data-i18n="contact_page.email_card_title">Correo de Contacto</h3>
 
-    <p>
+    <p data-i18n="contact_page.email_card_text">
        ¿Tienes alguna consulta o propuesta de colaboración? Contacta con Mosco Events para obtener información sobre eventos, inscripciones, normativa y próximas actividades.
     </p>
 
     <a
         class="btn"
-        href="mailto:moscoeventes@gmail.com">
+        href="mailto:moscoeventes@gmail.com"
+        data-i18n="contact_page.email_button">
 
      CONTACTAR POR EMAIL
 
@@ -177,12 +183,12 @@
 <footer>
 
 <p>
-    🪖 Mosco Events © 2026 - Todos los derechos reservados
+    🪖 Mosco Events © <span id="footer-year">2026</span> - <span data-i18n="footer.rights">Todos los derechos reservados</span>
 </p>
 
 </footer>
 
-<script src="/script.js?v=13"></script>
+<script src="/script.js?v=14"></script>
 
 </body>
 </html>

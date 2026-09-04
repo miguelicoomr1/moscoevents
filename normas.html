@@ -45,6 +45,143 @@
         href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&display=swap"
     >
 
+    <style>
+        .rules-index {
+            width: min(920px, 100%);
+            margin: 0 auto;
+            padding: 22px clamp(20px, 4vw, 30px);
+
+            background: rgba(215, 192, 139, 0.06);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+        }
+
+        .rules-index__title {
+            margin: 0 0 14px;
+
+            color: var(--mc-sand);
+            font-family: "Oswald", sans-serif;
+            font-size: 0.82rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .rules-index ol {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px 14px;
+
+            margin: 0;
+            padding: 0;
+
+            list-style: none;
+        }
+
+        .rules-index a {
+            display: inline-block;
+
+            padding: 8px 16px;
+
+            color: var(--text-soft);
+            font-size: 0.95rem;
+            font-weight: 600;
+            text-decoration: none;
+
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            border-radius: 30px;
+
+            transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+        }
+
+        .rules-index a:hover,
+        .rules-index a:focus-visible {
+            color: var(--mc-sand);
+            background: rgba(215, 192, 139, 0.1);
+            border-color: var(--border-strong);
+        }
+
+        .rules-doc {
+            width: min(920px, 100%);
+            margin: 0 auto;
+            padding: clamp(28px, 5vw, 44px);
+
+            background:
+                linear-gradient(145deg, rgba(36, 41, 29, 0.96), rgba(17, 20, 14, 0.98)),
+                linear-gradient(90deg, rgba(215, 192, 139, 0.08), transparent 48%);
+
+            border: 1px solid var(--border);
+            border-radius: 8px;
+
+            text-align: left;
+
+            box-shadow: var(--shadow);
+
+            scroll-margin-top: 100px;
+        }
+
+        .rules-doc h3 {
+            margin: 0 0 18px;
+
+            color: var(--mc-sand);
+            font-family: "Oswald", sans-serif;
+            font-size: 1.6rem;
+            font-weight: 700;
+        }
+
+        .rules-doc p {
+            margin: 0 0 16px;
+
+            color: #d9d4c6;
+            font-size: 1.05rem;
+            line-height: 1.65;
+        }
+
+        .rules-doc p:last-child {
+            margin-bottom: 0;
+        }
+
+        .rules-doc p strong {
+            color: #f7f4ea;
+        }
+
+        .rules-doc ul {
+            margin: -6px 0 16px;
+            padding-left: 1.4rem;
+
+            color: #d9d4c6;
+        }
+
+        .rules-doc li {
+            margin: 8px 0;
+
+            font-size: 1.05rem;
+            line-height: 1.6;
+        }
+
+        .rules-doc li strong {
+            color: #f7f4ea;
+        }
+
+        .rules-doc__panel {
+            margin-top: 6px;
+            padding: 24px 26px;
+
+            color: #f7f4ea;
+            font-size: 1rem;
+            font-weight: 700;
+            line-height: 1.6;
+            letter-spacing: 0.01em;
+            text-transform: uppercase;
+
+            background: rgba(169, 85, 56, 0.22);
+            border: 1px solid rgba(215, 192, 139, 0.36);
+            border-left: 5px solid var(--mc-rust);
+            border-radius: 10px;
+        }
+    </style>
+
     <link rel="canonical" href="https://www.moscoevents.com/normas.html">
 
     <meta property="og:type" content="website">
@@ -67,7 +204,9 @@
 <body>
 
 
-<script src="/header.js?v=5"></script>
+<script src="/header.js?v=7"></script>
+<script src="/i18n-lang.js?v=2"></script>
+<script src="/i18n.js?v=2"></script>
 
 <section class="hero" aria-label="Próximo evento">
 
@@ -75,22 +214,23 @@
 
     <div class="hero-content">
 
-        <h1>NORMAS</h1>
+        <h1 data-i18n="normas.hero_title">NORMAS</h1>
 
-        <p>
+        <p data-i18n="normas.hero_subtitle">
             Normas Oficiales para todos los eventos de Mosco Events
         </p>
 <div class="card">
 
-    <h3>Normativa Oficial</h3>
+    <h3 data-i18n="normas.pdf_card_title">Normativa Oficial</h3>
 
-    <p>
+    <p data-i18n="normas.pdf_card_text">
         Descarga el reglamento completo de Mosco Events en formato PDF.
     </p>
 
     <a class="btn"
        href="Normas MOSCO EVENTS.pdf"
-       download>
+       download
+       data-i18n="normas.pdf_button">
 
        DESCARGAR PDF
 
@@ -105,130 +245,76 @@
 
     <section class="eventos">
 
-<h2>NORMAS OFICIALES</h2>
+<h2 data-i18n="normas.section_heading">NORMAS OFICIALES</h2>
 
-<div class="card">
-    <h3>Uso obligatorio de protección ocular</h3>
-    <p>
-        A partir del momento en que se acceda al campo de juego, el uso de gafas de protección será obligatorio en todo momento.
-        Está terminantemente prohibido retirar las gafas fuera de las zonas seguras habilitadas por la organización.
-    </p>
+<p style="max-width:720px; margin:0 auto; color:var(--text-muted); font-size:1.05rem; text-align:center;" data-i18n="normas.intro">
+    De obligado cumplimiento para todos los participantes. La inscripción en cualquier evento implica la aceptación íntegra de este reglamento.
+</p>
+
+<nav class="rules-index" aria-label="Índice de normas">
+    <p class="rules-index__title" data-i18n="normas.index_title">Ir a la sección</p>
+    <ol>
+        <li><a href="#seguridad" data-i18n="normas.index.seguridad">1. Seguridad</a></li>
+        <li><a href="#replicas" data-i18n="normas.index.replicas">2. Réplicas y equipo</a></li>
+        <li><a href="#juego" data-i18n="normas.index.juego">3. Normas de juego</a></li>
+        <li><a href="#conducta" data-i18n="normas.index.conducta">4. Conducta y autoridad</a></li>
+        <li><a href="#disciplina" data-i18n="normas.index.disciplina">5. Régimen disciplinario</a></li>
+    </ol>
+</nav>
+
+<div class="rules-doc" id="seguridad">
+    <h3 data-i18n="normas.index.seguridad">1. Seguridad</h3>
+    <p data-i18n-html="normas.seguridad.p1"><strong>1.1. Protección ocular obligatoria.</strong> Desde el momento en que se accede al campo de juego, el uso de gafas de protección homologadas es obligatorio en todo momento. Queda terminantemente prohibido retirarlas fuera de las zonas seguras habilitadas por la organización.</p>
+    <p data-i18n-html="normas.seguridad.p2"><strong>1.2. Réplicas en la zona de bar y descanso.</strong> No está permitido permanecer en la zona de bar o de descanso portando réplicas. Todas las réplicas deberán quedar fuera de esta área o cumplir las indicaciones de seguridad que establezca la organización.</p>
+    <p data-i18n-html="normas.seguridad.p3"><strong>1.3. Elementos del campo.</strong> Queda prohibido mover, desplazar, retirar o modificar cualquier objeto del campo que no haya sido expresamente autorizado o señalizado por la organización para tal fin.</p>
 </div>
 
-<div class="card">
-    <h3>Réplicas en zona de bar</h3>
-    <p>
-        No está permitido permanecer dentro de la zona de bar o descanso portando réplicas.
-        Todas las réplicas deberán permanecer fuera de esta área o cumplir las indicaciones de seguridad establecidas por la organización.
-    </p>
+<div class="rules-doc" id="replicas">
+    <h3 data-i18n="normas.index.replicas">2. Réplicas y equipo</h3>
+    <p data-i18n-html="normas.replicas.p1"><strong>2.1. Potencia máxima.</strong> La potencia máxima autorizada es de <strong>1,14 J</strong>. No existe límite de peso de bola.</p>
+    <p data-i18n-html="normas.replicas.p2"><strong>2.2. Cronaje.</strong> La organización podrá exigir el paso por crono en cualquier momento del evento, con las siguientes condiciones:</p>
+    <ul>
+        <li data-i18n-html="normas.replicas.li1">La réplica se cronará con la bola y el hop-up configurados tal y como se vayan a utilizar en juego.</li>
+        <li data-i18n-html="normas.replicas.li2">Las réplicas de gas deberán presentarse en el crono con bolas, pero <strong>sin gas cargado en el cargador</strong>. La carga se realizará delante de la organización, para verificar que la réplica no supera el límite con el cargador a plena carga.</li>
+    </ul>
+    <p data-i18n-html="normas.replicas.p3"><strong>2.3. Modo de disparo.</strong> Únicamente se permite el disparo en modo semiautomático. Quedan totalmente prohibidos el modo automático, el semi-ramping y el modo binario, así como la modificación del gatillo electrónico mediante aplicaciones Bluetooth.</p>
+    <p data-i18n-html="normas.replicas.p4"><strong>2.4. Cargadores.</strong> No está permitido el uso de cargadores de tipo Hi-Cap.</p>
+    <p data-i18n-html="normas.replicas.p5"><strong>2.5. Granadas.</strong> No se permite el uso de granadas de ningún tipo durante el evento, salvo autorización expresa de la organización.</p>
 </div>
 
-<div class="card">
-    <h3>Prohibición de "libanesas"</h3>
-    <p>
-        No se permite realizar disparos tipo "libanesa" bajo ninguna circunstancia.
-    </p>
+<div class="rules-doc" id="juego">
+    <h3 data-i18n="normas.index.juego">3. Normas de juego</h3>
+    <p data-i18n-html="normas.juego.p1"><strong>3.1. Disparos tipo "libanesa".</strong> No se permite disparar a ciegas (tipo "libanesa"), es decir, efectuar disparos sin exponer la cabeza ni tener visión directa del objetivo, bajo ninguna circunstancia.</p>
+    <p data-i18n-html="normas.juego.p2"><strong>3.2. Disparos a través de huecos.</strong> No está permitido disparar a través de huecos o aberturas si el cañón de la réplica no se encuentra a <strong>1 m o más</strong> del parapeto. Sí será válido recibir impactos a través de dichos huecos, por pequeños que sean.</p>
+    <p data-i18n-html="normas.juego.p3"><strong>3.3. Zonas CQB.</strong> Todas las zonas CQB del campo se consideran habitaciones cerradas. Por tanto, no está permitido disparar por encima de las paredes o estructuras que las delimitan, ni se considerarán válidos los impactos recibidos de ese modo.</p>
+    <p data-i18n-html="normas.juego.p4"><strong>3.4. Enfrentamientos simultáneos.</strong> Cuando dos jugadores se encuentren encarados, apuntándose mutuamente, y ambos efectúen un disparo de forma simultánea, los dos serán considerados eliminados. Esta norma se aplica únicamente cuando ambos jugadores están encarados y apuntándose entre sí; si uno de ellos no está apuntando al otro en ese momento, la situación se resolverá según las reglas de eliminación habituales.</p>
 </div>
 
-<div class="card">
-    <h3>Manipulación de elementos del campo</h3>
-    <p>
-        Queda prohibido mover, desplazar, retirar o modificar cualquier objeto del campo que no haya sido expresamente autorizado o marcado por la organización para tal fin.
-    </p>
+<div class="rules-doc" id="conducta">
+    <h3 data-i18n="normas.index.conducta">4. Conducta y autoridad</h3>
+    <p data-i18n-html="normas.conducta.p1"><strong>4.1. Respeto y deportividad.</strong> Se exige respeto absoluto hacia el resto de participantes, los árbitros y los miembros de la organización. Cualquier conducta antideportiva, insulto, amenaza o falta de respeto podrá suponer la expulsión inmediata del evento.</p>
+    <p data-i18n-html="normas.conducta.p2"><strong>4.2. Decisiones de la organización.</strong> Las decisiones de la organización y del equipo arbitral son de obligado cumplimiento durante todo el evento y no admiten discusión en el campo de juego.</p>
 </div>
 
-<div class="card">
-    <h3>Uso de granadas</h3>
-    <p>
-        No se permite el uso de granadas de ningún tipo durante el evento.
-    </p>
-</div>
-
-<div class="card">
-    <h3>Disparos a través de huecos</h3>
-    <p>
-        No está permitido disparar a través de huecos o aberturas por las que no pueda introducirse la cabeza de un jugador.
-        Sí será válido recibir impactos a través de dichos huecos.
-        Como excepción, para disparar a través de una apertura menor al tamaño de una cabeza, el jugador deberá encontrarse a una distancia mínima de 1 metro del hueco.
-    </p>
-</div>
-
-<div class="card">
-    <h3>Normativa CQB</h3>
-    <p>
-        Todas las zonas CQB del campo serán consideradas habitaciones cerradas.
-        Por tanto, no está permitido disparar ni recibir impactos por encima de las paredes o estructuras que delimitan dichas zonas.
-    </p>
-</div>
-
-<div class="card">
-    <h3>Modo de disparo</h3>
-    <p>
-        Únicamente se permite el disparo en modo semiautomático.
-        El uso del modo automático, semi-ramping, binario queda totalmente prohibido.
-        La modificación de gatillo electrónico mediante app bluetooth queda totalmente prohibido.
-    </p>
-</div>
-
-<div class="card">
-    <h3>Potencia máxima permitida</h3>
-    <p>
-        La potencia máxima autorizada será de 1,14 julios (J).
-        No existe limitación en cuanto al peso de las bolas utilizadas.
-    </p>
-</div>
-
-<div class="card">
-    <h3>Cargadores permitidos</h3>
-    <p>
-        No está permitido el uso de cargadores tipo Hi-Cap.
-    </p>
-</div>
-
-<div class="card">
-    <h3>Respeto y deportividad</h3>
-    <p>
-        Se exige respeto absoluto hacia todos los participantes, árbitros y miembros de la organización.
-        Cualquier conducta antideportiva, insulto, amenaza o falta de respeto podrá suponer la expulsión inmediata del evento.
-    </p>
-</div>
-
-<div class="card">
-    <h3>Enfrentamientos simultáneos</h3>
-    <p>
-        En caso de que dos jugadores se encuentren apuntándose mutuamente y ambos efectúen un disparo de forma simultánea, ambos serán considerados eliminados.
-        Esta norma únicamente se aplicará cuando los dos jugadores estén encarados y apuntándose entre sí.
-        Si uno de los jugadores no está apuntando al otro en el momento del enfrentamiento, la situación se resolverá de manera normal según las reglas de eliminación habituales.
-    </p>
-</div>
-
-<div class="card">
-    <h3>Decisiones de la organización</h3>
-    <p>
-        Las decisiones tomadas por la organización y el equipo arbitral serán de obligado cumplimiento durante todo el evento.
-        La organización se reserva el derecho de pasar crono a cualquier réplica/persona en cualquier momento, será de modo aleatorio y en caso de petición de cualquier otro usuario.
-    </p>
-</div>
-
-<div class="card">
-    <h3>Medidas disciplinarias</h3>
-    <p>
-        Cualquier persona que incumpla cualquiera de las normas establecidas en este reglamento estará sujeta a las medidas disciplinarias que la organización considere oportunas, en función de la gravedad de la infracción. Dichas medidas podrán incluir advertencias, sanciones, la expulsión inmediata del evento o, en los casos más graves o reincidentes, la expulsión permanente del campo y la prohibición de participar en futuros eventos organizados por Mosco Events.
-    </p>
+<div class="rules-doc" id="disciplina">
+    <h3 data-i18n="normas.index.disciplina">5. Régimen disciplinario</h3>
+    <div class="rules-doc__panel" data-i18n="normas.disciplina.panel">
+        Cualquier persona que incumpla alguna de las normas de este reglamento estará sujeta a las medidas disciplinarias que la organización considere oportunas, en función de la gravedad de la infracción. Dichas medidas podrán incluir advertencias, sanciones, la expulsión inmediata del evento o, en los casos más graves o reincidentes, la expulsión permanente del campo y la prohibición de participar en futuros eventos organizados por Mosco Events.
+    </div>
 </div>
 
     </section>
 
     <section id="contacto" class="contacto">
 
-        <h2>CONTACTO</h2>
+        <h2 data-i18n="common.contacto_titulo">CONTACTO</h2>
 
-        <p>
+        <p data-i18n="common.contacto_pregunta">
             ¿Preparado para la siguiente partida?
         </p>
 
         <a
-            class="whatsapp"
+            class="whatsapp" data-i18n="common.whatsapp"
              href="https://wa.me/34698125932?text=Hola,%20me%20interesa%20Mosco%20Events.%20%C2%BFC%C3%B3mo%20puedo%20participar%20en%20los%20pr%C3%B3ximos%20eventos%3F"
             target="_blank"
             rel="noopener noreferrer">
@@ -238,7 +324,7 @@
         </a>
 
         <a
-            class="instagram"
+            class="instagram" data-i18n="common.instagram"
             href="https://www.instagram.com/mosco.events/"
             target="_blank"
             rel="noopener noreferrer">
@@ -254,12 +340,12 @@
 <footer>
 
     <p>
-        🪖 Mosco Events © 2026 - Todos los derechos reservados
+        🪖 Mosco Events © <span id="footer-year">2026</span> - <span data-i18n="footer.rights">Todos los derechos reservados</span>
     </p>
 
 </footer>
 
-<script src="/script.js?v=13"></script>
+<script src="/script.js?v=14"></script>
 
 </body>
 </html>
