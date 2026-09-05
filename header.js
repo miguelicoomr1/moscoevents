@@ -39,7 +39,7 @@
                         </a>
 
                         <a href="/Proximos%20Eventos/proximos-eventos.html" data-i18n="nav.proximos">
-                            \uD83D\uDD1C Pr\u00F3ximos Eventos
+                            \uD83C\uDFAF Pr\u00F3ximos Eventos
                         </a>
 
                         <a href="/registro.html" data-i18n="nav.inscripciones">
@@ -47,7 +47,7 @@
                         </a>
 
                         <a href="/Eventos%20anteriores/eventos-anteriores.html" data-i18n="nav.anteriores">
-                            \uD83D\uDD19 Eventos Anteriores
+                            \uD83D\uDDC2\uFE0F Eventos Anteriores
                         </a>
                     </div>
                 </div>
@@ -175,5 +175,59 @@
         window.addEventListener("load", () => {
             navigator.serviceWorker.register("/service-worker.js").catch(() => {});
         });
+    }
+
+    const IOS_BANNER_DISMISSED_KEY = "moscoIosInstallBannerDismissed";
+
+    function isIos() {
+        return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    }
+
+    function isStandalone() {
+        return window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
+    }
+
+    function mountIosInstallBanner() {
+        if (!isIos() || isStandalone()) {
+            return;
+        }
+
+        let dismissed = false;
+        try {
+            dismissed = localStorage.getItem(IOS_BANNER_DISMISSED_KEY) === "1";
+        } catch (error) {
+            dismissed = false;
+        }
+
+        if (dismissed) {
+            return;
+        }
+
+        const banner = document.createElement("div");
+        banner.className = "ios-install-banner";
+        banner.innerHTML = `
+            <p>
+                <strong>Instala Mosco Events</strong> en tu iPhone: toca
+                <span class="ios-install-banner-icon">📤</span> y luego "Añadir a pantalla de inicio".
+            </p>
+            <button type="button" class="ios-install-banner-close" aria-label="Cerrar aviso">×</button>
+        `;
+
+        document.body.appendChild(banner);
+
+        banner.querySelector(".ios-install-banner-close").addEventListener("click", () => {
+            banner.remove();
+            try {
+                localStorage.setItem(IOS_BANNER_DISMISSED_KEY, "1");
+            } catch (error) {
+                /* localStorage unavailable, ignore */
+            }
+        });
+    }
+
+    if (document.body) {
+        mountIosInstallBanner();
+    } else {
+        document.addEventListener("DOMContentLoaded", mountIosInstallBanner);
     }
 })();
