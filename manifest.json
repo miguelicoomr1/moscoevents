@@ -1,0 +1,48 @@
+{
+    "name": "Mosco Events",
+    "short_name": "Mosco Events",
+    "description": "Partidas de airsoft, TCSIM y simulación táctica en Pedrola (Zaragoza). Inscripciones, calendario y galería de eventos.",
+    "start_url": "/index.html",
+    "scope": "/",
+    "display": "standalone",
+    "orientation": "portrait-primary",
+    "background_color": "#070806",
+    "theme_color": "#8d9a55",
+    "lang": "es",
+    "icons": [
+        {
+            "src": "/images/base%20web/icon-192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "/images/base%20web/icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "/images/base%20web/icon-maskable-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
+        }
+    ],
+    "shortcuts": [
+        {
+            "name": "Inscripciones",
+            "url": "/registro.html",
+            "icons": [
+                { "src": "/images/base%20web/icon-192.png", "sizes": "192x192" }
+            ]
+        },
+        {
+            "name": "Próximos Eventos",
+            "url": "/Proximos%20Eventos/proximos-eventos.html",
+            "icons": [
+                { "src": "/images/base%20web/icon-192.png", "sizes": "192x192" }
+            ]
+        }
+    ]
+}
