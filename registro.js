@@ -19,6 +19,8 @@
     const result = document.getElementById("registration-result");
     const participantControls = document.querySelectorAll("[data-registration-participant]");
     const waitlist = document.getElementById("registration-waitlist");
+    const blockedNotice = document.getElementById("registration-blocked");
+    const blockedMessage = document.querySelector("[data-registration-blocked-message]");
     const reservationForm = document.getElementById("reservation-form");
     const reservationSubmit = document.getElementById("reservation-submit");
     const reservationName = reservationForm?.querySelector("[name='nombreReserva']");
@@ -103,6 +105,7 @@
     let isSubmitting = false;
     let isSubmittingReservation = false;
     let selectedEventFull = false;
+    let selectedEventBlocked = false;
     let capacityChecking = false;
     let capacityRequestId = 0;
     let silentCapacityChecking = false;
@@ -201,7 +204,7 @@
 
     function syncPaypalPayment() {
         const hasEvent = Boolean(selectedEvent);
-        const isReady = hasEvent && !capacityChecking && !selectedEventFull;
+        const isReady = hasEvent && !capacityChecking && !selectedEventFull && !selectedEventBlocked;
 
         paymentButton.classList.toggle("is-disabled", !isReady);
         paymentButton.setAttribute("aria-disabled", String(!isReady));
@@ -209,6 +212,9 @@
         if (!hasEvent) {
             paymentButton.removeAttribute("href");
             paymentButtonLabel.textContent = t("registro.payment.select_event");
+        } else if (selectedEventBlocked) {
+            paymentButton.removeAttribute("href");
+            paymentButtonLabel.textContent = t("registro.payment.event_blocked");
         } else if (selectedEventFull) {
             paymentButton.removeAttribute("href");
             paymentButtonLabel.textContent = t("registro.payment.event_full");
@@ -456,22 +462,42 @@
         });
     }
 
+    // Bloqueo manual del evento (problemas tecnicos, mantenimiento...), no
+    // relacionado con el aforo: se define en datos.js por evento.
+    function isEventBlocked(evento) {
+        return Boolean(evento?.inscripcionesCerradas);
+    }
+
+    function syncBlockedNotice() {
+        if (blockedNotice) {
+            blockedNotice.hidden = !selectedEventBlocked;
+        }
+
+        if (blockedMessage) {
+            blockedMessage.textContent = selectedEventBlocked
+                ? (selectedEvent?.avisoInscripcion || t("registro.form.blocked_message_default"))
+                : "";
+        }
+    }
+
     function setRegistrationFull(isFull) {
         selectedEventFull = Boolean(isFull && selectedEvent);
 
+        const hideParticipant = selectedEventFull || selectedEventBlocked;
+
         participantControls.forEach((element) => {
-            element.hidden = selectedEventFull;
+            element.hidden = hideParticipant;
 
             if ("disabled" in element) {
-                element.disabled = selectedEventFull;
+                element.disabled = hideParticipant;
             }
         });
 
         reservationControls.forEach((control) => {
-            control.disabled = !selectedEventFull;
+            control.disabled = !selectedEventFull || selectedEventBlocked;
         });
 
-        waitlist.hidden = !selectedEventFull;
+        waitlist.hidden = !selectedEventFull || selectedEventBlocked;
         reservationEventId.value = selectedEventFull ? selectedEvent.id : "";
         reservationEventName.value = selectedEventFull ? selectedEvent.titulo : "";
 
@@ -539,7 +565,9 @@
     }
 
     function formatEventLabel(evento) {
-        return `${evento.tituloListado || evento.titulo} - ${evento.fechaCorta || evento.fechaTexto}`;
+        const base = `${evento.tituloListado || evento.titulo} - ${evento.fechaCorta || evento.fechaTexto}`;
+
+        return isEventBlocked(evento) ? `${base} ${t("registro.form.blocked_option_suffix")}` : base;
     }
 
     function eventDetails(evento) {
@@ -583,6 +611,8 @@
             element.textContent = value;
         });
 
+        selectedEventBlocked = isEventBlocked(evento);
+        syncBlockedNotice();
         syncPasswordField();
         syncPaypalPayment();
     }
@@ -632,6 +662,7 @@
             !isSubmitting &&
             !capacityChecking &&
             !selectedEventFull &&
+            !selectedEventBlocked &&
             selectedEvent &&
             requiredFieldsReady &&
             isPasswordValid() &&
@@ -1079,7 +1110,7 @@
     );
 
     reservationSubmit.addEventListener("click", async () => {
-        if (!selectedEvent || !selectedEventFull || isSubmittingReservation) {
+        if (!selectedEvent || !selectedEventFull || selectedEventBlocked || isSubmittingReservation) {
             return;
         }
 
@@ -1169,7 +1200,7 @@
     form.addEventListener("submit", async (event) => {
         event.preventDefault();
 
-        if (isSubmitting) {
+        if (isSubmitting || selectedEventBlocked) {
             return;
         }
 

@@ -668,6 +668,17 @@ body .card::after {
     margin: 0;
 }
 
+.event-registration-notice {
+    flex-basis: 100%;
+    margin: 0;
+    padding: 14px 18px;
+    border: 1px solid var(--field-signal-dark);
+    border-radius: 12px;
+    background: rgba(189, 61, 32, 0.09);
+    color: var(--field-signal-dark);
+    text-align: center;
+}
+
 .event-empty {
     grid-column: 1 / -1;
     text-align: center;

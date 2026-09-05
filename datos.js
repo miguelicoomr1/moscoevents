@@ -93,6 +93,8 @@
             horario: "16:30 - 21:00",
             importe: 15,
             inscripcionUrl: "/registro.html?id=jueves-10-09-2026",
+            inscripcionesCerradas: true,
+            avisoInscripcion: "Estamos teniendo problemas técnicos con las inscripciones de esta partida. Las estamos revisando y volverán a estar disponibles muy pronto. Disculpa las molestias.",
             normasUrl: INFO_NORMAS_URL,
             seccion: "proximos",
             galeria: {
