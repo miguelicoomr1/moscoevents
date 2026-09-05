@@ -1,6 +1,5 @@
 (function () {
-    const INFO_NORMAS_URL =
-        "https://drive.google.com/file/d/16wq9zk_kPDmea1O83lBgBRN1R4EVqurj/view?usp=drive_link";
+    const INFO_NORMAS_URL = "/normas.html";
 
     function crearGaleria({ carpeta, prefijo, extension, desde = 1, hasta = 0, excluir = [], relleno = 0 }) {
         const omitidos = new Set(excluir);
