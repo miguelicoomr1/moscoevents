@@ -33,7 +33,7 @@
 
     <link
         rel="stylesheet"
-        href="/style.css?v=29"
+        href="/style.css?v=30"
     >
 
     <link
@@ -73,7 +73,7 @@
 <body data-registration-page>
 
 <script src="/header.js?v=9"></script>
-<script src="/i18n-lang.js?v=3"></script>
+<script src="/i18n-lang.js?v=4"></script>
 <script src="/i18n.js?v=2"></script>
 
 <section class="hero registration-hero" aria-label="Inscripciones Mosco Events">
@@ -227,6 +227,20 @@
                         No hay pr&oacute;ximas partidas disponibles para registro.
                     </p>
                 </fieldset>
+
+                <section
+                    class="registration-waitlist"
+                    id="registration-blocked"
+                    aria-live="polite"
+                    hidden
+                >
+                    <h2 data-i18n="registro.form.blocked_heading">Inscripciones no disponibles</h2>
+
+                    <p data-registration-blocked-message data-i18n="registro.form.blocked_message_default">
+                        Estamos teniendo problemas t&eacute;cnicos con las inscripciones de esta partida.
+                        Volver&aacute;n a estar disponibles muy pronto.
+                    </p>
+                </section>
 
                 <section
                     class="registration-waitlist"
@@ -541,9 +555,9 @@
     <p>Mosco Events &copy; <span id="footer-year">2026</span> - <span data-i18n="footer.rights">Todos los derechos reservados</span></p>
 </footer>
 
-<script src="/datos.js?v=24"></script>
+<script src="/datos.js?v=25"></script>
 <script src="/inscripciones-config.js?v=2"></script>
-<script src="/registro.js?v=29"></script>
+<script src="/registro.js?v=30"></script>
 
 </body>
 </html>
