@@ -1547,6 +1547,21 @@ body .mission-strip {
     font-size: 0.9rem;
 }
 
+.registration-payment-warning {
+    margin: 0 18px 14px;
+    padding: 12px 14px;
+    border: 1px solid var(--field-signal-dark);
+    border-radius: 10px;
+    background: rgba(189, 61, 32, 0.08);
+    color: var(--field-signal-dark);
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.registration-payment-warning strong {
+    font-weight: 800;
+}
+
 .registration-payment-confirm {
     display: flex;
     align-items: flex-start;
