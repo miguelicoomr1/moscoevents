@@ -37,6 +37,7 @@
     const paymentConfirmInput = document.getElementById("payment-confirmed");
     const paymentConfirmAmount = document.querySelector("[data-payment-confirm-amount]");
     const paymentConfirmHelp = document.querySelector("[data-payment-confirm-help]");
+    const goodsServicesInput = document.getElementById("pay-as-goods-services");
     const submissionConfig = window.MOSCO_INSCRIPCIONES_CONFIG || {};
     const fallbackAction = submissionConfig.fallbackAction || "https://formsubmit.co/moscoeventes@gmail.com";
     const appsScriptUrl = String(submissionConfig.appsScriptUrl || "").trim();
@@ -132,13 +133,43 @@
             : 0;
     }
 
-    // El importe sale SIEMPRE del evento seleccionado, nunca de una constante fija.
-    function paymentAmount() {
+    // Comision que PayPal cobra a Mosco Events cuando el pago llega marcado
+    // como "Bienes y servicios" en vez de "Amigos y familiares". Indicada
+    // por el titular de la cuenta (Configuracion > Tarifas de PayPal):
+    // 5,27% sin cuota fija. Si PayPal cambia la tarifa, actualizar solo esta constante.
+    const GOODS_SERVICES_FEE_RATE = 0.0527;
+
+    function payingAsGoodsServices() {
+        return Boolean(goodsServicesInput?.checked);
+    }
+
+    // Lo que cuesta realmente la partida (mas alquiler), antes de cualquier
+    // comision de PayPal. El importe sale SIEMPRE del evento seleccionado,
+    // nunca de una constante fija.
+    function baseAmount() {
         if (typeof selectedEvent?.importe !== "number") {
             return 0;
         }
 
         return selectedEvent.importe + rentalSurcharge();
+    }
+
+    // Si se paga como "Bienes y servicios", se pide un importe mayor para
+    // que, tras la comision de PayPal, a Mosco Events le siga llegando el
+    // importe integro de la partida. Redondeado hacia arriba al centimo
+    // para no quedarse corto por el redondeo.
+    function grossUpForGoodsServices(net) {
+        if (!net) {
+            return net;
+        }
+
+        return Math.ceil((net / (1 - GOODS_SERVICES_FEE_RATE)) * 100) / 100;
+    }
+
+    function paymentAmount() {
+        const net = baseAmount();
+
+        return payingAsGoodsServices() ? grossUpForGoodsServices(net) : net;
     }
 
     function paypalPaymentUrl() {
@@ -156,12 +187,26 @@
     }
 
     function paymentDetails(method = selectedPaymentMethod()) {
+        const net = baseAmount();
         const value = paymentAmount();
         const amount = value ? formatPaymentAmount(value) : "";
         const surcharge = rentalSurcharge();
-        const breakdown = surcharge && selectedEvent
-            ? `${formatPaymentAmount(selectedEvent.importe)} partida + ${formatPaymentAmount(surcharge)} alquiler`
-            : "";
+        const goodsServicesFee = payingAsGoodsServices() && net ? value - net : 0;
+        const breakdownParts = [];
+
+        if (selectedEvent) {
+            breakdownParts.push(`${formatPaymentAmount(selectedEvent.importe)} partida`);
+        }
+
+        if (surcharge) {
+            breakdownParts.push(`${formatPaymentAmount(surcharge)} alquiler`);
+        }
+
+        if (goodsServicesFee) {
+            breakdownParts.push(`${formatPaymentAmount(goodsServicesFee)} comisión PayPal (bienes y servicios)`);
+        }
+
+        const breakdown = breakdownParts.length > 1 ? breakdownParts.join(" + ") : "";
 
         if (method === "PayPal" && value) {
             return {
