@@ -1562,6 +1562,36 @@ body .mission-strip {
     font-weight: 800;
 }
 
+.registration-payment-warning p {
+    margin: 0;
+}
+
+.registration-payment-warning p + * {
+    margin-top: 10px;
+}
+
+.registration-payment-goods-toggle {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    cursor: pointer;
+    font-weight: 700;
+}
+
+.registration-payment-goods-toggle input {
+    flex: 0 0 auto;
+    width: 18px;
+    height: 18px;
+    margin-top: 2px;
+    accent-color: var(--field-signal-dark);
+}
+
+.registration-payment-goods-help {
+    margin: 4px 0 0;
+    opacity: 0.85;
+    font-size: 0.85rem;
+}
+
 .registration-payment-confirm {
     display: flex;
     align-items: flex-start;
