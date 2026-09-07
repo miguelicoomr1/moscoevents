@@ -79,36 +79,6 @@
             }
         },
         {
-            id: "miercoles-09-09-2026",
-            titulo: "Miércoles 9 de Septiembre",
-            tituloListado: "Miércoles Tarde 09-09-2026",
-            tituloCalendario: "Partida 09-09-2026",
-            fecha: "2026-09-09",
-            fechaTexto: "9 de Septiembre de 2026",
-            fechaCorta: "09/09/2026",
-            subtitulo: "Evento oficial de Mosco Events",
-            resumen: "Laser Counter - Pedrola.",
-            ubicacion: "Laser Counter (Pedrola)",
-            participantes: 26,
-            horario: "16:30 - 21:00",
-            importe: 15,
-            inscripcionUrl: "/registro.html?id=miercoles-09-09-2026",
-            normasUrl: INFO_NORMAS_URL,
-            seccion: "proximos",
-            galeria: {
-                activa: true,
-                titulo: "GALERÍA",
-                descripcion: "Fotografías de Mosco Events en la PARTIDA del 09-09-2026",
-                botonListado: "FOTOS EVENTO 09-09-2026 →",
-                mensajeVacio: "aún no hay fotos",
-                imagenes: crearGaleria({
-                    carpeta: "/images/09-09-2026",
-                    prefijo: "09092026 ",
-                    extension: "jpeg"
-                })
-            }
-        },
-        {
             id: "sabado-29-08-2026",
             titulo: "S\u00e1bado 29 de agosto de 2026",
             tituloListado: "S\u00e1bado 29-08-2026",
