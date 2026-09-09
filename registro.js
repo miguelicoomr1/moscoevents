@@ -13,6 +13,8 @@
     const passwordField = document.querySelector("[data-registration-password-field]");
     const passwordInput = document.getElementById("registration-event-password");
     const passwordError = document.querySelector("[data-registration-password-error]");
+    const sideField = document.querySelector("[data-registration-side-field]");
+    const sideSelect = form?.elements.bando;
     const rulesInput = form?.elements.normasLeidas;
     const rulesError = document.querySelector("[data-rules-error]");
     const submitButton = form?.querySelector('button[type="submit"][data-registration-participant]');
@@ -361,6 +363,26 @@
         }
     }
 
+    // Solo algunas partidas (p. ej. la TCSIM del 19-09-2026) piden elegir bando.
+    function requiresSide(evento) {
+        return Boolean(evento?.seleccionBando);
+    }
+
+    function syncSideField() {
+        if (!sideField || !sideSelect) {
+            return;
+        }
+
+        const required = requiresSide(selectedEvent);
+
+        sideField.hidden = !required;
+        sideSelect.required = required;
+
+        if (!required) {
+            sideSelect.value = "";
+        }
+    }
+
     function isUpcomingEvent(evento) {
         if (evento.seccion) {
             return evento.seccion === "proximos";
@@ -659,6 +681,7 @@
         selectedEventBlocked = isEventBlocked(evento);
         syncBlockedNotice();
         syncPasswordField();
+        syncSideField();
         syncPaypalPayment();
     }
 
@@ -938,13 +961,14 @@
             [t("registro.receipt.name"), record.participante.nombre],
             [t("registro.receipt.team"), record.participante.equipo],
             [t("registro.receipt.equipment"), record.participante.equipamiento],
-            [t("registro.receipt.side"), record.participante.bando],
+            // Bando solo aplica a las partidas que lo piden (ver seleccionBando en datos.js).
+            record.participante.bando ? [t("registro.receipt.side"), record.participante.bando] : null,
             [t("registro.receipt.phone"), record.participante.telefono],
             [t("registro.receipt.email"), record.participante.correo],
             [t("registro.receipt.image_consent"), record.consentimientoImagenes],
             [t("registro.receipt.rules_read"), record.normasLeidas],
             [t("registro.receipt.signature_date"), record.fechaFirma]
-        ];
+        ].filter(Boolean);
     }
 
     function escapeHtml(value) {

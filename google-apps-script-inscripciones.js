@@ -13,6 +13,11 @@ const CONFIG = {
     EVENT_PASSWORDS: {
         "miercoles-16-09-2026": "16sep26"
     },
+    // Partidas que piden elegir bando (OTAN/PMC) al inscribirse.
+    // Debe coincidir con el campo "seleccionBando" del evento en datos.js.
+    EVENTS_WITH_SIDE_SELECTION: [
+        "sabado-19-09-2026"
+    ],
     PAYPAL_HANDLE: "martinlopezmoscoso",
     WEBSITE_URL: "https://www.moscoevents.com",
     LOGO_URL: "https://www.moscoevents.com/images/base%20web/logo-header.webp",
@@ -236,7 +241,7 @@ function validateRegistration_(record) {
     if (!record.nombre) missing.push("Nombre");
     if (!record.equipo) missing.push("Equipo");
     if (!record.equipamiento) missing.push("Equipamiento");
-    if (!record.bando) missing.push("Bando");
+    if (CONFIG.EVENTS_WITH_SIDE_SELECTION.includes(record.eventoId) && !record.bando) missing.push("Bando");
     if (!record.telefono) missing.push("Telefono");
     if (!record.correo) missing.push("Correo electronico");
     if (!record.consentimientoImagenes) missing.push("Consentimiento imagenes");
@@ -577,7 +582,7 @@ function buildPlainBody_(record, spreadsheetUrl, signatureUrl, includeAdminLinks
         `Nombre: ${record.nombre}`,
         `Equipo: ${record.equipo}`,
         `Equipamiento: ${record.equipamiento}`,
-        `Bando: ${record.bando}`,
+        record.bando ? `Bando: ${record.bando}` : null,
         `Telefono: ${record.telefono}`,
         `Correo electronico: ${record.correo}`,
         `Consentimiento imagenes: ${record.consentimientoImagenes}`,
@@ -600,7 +605,7 @@ function buildPlainBody_(record, spreadsheetUrl, signatureUrl, includeAdminLinks
         );
     }
 
-    return lines.join("\n");
+    return lines.filter((line) => line !== null).join("\n");
 }
 
 function buildHtmlBody_(record, spreadsheetUrl, signatureUrl, includeAdminLinks) {
@@ -623,14 +628,14 @@ function buildHtmlBody_(record, spreadsheetUrl, signatureUrl, includeAdminLinks)
         ["Nombre", record.nombre],
         ["Equipo", record.equipo],
         ["Equipamiento", record.equipamiento],
-        ["Bando", record.bando],
+        record.bando ? ["Bando", record.bando] : null,
         ["Telefono", record.telefono],
         ["Correo electronico", record.correo],
         ["Consentimiento imagenes", record.consentimientoImagenes],
         ["Normas leidas", record.normasLeidas],
         ["Texto legal firmado", record.textoLegalFirmado],
         ["Firma legal", "Recibida"]
-    ];
+    ].filter(Boolean);
 
     if (includeAdminLinks) {
         participantRows.push(["Google Sheets", spreadsheetUrl], ["Firma", signatureUrl || "No guardada"]);

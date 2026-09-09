@@ -1205,7 +1205,8 @@ body .mission-strip {
 
 .registration-waitlist[hidden],
 [data-registration-participant][hidden],
-.registration-event-password[hidden] {
+.registration-event-password[hidden],
+[data-registration-side-field][hidden] {
     display: none !important;
 }
 
