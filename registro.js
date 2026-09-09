@@ -541,7 +541,7 @@
         }
 
         if (blockedMessage) {
-            blockedMessage.textContent = selectedEventBlocked
+            blockedMessage.innerHTML = selectedEventBlocked
                 ? (selectedEvent?.avisoInscripcion || t("registro.form.blocked_message_default"))
                 : "";
         }

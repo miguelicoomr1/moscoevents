@@ -439,7 +439,8 @@
         // No mostrar INSCRIBIRSE en partidas ya pasadas: registro.js solo
         // lista eventos "proximos", asi que el enlace llevaria a un formulario vacio.
         if (evento.inscripcionesCerradas) {
-            const aviso = crearElemento("p", "event-registration-notice", evento.avisoInscripcion || t("registro.form.blocked_message_default"));
+            const aviso = crearElemento("p", "event-registration-notice");
+            aviso.innerHTML = evento.avisoInscripcion || t("registro.form.blocked_message_default");
             acciones.appendChild(aviso);
         } else if (evento.inscripcionUrl && esSeccion(evento, "proximos")) {
             acciones.appendChild(crearEnlaceRegistro(evento));
