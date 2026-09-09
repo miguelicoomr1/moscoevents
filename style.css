@@ -1226,6 +1226,13 @@ body .mission-strip {
     color: var(--text-soft);
 }
 
+.registration-waitlist > p a,
+.event-registration-notice a {
+    color: inherit;
+    font-weight: 700;
+    text-decoration: underline;
+}
+
 .registration-waitlist > p {
     margin-bottom: 24px;
 }

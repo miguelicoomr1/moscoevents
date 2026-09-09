@@ -1,5 +1,10 @@
 (function () {
     const INFO_NORMAS_URL = "/normas.html";
+    const WHATSAPP_COMUNIDAD_URL = "https://chat.whatsapp.com/JuC0zyC1NqU7v2ssUYmzIH";
+    // Aviso comun para partidas con inscripciones bloqueadas temporalmente.
+    const AVISO_INSCRIPCIONES_BLOQUEADAS =
+        "Actualmente no se puede realizar ninguna inscripción. " +
+        `Conforme esté arreglado se avisará por la <a href="${WHATSAPP_COMUNIDAD_URL}" target="_blank" rel="noopener noreferrer">comunidad de WhatsApp</a>.`;
 
     function crearGaleria({ carpeta, prefijo, extension, desde = 1, hasta = 0, excluir = [], relleno = 0 }) {
         const omitidos = new Set(excluir);
@@ -33,6 +38,8 @@
             importe: 15,
             contrasena: "16sep26",
             inscripcionUrl: "/registro.html?id=miercoles-16-09-2026",
+            inscripcionesCerradas: true,
+            avisoInscripcion: AVISO_INSCRIPCIONES_BLOQUEADAS,
             normasUrl: INFO_NORMAS_URL,
             seccion: "proximos",
             galeria: {
@@ -63,6 +70,8 @@
             horario: "16:30 - 21:00",
             importe: 15,
             inscripcionUrl: "/registro.html?id=jueves-17-09-2026",
+            inscripcionesCerradas: true,
+            avisoInscripcion: AVISO_INSCRIPCIONES_BLOQUEADAS,
             normasUrl: INFO_NORMAS_URL,
             seccion: "proximos",
             galeria: {
@@ -94,6 +103,8 @@
             importe: 18,
             seleccionBando: true,
             inscripcionUrl: "/registro.html?id=sabado-19-09-2026",
+            inscripcionesCerradas: true,
+            avisoInscripcion: AVISO_INSCRIPCIONES_BLOQUEADAS,
             normasUrl: INFO_NORMAS_URL,
             seccion: "proximos",
             galeria: {
