@@ -92,6 +92,7 @@
             participantes: 26,
             horario: "16:00 - 20:30",
             importe: 18,
+            seleccionBando: true,
             inscripcionUrl: "/registro.html?id=sabado-19-09-2026",
             normasUrl: INFO_NORMAS_URL,
             seccion: "proximos",
