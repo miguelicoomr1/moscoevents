@@ -938,6 +938,7 @@
             [t("registro.receipt.name"), record.participante.nombre],
             [t("registro.receipt.team"), record.participante.equipo],
             [t("registro.receipt.equipment"), record.participante.equipamiento],
+            [t("registro.receipt.side"), record.participante.bando],
             [t("registro.receipt.phone"), record.participante.telefono],
             [t("registro.receipt.email"), record.participante.correo],
             [t("registro.receipt.image_consent"), record.consentimientoImagenes],
@@ -1349,6 +1350,7 @@
                 nombre: formData.get("nombre"),
                 equipo: formData.get("equipo"),
                 equipamiento: formData.get("equipamiento"),
+                bando: formData.get("bando"),
                 telefono: formData.get("telefono"),
                 correo: formData.get("email")
             },
