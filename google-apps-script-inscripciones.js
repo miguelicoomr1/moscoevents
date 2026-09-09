@@ -45,7 +45,8 @@ const HEADERS = [
     "Estado del pago",
     "Destino del pago",
     "Enlace de pago",
-    "Pago confirmado por el participante"
+    "Pago confirmado por el participante",
+    "Bando"
 ];
 
 const RESERVATION_HEADERS = [
@@ -179,6 +180,7 @@ function normalizeRegistration_(payload) {
         nombre: value_(payload.nombre),
         equipo: value_(payload.equipo),
         equipamiento: value_(payload.equipamiento),
+        bando: value_(payload.bando),
         telefono: value_(payload.telefono),
         correo: value_(payload.email || payload._replyto),
         consentimientoImagenes: value_(payload.consentimientoImagenes),
@@ -234,6 +236,7 @@ function validateRegistration_(record) {
     if (!record.nombre) missing.push("Nombre");
     if (!record.equipo) missing.push("Equipo");
     if (!record.equipamiento) missing.push("Equipamiento");
+    if (!record.bando) missing.push("Bando");
     if (!record.telefono) missing.push("Telefono");
     if (!record.correo) missing.push("Correo electronico");
     if (!record.consentimientoImagenes) missing.push("Consentimiento imagenes");
@@ -498,7 +501,8 @@ function buildSheetRow_(record, signatureUrl) {
         safeCell_(record.pagoEstado),
         safeCell_(record.pagoDestino),
         safeCell_(record.pagoEnlace),
-        safeCell_(record.pagoConfirmado)
+        safeCell_(record.pagoConfirmado),
+        safeCell_(record.bando)
     ];
 }
 
@@ -573,6 +577,7 @@ function buildPlainBody_(record, spreadsheetUrl, signatureUrl, includeAdminLinks
         `Nombre: ${record.nombre}`,
         `Equipo: ${record.equipo}`,
         `Equipamiento: ${record.equipamiento}`,
+        `Bando: ${record.bando}`,
         `Telefono: ${record.telefono}`,
         `Correo electronico: ${record.correo}`,
         `Consentimiento imagenes: ${record.consentimientoImagenes}`,
@@ -618,6 +623,7 @@ function buildHtmlBody_(record, spreadsheetUrl, signatureUrl, includeAdminLinks)
         ["Nombre", record.nombre],
         ["Equipo", record.equipo],
         ["Equipamiento", record.equipamiento],
+        ["Bando", record.bando],
         ["Telefono", record.telefono],
         ["Correo electronico", record.correo],
         ["Consentimiento imagenes", record.consentimientoImagenes],
