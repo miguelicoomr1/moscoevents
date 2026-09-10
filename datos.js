@@ -36,10 +36,8 @@
             participantes: 26,
             horario: "16:30 - 21:00",
             importe: 15,
-            contrasena: "16sep26",
+            contrasena: "AGM",
             inscripcionUrl: "/registro.html?id=miercoles-16-09-2026",
-            inscripcionesCerradas: true,
-            avisoInscripcion: AVISO_INSCRIPCIONES_BLOQUEADAS,
             normasUrl: INFO_NORMAS_URL,
             seccion: "proximos",
             galeria: {
@@ -70,8 +68,6 @@
             horario: "16:30 - 21:00",
             importe: 15,
             inscripcionUrl: "/registro.html?id=jueves-17-09-2026",
-            inscripcionesCerradas: true,
-            avisoInscripcion: AVISO_INSCRIPCIONES_BLOQUEADAS,
             normasUrl: INFO_NORMAS_URL,
             seccion: "proximos",
             galeria: {
@@ -103,8 +99,6 @@
             importe: 18,
             seleccionBando: true,
             inscripcionUrl: "/registro.html?id=sabado-19-09-2026",
-            inscripcionesCerradas: true,
-            avisoInscripcion: AVISO_INSCRIPCIONES_BLOQUEADAS,
             normasUrl: INFO_NORMAS_URL,
             seccion: "proximos",
             galeria: {
