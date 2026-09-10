@@ -11,13 +11,15 @@ const CONFIG = {
     // Partidas privadas que exigen contrasena para inscribirse o reservar.
     // Debe coincidir con el campo "contrasena" del evento en datos.js.
     EVENT_PASSWORDS: {
-        "miercoles-16-09-2026": "16sep26"
+        "miercoles-16-09-2026": "AGM"
     },
     // Partidas que piden elegir bando (OTAN/PMC) al inscribirse.
     // Debe coincidir con el campo "seleccionBando" del evento en datos.js.
     EVENTS_WITH_SIDE_SELECTION: [
         "sabado-19-09-2026"
     ],
+    // Maximo de inscripciones con equipo de alquiler por partida.
+    RENTAL_CAPACITY: 4,
     PAYPAL_HANDLE: "martinlopezmoscoso",
     WEBSITE_URL: "https://www.moscoevents.com",
     LOGO_URL: "https://www.moscoevents.com/images/base%20web/logo-header.webp",
@@ -113,6 +115,14 @@ function doPost(e) {
                 wantsJson, false, "Partida llena",
                 `La partida ya ha alcanzado el limite de ${capacity} inscripciones. Vuelve al formulario para apuntarte a reservas.`,
                 "full"
+            );
+        }
+
+        if (isRentalEquipment_(record.equipamiento) && rentalCount_(sheet) >= CONFIG.RENTAL_CAPACITY) {
+            return respond_(
+                wantsJson, false, "Alquiler completo",
+                `Ya se han alcanzado los ${CONFIG.RENTAL_CAPACITY} alquileres disponibles para esta partida. Vuelve al formulario y selecciona material propio para inscribirte.`,
+                "rental_full"
             );
         }
 
@@ -267,6 +277,7 @@ function capacityStatusResponse_(params) {
     const eventName = value_(params.eventName);
     const callback = safeCallback_(params.callback);
     let count = 0;
+    let rentalCount = 0;
 
     if (eventName) {
         const folder = getOrCreateFolder_(CONFIG.DRIVE_FOLDER_NAME);
@@ -274,6 +285,7 @@ function capacityStatusResponse_(params) {
         const sheet = spreadsheet.getSheetByName(eventSheetName_(eventName, eventId));
 
         count = registrationCount_(sheet);
+        rentalCount = rentalCount_(sheet);
     }
 
     const capacity = eventCapacity_(params.capacity);
@@ -281,7 +293,10 @@ function capacityStatusResponse_(params) {
         eventId: eventId,
         capacity: capacity, // null = sin limite de plazas
         count: count,
-        full: isEventFull_(count, capacity)
+        full: isEventFull_(count, capacity),
+        rentalCount: rentalCount,
+        rentalCapacity: CONFIG.RENTAL_CAPACITY,
+        rentalFull: rentalCount >= CONFIG.RENTAL_CAPACITY
     };
     const content = callback
         ? `${callback}(${JSON.stringify(payload)});`
@@ -307,6 +322,29 @@ function registrationCount_(sheet) {
     }
 
     return Math.max(0, sheet.getLastRow() - 1);
+}
+
+// El equipamiento de alquiler siempre empieza por "Alquiler" (ver datos.js/registro.html).
+function isRentalEquipment_(equipamiento) {
+    return /^alquiler/i.test(value_(equipamiento));
+}
+
+// Cuenta cuantas inscripciones de esta partida ya llevan equipo de alquiler.
+function rentalCount_(sheet) {
+    if (!sheet) {
+        return 0;
+    }
+
+    const lastRow = sheet.getLastRow();
+
+    if (lastRow < 2) {
+        return 0;
+    }
+
+    const equipCol = HEADERS.indexOf("Equipamiento") + 1;
+    const values = sheet.getRange(2, equipCol, lastRow - 1, 1).getValues();
+
+    return values.filter((row) => isRentalEquipment_(row[0])).length;
 }
 
 function referenceExists_(sheet, referencia) {
