@@ -119,6 +119,13 @@
     const paypalHandle = window.MOSCO_PAYPAL_HANDLE || "martinlopezmoscoso";
     // Suplemento por alquilar equipo. Se suma al precio de la partida.
     const RENTAL_SURCHARGE = 20;
+    const equipmentSelect = form.elements.equipamiento;
+    const rentalOption = equipmentSelect
+        ? Array.from(equipmentSelect.options).find((option) => option.value.startsWith("Alquiler"))
+        : null;
+    const rentalOptionDefaultLabel = rentalOption?.textContent || "";
+    const rentalFullNotice = document.querySelector("[data-rental-full-notice]");
+    let selectedEventRentalFull = false;
 
     function formatPaymentAmount(amount) {
         return new Intl.NumberFormat(window.MoscoI18n?.getLocale() || "es-ES", {
@@ -133,6 +140,29 @@
         return String(form.elements.equipamiento?.value || "").startsWith("Alquiler")
             ? RENTAL_SURCHARGE
             : 0;
+    }
+
+    // Cada partida admite un maximo de alquileres (ver RENTAL_CAPACITY en el
+    // backend). Una vez alcanzado, la opcion se deshabilita para que no se
+    // pueda elegir hasta que haya hueco de nuevo.
+    function syncRentalAvailability(rentalFull) {
+        selectedEventRentalFull = Boolean(rentalFull);
+
+        if (rentalOption) {
+            rentalOption.disabled = selectedEventRentalFull;
+            rentalOption.textContent = selectedEventRentalFull
+                ? t("registro.form.equipment_rental_full")
+                : (rentalOptionDefaultLabel || t("registro.form.equipment_rental"));
+
+            if (selectedEventRentalFull && equipmentSelect.value === rentalOption.value) {
+                equipmentSelect.value = "";
+                updateSubmitAvailability();
+            }
+        }
+
+        if (rentalFullNotice) {
+            rentalFullNotice.hidden = !selectedEventRentalFull;
+        }
     }
 
     // Comision que PayPal cobra a Mosco Events cuando el pago llega marcado
@@ -516,7 +546,7 @@
                         return;
                     }
 
-                    finish({ full: Boolean(payload.full) });
+                    finish({ full: Boolean(payload.full), rentalFull: Boolean(payload.rentalFull) });
                 };
 
                 script.async = true;
@@ -580,6 +610,7 @@
         const requestId = ++capacityRequestId;
 
         setRegistrationFull(false);
+        syncRentalAvailability(false);
 
         if (!evento) {
             capacityChecking = false;
@@ -598,6 +629,7 @@
 
         capacityChecking = false;
         setRegistrationFull(Boolean(status?.full));
+        syncRentalAvailability(Boolean(status?.rentalFull));
 
         return status;
     }
@@ -626,6 +658,7 @@
             }
 
             setRegistrationFull(Boolean(status.full));
+            syncRentalAvailability(Boolean(status.rentalFull));
         } finally {
             silentCapacityChecking = false;
         }
@@ -1338,6 +1371,15 @@
             return;
         }
 
+        syncRentalAvailability(Boolean(capacityStatus?.rentalFull));
+
+        if (selectedEventRentalFull && String(equipmentSelect.value || "").startsWith("Alquiler")) {
+            updateSubmitAvailability();
+            equipmentSelect.scrollIntoView({ behavior: "smooth", block: "center" });
+            equipmentSelect.focus();
+            return;
+        }
+
         // La comprobacion de aforo es asincrona y, mientras esperaba,
         // pudo recalcularse el estado de la confirmacion de pago. Se
         // vuelve a comprobar aqui para no enviar al backend una
@@ -1427,6 +1469,14 @@
                         result.classList.remove("is-sending");
                         setRegistrationFull(true);
                         waitlist.scrollIntoView({ behavior: "smooth", block: "start" });
+                    } else if (outcome?.code === "rental_full") {
+                        isSubmitting = false;
+                        result.hidden = true;
+                        result.classList.remove("is-sending");
+                        syncRentalAvailability(true);
+                        updateSubmitAvailability();
+                        equipmentSelect.scrollIntoView({ behavior: "smooth", block: "center" });
+                        equipmentSelect.focus();
                     } else {
                         showSubmissionDelay();
                     }
