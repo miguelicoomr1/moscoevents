@@ -1,5 +1,5 @@
 const CONFIG = {
-    OWNER_EMAIL: "moscoeventes@gmail.com",
+    OWNER_EMAIL: "inscripciones@moscoevents.com",
     DRIVE_FOLDER_NAME: "\ud83d\udcdd Inscripciones \u2014 Mosco Events",
     SPREADSHEET_NAME: "Inscripciones Mosco Events",
     SPREADSHEET_ID: "1kfS5Ky3S9mTcE6Tp-PDCR3OzjLhf3l2u5KvWQznp4OM",
@@ -584,6 +584,7 @@ function sendEmails_(record, spreadsheetUrl, signatureUrl) {
         subject: participantSubject,
         body: buildPlainBody_(record, "", "", false),
         htmlBody: buildHtmlBody_(record, "", "", false),
+        replyTo: CONFIG.OWNER_EMAIL,
         name: "Mosco Events"
     });
 }

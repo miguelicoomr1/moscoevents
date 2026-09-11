@@ -41,7 +41,7 @@
     const paymentConfirmHelp = document.querySelector("[data-payment-confirm-help]");
     const goodsServicesInput = document.getElementById("pay-as-goods-services");
     const submissionConfig = window.MOSCO_INSCRIPCIONES_CONFIG || {};
-    const fallbackAction = submissionConfig.fallbackAction || "https://formsubmit.co/moscoeventes@gmail.com";
+    const fallbackAction = submissionConfig.fallbackAction || "https://formsubmit.co/inscripciones@moscoevents.com";
     const appsScriptUrl = String(submissionConfig.appsScriptUrl || "").trim();
     const referenceStorageKey = "moscoEventsRegistrationReference";
     // Solo tiene que sobrevivir al salto al backend y la vuelta con ?enviado=1.

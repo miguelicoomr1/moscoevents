@@ -21,8 +21,9 @@ Cuando `appsScriptUrl` tenga la URL de Apps Script, cada envio del formulario:
 
 - Se guardara en Google Sheets en la pestana de la partida correcta.
 - Guardara la firma en una carpeta `Firmas inscripciones`.
-- Enviara el aviso a `moscoeventes@gmail.com`.
-- Enviara una copia de las respuestas al correo del participante.
+- Enviara el aviso a `inscripciones@moscoevents.com`.
+- Enviara una copia de las respuestas al correo del participante, con respuesta a
+  `inscripciones@moscoevents.com`.
 - Guardara el metodo, importe y estado del pago seleccionado, calculado siempre a partir del
   precio de la partida elegida (mas el suplemento de alquiler si aplica), nunca un importe fijo.
 - Exigira que el participante haya confirmado el pago en PayPal antes de aceptar la inscripcion.
