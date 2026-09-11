@@ -8,3 +8,21 @@ apps-script/Código.js
 apps-script/deployment-id.txt
 apps-script/.clasprc.json
 
+# Mensajero de correo (apps-script-correo/): misma idea que arriba.
+apps-script-correo/node_modules/
+apps-script-correo/.clasp.json
+apps-script-correo/Code.js
+apps-script-correo/deployment-id.txt
+
+# Verificador de pagos PayPal (apps-script-pagos/): misma idea que arriba.
+apps-script-pagos/node_modules/
+apps-script-pagos/.clasp.json
+apps-script-pagos/Code.js
+
+# Clave compartida entre los dos proyectos. ESTA si es secreta: nunca a Git.
+apps-script/clave-mensajero.txt
+
+# Clave de la rutina automatica que revisa el correo de PayPal (endpoints
+# pendingPayments/markPaid). Tambien secreta: nunca a Git.
+apps-script/clave-automatizacion.txt
+

@@ -1,0 +1,10 @@
+{
+  "name": "mosco-events-apps-script-pagos",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Herramientas para desplegar google-apps-script-pagos.js (verificador de pagos PayPal, cuenta info@moscoevents.com) con clasp.",
+  "scripts": {
+    "sync": "node sync.js",
+    "push": "npm run sync && clasp -u info push"
+  }
+}
