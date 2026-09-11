@@ -126,6 +126,16 @@
     const rentalOptionDefaultLabel = rentalOption?.textContent || "";
     const rentalFullNotice = document.querySelector("[data-rental-full-notice]");
     let selectedEventRentalFull = false;
+    const sideOtanOption = sideSelect
+        ? Array.from(sideSelect.options).find((option) => option.value.startsWith("OTAN"))
+        : null;
+    const sidePmcOption = sideSelect
+        ? Array.from(sideSelect.options).find((option) => option.value.startsWith("PMC"))
+        : null;
+    const sideOtanOptionDefaultLabel = sideOtanOption?.textContent || "";
+    const sidePmcOptionDefaultLabel = sidePmcOption?.textContent || "";
+    let selectedEventOtanFull = false;
+    let selectedEventPmcFull = false;
 
     function formatPaymentAmount(amount) {
         return new Intl.NumberFormat(window.MoscoI18n?.getLocale() || "es-ES", {
@@ -162,6 +172,38 @@
 
         if (rentalFullNotice) {
             rentalFullNotice.hidden = !selectedEventRentalFull;
+        }
+    }
+
+    // Cada bando de las partidas con seleccionBando admite un maximo de
+    // inscripciones (ver SIDE_CAPACITY en el backend). Una vez alcanzado, esa
+    // opcion se deshabilita para que no se pueda elegir hasta que haya hueco.
+    function syncSideAvailability(otanFull, pmcFull) {
+        selectedEventOtanFull = Boolean(otanFull);
+        selectedEventPmcFull = Boolean(pmcFull);
+
+        if (sideOtanOption) {
+            sideOtanOption.disabled = selectedEventOtanFull;
+            sideOtanOption.textContent = selectedEventOtanFull
+                ? t("registro.form.side_otan_full")
+                : (sideOtanOptionDefaultLabel || t("registro.form.side_otan"));
+
+            if (selectedEventOtanFull && sideSelect.value === sideOtanOption.value) {
+                sideSelect.value = "";
+                updateSubmitAvailability();
+            }
+        }
+
+        if (sidePmcOption) {
+            sidePmcOption.disabled = selectedEventPmcFull;
+            sidePmcOption.textContent = selectedEventPmcFull
+                ? t("registro.form.side_pmc_full")
+                : (sidePmcOptionDefaultLabel || t("registro.form.side_pmc"));
+
+            if (selectedEventPmcFull && sideSelect.value === sidePmcOption.value) {
+                sideSelect.value = "";
+                updateSubmitAvailability();
+            }
         }
     }
 
@@ -546,7 +588,12 @@
                         return;
                     }
 
-                    finish({ full: Boolean(payload.full), rentalFull: Boolean(payload.rentalFull) });
+                    finish({
+                        full: Boolean(payload.full),
+                        rentalFull: Boolean(payload.rentalFull),
+                        otanFull: Boolean(payload.otanFull),
+                        pmcFull: Boolean(payload.pmcFull)
+                    });
                 };
 
                 script.async = true;
@@ -611,6 +658,7 @@
 
         setRegistrationFull(false);
         syncRentalAvailability(false);
+        syncSideAvailability(false, false);
 
         if (!evento) {
             capacityChecking = false;
@@ -630,6 +678,7 @@
         capacityChecking = false;
         setRegistrationFull(Boolean(status?.full));
         syncRentalAvailability(Boolean(status?.rentalFull));
+        syncSideAvailability(Boolean(status?.otanFull), Boolean(status?.pmcFull));
 
         return status;
     }
@@ -659,6 +708,7 @@
 
             setRegistrationFull(Boolean(status.full));
             syncRentalAvailability(Boolean(status.rentalFull));
+            syncSideAvailability(Boolean(status.otanFull), Boolean(status.pmcFull));
         } finally {
             silentCapacityChecking = false;
         }
@@ -1377,6 +1427,20 @@
             updateSubmitAvailability();
             equipmentSelect.scrollIntoView({ behavior: "smooth", block: "center" });
             equipmentSelect.focus();
+            return;
+        }
+
+        syncSideAvailability(Boolean(capacityStatus?.otanFull), Boolean(capacityStatus?.pmcFull));
+
+        const sideValue = String(sideSelect.value || "");
+
+        if (
+            (selectedEventOtanFull && sideOtanOption && sideValue === sideOtanOption.value) ||
+            (selectedEventPmcFull && sidePmcOption && sideValue === sidePmcOption.value)
+        ) {
+            updateSubmitAvailability();
+            sideSelect.scrollIntoView({ behavior: "smooth", block: "center" });
+            sideSelect.focus();
             return;
         }
 
