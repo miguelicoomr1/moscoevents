@@ -22,8 +22,8 @@ Cuando `appsScriptUrl` tenga la URL de Apps Script, cada envio del formulario:
 - Se guardara en Google Sheets en la pestana de la partida correcta.
 - Guardara la firma en una carpeta `Firmas inscripciones`.
 - Enviara el aviso a `inscripciones@moscoevents.com`.
-- Enviara una copia de las respuestas al correo del participante, con respuesta a
-  `inscripciones@moscoevents.com`.
+- Enviara una copia de las respuestas al correo del participante desde
+  `inscripciones@moscoevents.com` (ver "Mensajero de correo" mas abajo).
 - Guardara el metodo, importe y estado del pago seleccionado, calculado siempre a partir del
   precio de la partida elegida (mas el suplemento de alquiler si aplica), nunca un importe fijo.
 - Exigira que el participante haya confirmado el pago en PayPal antes de aceptar la inscripcion.
@@ -72,3 +72,28 @@ Apps Script; nadie mas los puede completar en tu lugar.
 
 `apps-script/.clasp.json`, `apps-script/deployment-id.txt` y las credenciales de `clasp login` no
 se suben a Git (ver `.gitignore`): son configuracion local de quien despliega, no del sitio.
+
+## Mensajero de correo (inscripciones@moscoevents.com)
+
+El backend de inscripciones se ejecuta con la cuenta `moscoeventes@gmail.com`, y `MailApp` no
+permite cambiar el remitente. Para que la copia al participante salga desde
+`inscripciones@moscoevents.com` hay un segundo proyecto de Apps Script, el mensajero
+(`google-apps-script-correo.js`), que pertenece a esa cuenta y se despliega como aplicacion web.
+
+- El backend le pasa el correo ya montado con `UrlFetchApp` (`CONFIG.MAIL_RELAY_URL`), junto con
+  una clave compartida. El mensajero rechaza cualquier peticion sin esa clave y cualquier envio si
+  no se esta ejecutando con `inscripciones@moscoevents.com`.
+- Si el mensajero falla o no esta configurado, el backend envia la copia desde Gmail como antes
+  (con respuesta a `inscripciones@`) y manda un aviso de error al organizador.
+- La clave vive solo en `apps-script/clave-mensajero.txt` (fuera de Git). Los dos `sync.js` la
+  insertan en el codigo al subirlo; en el repositorio solo queda el marcador `__CLAVE_MENSAJERO__`.
+  Si se cambia la clave, hay que volver a desplegar los dos proyectos.
+
+Despliegue del mensajero (carpeta `apps-script-correo/`, con el usuario de clasp `inscripciones`,
+creado con `clasp -u inscripciones login` iniciando sesion con `inscripciones@moscoevents.com`):
+
+- `npm run deploy`: sube el codigo y actualiza la implementacion guardada en
+  `apps-script-correo/deployment-id.txt` (la primera vez la crea y guarda su ID).
+- Si se anade un permiso nuevo al mensajero, hay que abrir su proyecto en el editor con
+  `inscripciones@moscoevents.com` y ejecutar `autorizar` una vez. Del mismo modo, en el backend,
+  `probarMensajero` concede el permiso de `UrlFetchApp` y comprueba que el mensajero responde.

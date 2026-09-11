@@ -1,0 +1,11 @@
+{
+  "name": "mosco-events-apps-script-correo",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Herramientas para desplegar google-apps-script-correo.js (mensajero de inscripciones@moscoevents.com) con clasp.",
+  "scripts": {
+    "sync": "node sync.js",
+    "push": "npm run sync && clasp -u inscripciones push",
+    "deploy": "npm run push && node deploy.js"
+  }
+}
