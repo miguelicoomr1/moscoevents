@@ -20,7 +20,7 @@ const CONFIG = {
     ],
     // Maximo de inscripciones con equipo de alquiler por partida.
     RENTAL_CAPACITY: 4,
-    PAYPAL_HANDLE: "martinlopezmoscoso",
+    PAYPAL_HANDLE: "MoscoEvents",
     WEBSITE_URL: "https://www.moscoevents.com",
     LOGO_URL: "https://www.moscoevents.com/images/base%20web/logo-header.webp",
     WHATSAPP_NUMBER: "34698125932",

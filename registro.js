@@ -116,7 +116,7 @@
     // cambia despues (otro evento, alquiler...) deja de coincidir y hay
     // que pulsar "PAGAR CON PAYPAL" otra vez antes de poder confirmar.
     let paypalOpenedForUrl = "";
-    const paypalHandle = window.MOSCO_PAYPAL_HANDLE || "martinlopezmoscoso";
+    const paypalHandle = window.MOSCO_PAYPAL_HANDLE || "MoscoEvents";
     // Suplemento por alquilar equipo. Se suma al precio de la partida.
     const RENTAL_SURCHARGE = 20;
     const equipmentSelect = form.elements.equipamiento;

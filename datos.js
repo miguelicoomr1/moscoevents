@@ -404,7 +404,7 @@
         "tcsim-16-04-2026": "/Galeria/TCSIM-16-04-2026.html"
     };
 
-    const PAYPAL_HANDLE = "martinlopezmoscoso";
+    const PAYPAL_HANDLE = "MoscoEvents";
 
     function formatearImporte(importe) {
         return new Intl.NumberFormat("es-ES", {
