@@ -20,11 +20,32 @@ const CONFIG = {
     ],
     // Maximo de inscripciones con equipo de alquiler por partida.
     RENTAL_CAPACITY: 4,
+    // Maximo de inscripciones por bando en las partidas de EVENTS_WITH_SIDE_SELECTION
+    // (la suma de los dos bandos debe coincidir con el aforo total de la partida).
+    SIDE_CAPACITY: 13,
+    // Valores exactos del campo "bando" (deben coincidir con las opciones
+    // del select en registro.html).
+    SIDE_VALUES: {
+        otan: "OTAN (Camuflajes)",
+        pmc: "PMC (Sin camuflajes)"
+    },
     PAYPAL_HANDLE: "MoscoEvents",
     WEBSITE_URL: "https://www.moscoevents.com",
     LOGO_URL: "https://www.moscoevents.com/images/base%20web/logo-header.webp",
     WHATSAPP_NUMBER: "34698125932",
-    WHATSAPP_DISPLAY: "+34 698 125 932"
+    WHATSAPP_DISPLAY: "+34 698 125 932",
+    // Mensajero (google-apps-script-correo.js) que envia la copia al
+    // participante desde inscripciones@moscoevents.com. Si falla o no esta
+    // configurado, la copia sale con MailApp desde esta cuenta, como antes.
+    MAIL_RELAY_URL: "https://script.google.com/macros/s/AKfycbzDjCW9byTSTRbH-PWr2OAbbnPmLtURwuKXMMNCriN1GTaVf3rsMAGoPf-D1WQpEVdbag/exec",
+    // apps-script/sync.js sustituye el marcador por la clave real
+    // (apps-script/clave-mensajero.txt, fuera de Git) al subir el codigo.
+    MAIL_RELAY_KEY: "__CLAVE_MENSAJERO__",
+    // Da acceso a los endpoints "pendingPayments"/"markPaid" que usa la
+    // rutina automatica que revisa el correo de PayPal cada X horas.
+    // apps-script/sync.js sustituye el marcador por la clave real
+    // (apps-script/clave-automatizacion.txt, fuera de Git) al subir el codigo.
+    AUTOMATION_KEY: "__CLAVE_AUTOMATIZACION__"
 };
 
 const HEADERS = [
@@ -66,9 +87,18 @@ const RESERVATION_HEADERS = [
 
 function doGet(e) {
     const params = e && e.parameter ? e.parameter : {};
+    const action = value_(params.action);
 
-    if (value_(params.action) === "status") {
+    if (action === "status") {
         return capacityStatusResponse_(params);
+    }
+
+    if (action === "pendingPayments") {
+        return pendingPaymentsResponse_(params);
+    }
+
+    if (action === "markPaid") {
+        return markPaidResponse_(params);
     }
 
     return html_("Inscripciones Mosco Events", "El sistema de inscripciones esta activo.");
@@ -124,6 +154,18 @@ function doPost(e) {
                 `Ya se han alcanzado los ${CONFIG.RENTAL_CAPACITY} alquileres disponibles para esta partida. Vuelve al formulario y selecciona material propio para inscribirte.`,
                 "rental_full"
             );
+        }
+
+        if (requiresSideSelection_(record.eventoId)) {
+            const side = sideKey_(record.bando);
+
+            if (side && sideCounts_(sheet)[side] >= CONFIG.SIDE_CAPACITY) {
+                return respond_(
+                    wantsJson, false, "Bando completo",
+                    `Ya se han alcanzado las ${CONFIG.SIDE_CAPACITY} plazas del bando elegido. Vuelve al formulario y elige el otro bando para inscribirte.`,
+                    "side_full"
+                );
+            }
         }
 
         const signatureUrl = saveSignature_(folder, record.firmaLegal, record.referencia);
@@ -278,6 +320,7 @@ function capacityStatusResponse_(params) {
     const callback = safeCallback_(params.callback);
     let count = 0;
     let rentalCount = 0;
+    let sides = { otan: 0, pmc: 0 };
 
     if (eventName) {
         const folder = getOrCreateFolder_(CONFIG.DRIVE_FOLDER_NAME);
@@ -286,9 +329,11 @@ function capacityStatusResponse_(params) {
 
         count = registrationCount_(sheet);
         rentalCount = rentalCount_(sheet);
+        sides = sideCounts_(sheet);
     }
 
     const capacity = eventCapacity_(params.capacity);
+    const sideSelectionRequired = requiresSideSelection_(eventId);
     const payload = {
         eventId: eventId,
         capacity: capacity, // null = sin limite de plazas
@@ -296,7 +341,12 @@ function capacityStatusResponse_(params) {
         full: isEventFull_(count, capacity),
         rentalCount: rentalCount,
         rentalCapacity: CONFIG.RENTAL_CAPACITY,
-        rentalFull: rentalCount >= CONFIG.RENTAL_CAPACITY
+        rentalFull: rentalCount >= CONFIG.RENTAL_CAPACITY,
+        otanCount: sides.otan,
+        pmcCount: sides.pmc,
+        sideCapacity: CONFIG.SIDE_CAPACITY,
+        otanFull: sideSelectionRequired && sides.otan >= CONFIG.SIDE_CAPACITY,
+        pmcFull: sideSelectionRequired && sides.pmc >= CONFIG.SIDE_CAPACITY
     };
     const content = callback
         ? `${callback}(${JSON.stringify(payload)});`
@@ -314,6 +364,140 @@ function safeCallback_(value) {
     const callback = value_(value);
 
     return /^[A-Za-z_$][0-9A-Za-z_$]{0,80}$/.test(callback) ? callback : "";
+}
+
+// La clave real mide 43 caracteres; si sync.js no la ha insertado queda el
+// marcador, que es mas corto, y estos endpoints no aceptan ninguna peticion.
+function validAutomationKey_(value) {
+    return CONFIG.AUTOMATION_KEY.length >= 32 && value_(value) === CONFIG.AUTOMATION_KEY;
+}
+
+// Hojas de inscripciones (una por partida), sin la de "Reservas".
+function eventSheets_(spreadsheet) {
+    return spreadsheet.getSheets().filter((sheet) => sheet.getName() !== CONFIG.RESERVATIONS_SHEET_NAME);
+}
+
+// Una inscripcion queda "pendiente" hasta que alguien (o la rutina
+// automatica que lee el correo de PayPal) escribe "PAGADO" al principio de
+// "Desglose del pago" - la misma convencion que ya se usaba a mano.
+function isMarkedPaid_(desglose) {
+    return /^pagado\b/i.test(value_(desglose));
+}
+
+// Usado por la rutina automatica: devuelve las inscripciones por PayPal que
+// el participante confirmo pero que todavia nadie (ni esta rutina) ha
+// verificado contra el correo "Ha recibido dinero" de PayPal.
+function pendingPaymentsResponse_(params) {
+    if (!validAutomationKey_(params.secret)) {
+        return json_({ ok: false, error: "clave" });
+    }
+
+    const folder = getOrCreateFolder_(CONFIG.DRIVE_FOLDER_NAME);
+    const spreadsheet = getOrCreateSpreadsheet_(folder);
+    const metodoCol = HEADERS.indexOf("Metodo de pago") + 1;
+    const importeCol = HEADERS.indexOf("Importe del pago") + 1;
+    const desgloseCol = HEADERS.indexOf("Desglose del pago") + 1;
+    const confirmadoCol = HEADERS.indexOf("Pago confirmado por el participante") + 1;
+    const pendientes = [];
+
+    eventSheets_(spreadsheet).forEach((sheet) => {
+        const lastRow = sheet.getLastRow();
+
+        if (lastRow < 2) {
+            return;
+        }
+
+        const values = sheet.getRange(2, 1, lastRow - 1, HEADERS.length).getValues();
+
+        values.forEach((row) => {
+            const metodo = value_(row[metodoCol - 1]);
+            const confirmado = value_(row[confirmadoCol - 1]);
+            const desglose = value_(row[desgloseCol - 1]);
+
+            if (metodo !== "PayPal" || confirmado !== "Si" || isMarkedPaid_(desglose)) {
+                return;
+            }
+
+            const fechaRegistro = row[HEADERS.indexOf("Fecha registro")];
+
+            pendientes.push({
+                referencia: value_(row[HEADERS.indexOf("Referencia")]),
+                nombre: value_(row[HEADERS.indexOf("Nombre")]),
+                correo: value_(row[HEADERS.indexOf("Correo electronico")]),
+                evento: value_(row[HEADERS.indexOf("Evento")]),
+                importe: value_(row[importeCol - 1]),
+                fechaRegistro: fechaRegistro instanceof Date ? fechaRegistro.toISOString() : value_(fechaRegistro)
+            });
+        });
+    });
+
+    return json_({ ok: true, pendientes: pendientes });
+}
+
+// Usado por la rutina automatica tras confirmar un pago por el correo de
+// PayPal: marca la fila (buscada por Referencia, unica) como pagada. Es
+// idempotente - si ya estaba marcada, no la toca dos veces.
+function markPaidResponse_(params) {
+    if (!validAutomationKey_(params.secret)) {
+        return json_({ ok: false, error: "clave" });
+    }
+
+    const referencia = value_(params.ref);
+
+    if (!referencia) {
+        return json_({ ok: false, error: "sin referencia" });
+    }
+
+    const lock = LockService.getScriptLock();
+
+    try {
+        lock.waitLock(30000);
+
+        const folder = getOrCreateFolder_(CONFIG.DRIVE_FOLDER_NAME);
+        const spreadsheet = getOrCreateSpreadsheet_(folder);
+        const refCol = HEADERS.indexOf("Referencia") + 1;
+        const desgloseCol = HEADERS.indexOf("Desglose del pago") + 1;
+
+        for (const sheet of eventSheets_(spreadsheet)) {
+            const lastRow = sheet.getLastRow();
+
+            if (lastRow < 2) {
+                continue;
+            }
+
+            const refs = sheet.getRange(2, refCol, lastRow - 1, 1).getValues();
+            const rowIndex = refs.findIndex((row) => value_(row[0]) === referencia);
+
+            if (rowIndex === -1) {
+                continue;
+            }
+
+            const cell = sheet.getRange(rowIndex + 2, desgloseCol);
+            const actual = value_(cell.getValue());
+
+            if (isMarkedPaid_(actual)) {
+                return json_({ ok: true, referencia: referencia, ya: true });
+            }
+
+            cell.setValue(actual ? `PAGADO — ${actual}` : "PAGADO");
+            cell.setNote(
+                `Verificado automaticamente el ${new Date().toISOString()} `
+                + `contra el correo de PayPal "Ha recibido dinero" (${value_(params.nota)}).`
+            );
+
+            return json_({ ok: true, referencia: referencia, ya: false });
+        }
+
+        return json_({ ok: false, error: "no encontrada" });
+    } finally {
+        lock.releaseLock();
+    }
+}
+
+function json_(payload) {
+    return ContentService
+        .createTextOutput(JSON.stringify(payload))
+        .setMimeType(ContentService.MimeType.JSON);
 }
 
 function registrationCount_(sheet) {
@@ -345,6 +529,47 @@ function rentalCount_(sheet) {
     const values = sheet.getRange(2, equipCol, lastRow - 1, 1).getValues();
 
     return values.filter((row) => isRentalEquipment_(row[0])).length;
+}
+
+// El evento pide elegir bando (ver EVENTS_WITH_SIDE_SELECTION / seleccionBando en datos.js).
+function requiresSideSelection_(eventId) {
+    return CONFIG.EVENTS_WITH_SIDE_SELECTION.includes(value_(eventId));
+}
+
+// A que bando corresponde este valor exacto del campo "Bando", o null si no
+// coincide con ninguno de los dos (p. ej. vacio, en una partida sin bandos).
+function sideKey_(bando) {
+    if (bando === CONFIG.SIDE_VALUES.otan) return "otan";
+    if (bando === CONFIG.SIDE_VALUES.pmc) return "pmc";
+    return null;
+}
+
+// Cuenta cuantas inscripciones de esta partida ya llevan cada bando.
+function sideCounts_(sheet) {
+    const counts = { otan: 0, pmc: 0 };
+
+    if (!sheet) {
+        return counts;
+    }
+
+    const lastRow = sheet.getLastRow();
+
+    if (lastRow < 2) {
+        return counts;
+    }
+
+    const bandoCol = HEADERS.indexOf("Bando") + 1;
+    const values = sheet.getRange(2, bandoCol, lastRow - 1, 1).getValues();
+
+    values.forEach((row) => {
+        const key = sideKey_(value_(row[0]));
+
+        if (key) {
+            counts[key] += 1;
+        }
+    });
+
+    return counts;
 }
 
 function referenceExists_(sheet, referencia) {
@@ -579,14 +804,65 @@ function sendEmails_(record, spreadsheetUrl, signatureUrl) {
         name: "Mosco Events Inscripciones"
     });
 
-    MailApp.sendEmail({
+    const participantMessage = {
         to: record.correo,
         subject: participantSubject,
         body: buildPlainBody_(record, "", "", false),
         htmlBody: buildHtmlBody_(record, "", "", false),
-        replyTo: CONFIG.OWNER_EMAIL,
         name: "Mosco Events"
-    });
+    };
+
+    if (!sendViaMailRelay_(participantMessage)) {
+        MailApp.sendEmail(Object.assign({ replyTo: CONFIG.OWNER_EMAIL }, participantMessage));
+    }
+}
+
+function mailRelayConfigured_() {
+    // La clave real mide 43 caracteres; el marcador sin sustituir, menos.
+    return Boolean(CONFIG.MAIL_RELAY_URL) && CONFIG.MAIL_RELAY_KEY.length >= 32;
+}
+
+// Devuelve false si el mensajero no esta configurado o no confirma el envio,
+// para que el llamador mande la copia por MailApp. Si estaba configurado y
+// falla, avisa al organizador para que se note y se pueda revisar.
+function sendViaMailRelay_(message) {
+    if (!mailRelayConfigured_()) {
+        return false;
+    }
+
+    const result = callMailRelay_(message);
+
+    if (result.ok !== true) {
+        notifyError_(new Error(`El mensajero de correo no ha enviado la copia al participante (${result.error}). Se ha enviado desde la cuenta de respaldo.`), null);
+        return false;
+    }
+
+    return true;
+}
+
+function callMailRelay_(payload) {
+    try {
+        const response = UrlFetchApp.fetch(CONFIG.MAIL_RELAY_URL, {
+            method: "post",
+            contentType: "application/json",
+            payload: JSON.stringify(Object.assign({ clave: CONFIG.MAIL_RELAY_KEY }, payload)),
+            muteHttpExceptions: true
+        });
+
+        return JSON.parse(response.getContentText());
+    } catch (error) {
+        return { ok: false, error: String(error) };
+    }
+}
+
+// Ejecutar una vez desde el editor de Apps Script: concede el permiso para
+// llamar al mensajero y comprueba que responde con la cuenta correcta.
+function probarMensajero() {
+    const result = mailRelayConfigured_()
+        ? callMailRelay_({ accion: "ping" })
+        : { ok: false, error: "sin configurar" };
+
+    console.log(JSON.stringify(result));
 }
 
 function buildPlainBody_(record, spreadsheetUrl, signatureUrl, includeAdminLinks) {
