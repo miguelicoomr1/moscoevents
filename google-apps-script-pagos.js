@@ -13,12 +13,12 @@
 // Si una inscripcion lleva mas de UNPAID_AFTER_HOURS sin ese correo, avisa
 // al organizador por si hay que reclamar el pago.
 const CONFIG = {
-    BACKEND_URL: "https://script.google.com/macros/s/AKfycbxaT_6V3G37RpEtUuW6HpiEkLcL4NbZ1yvXiYJbD6eaGE-v8ixz4Lb1GqXUnwmIbUgH/exec",
+    BACKEND_URL: "https://script.google.com/macros/s/AKfycbw3wZUcOYPorqGp8kYq2mn_slfUctzIqVrYIa3vvEZBad36AwEMlU17S5ostnwRgNVh/exec",
     // apps-script-pagos/sync.js sustituye el marcador por la clave real
     // (apps-script/clave-automatizacion.txt, fuera de Git) al subir el
     // codigo. Es la misma clave que valida google-apps-script-inscripciones.js.
     BACKEND_KEY: "__CLAVE_AUTOMATIZACION__",
-    NOTIFY_EMAIL: "inscripciones@moscoevents.com",
+    NOTIFY_EMAIL: "info@moscoevents.com",
     UNPAID_AFTER_HOURS: 24,
     // Ventana de busqueda de correos de PayPal ya confirmados o de avisos
     // de impago ya enviados, para no repetir ni reprocesar de mas.

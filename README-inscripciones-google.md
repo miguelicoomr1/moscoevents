@@ -36,64 +36,80 @@ El valor `SPREADSHEET_ID` de `google-apps-script-inscripciones.js` fija la hoja 
 
 Si `appsScriptUrl` esta vacio, la web conserva el envio anterior por FormSubmit como respaldo.
 
-## Despliegue automatizado con clasp (opcional)
+## Cuenta que ejecuta el backend: inscripciones@moscoevents.com
 
-La carpeta `apps-script/` contiene una configuracion de
-[`clasp`](https://github.com/google/clasp), la herramienta oficial de Google para gestionar
-proyectos de Apps Script desde la linea de comandos. Permite subir y desplegar cambios de
-`google-apps-script-inscripciones.js` sin abrir el editor web cada vez.
+Desde el 2026-09-12 el proyecto de Apps Script activo (`apps-script-inscripciones/`) pertenece y
+se ejecuta como `inscripciones@moscoevents.com`, no como la cuenta personal `moscoeventes@gmail.com`
+usada originalmente. Motivo: para que las notificaciones al organizador y (si el mensajero fallara)
+la copia de respaldo al participante salgan ya con la identidad correcta, sin depender de un relay.
 
-### Configuracion inicial (una sola vez, la tiene que hacer quien administra la cuenta de Google)
+El proyecto viejo (carpeta `apps-script/`, cuenta `moscoeventes@gmail.com`) se deja de usar pero no
+se borra, por si hiciera falta volver atras. Su URL `/exec` antigua puede seguir viva un tiempo como
+respaldo silencioso; no debe usarse para nada nuevo.
 
-Estos pasos requieren iniciar sesion con la cuenta de Google que es propietaria del proyecto de
-Apps Script; nadie mas los puede completar en tu lugar.
+**Limitacion descubierta al migrar:** un despliegue de "Aplicacion web" con acceso "Cualquier
+usuario" creado *solo* por API/`clasp` (`clasp deploy` sin pasar por el editor) se queda con un
+nivel de acceso mas restrictivo del que pide el manifest en cuentas de Google Workspace — la URL
+da 403 "Necesitas acceso" aunque `appsscript.json` diga `"access": "ANYONE_ANONYMOUS"`. Google
+parece exigir una confirmacion interactiva (solo disponible en `Implementar > Gestionar
+implementaciones > editar > Implementar`) para activar de verdad el acceso anonimo en una cuenta
+de dominio. Si se necesita crear una implementacion nueva alguna vez, hay que abrirla en el editor
+web (logueado con la cuenta del dominio) y pulsar "Implementar" una vez a mano, aunque los campos
+ya muestren los valores correctos.
+
+## Despliegue automatizado con clasp
+
+Cada proyecto de Apps Script tiene su propia carpeta con `clasp`, y clasp guarda varias sesiones
+con nombre (`-u <nombre>`) en el mismo `~/.clasprc.json` para poder desplegar cada uno con la
+cuenta de Google correcta sin cerrar sesion entre medias:
+
+| Carpeta | Cuenta | Perfil de clasp |
+| --- | --- | --- |
+| `apps-script-inscripciones/` | `inscripciones@moscoevents.com` | `-u inscripciones` |
+| `apps-script-correo/` (mensajero) | `inscripciones@moscoevents.com` | `-u inscripciones` |
+| `apps-script-pagos/` (verificador PayPal) | `info@moscoevents.com` | `-u info` |
+| `apps-script/` (**legacy, ya no se despliega**) | `moscoeventes@gmail.com` | `-u default` (sin `-u`) |
+
+### Configuracion inicial de una cuenta nueva (una sola vez)
 
 1. Instala Node.js si no esta instalado, y `npm install -g @google/clasp` (ya hecho en esta
    maquina).
-2. `clasp login` — abre el navegador y pide autorizar el acceso con la cuenta de Google
-   propietaria del script. Las credenciales quedan guardadas en tu usuario, no en el repositorio.
-3. Abre el proyecto de Apps Script en el navegador y ve a `Configuracion del proyecto` (icono de
-   engranaje) para copiar el **ID de secuencia de comandos** (Script ID).
-4. Dentro de `apps-script/`, crea `.clasp.json` con:
-   ```json
-   { "scriptId": "PEGA_AQUI_EL_SCRIPT_ID", "rootDir": "." }
-   ```
-5. Ve a `Implementar` > `Gestionar implementaciones` en el editor de Apps Script, abre la
-   implementacion activa (la que genera la URL `/exec` usada en `inscripciones-config.js`) y copia
-   su **ID de implementacion**. Guardalo en `apps-script/deployment-id.txt` (una sola linea, sin
-   espacios).
-### Uso habitual (a partir de ahi)
+2. `clasp -u <nombre> login` — abre el navegador y pide autorizar el acceso con esa cuenta de
+   Google. Si el entorno no puede abrir un servidor local (`localhost:xxxxx no disponible` en el
+   navegador), usa `clasp -u <nombre> login --no-localhost`: da una URL para abrir a mano y pide
+   pegar de vuelta la URL de redireccion (`http://localhost:8888/?code=...`) tras autorizar.
+3. Las sesiones caducan de vez en cuando (error `invalid_grant` / `invalid_rapt`, tipico en cuentas
+   de Workspace) y hay que repetir el login.
 
-- `npm run push` (dentro de `apps-script/`): copia la ultima version de
-  `google-apps-script-inscripciones.js` y la sube al proyecto de Apps Script con `clasp push`,
-  sin crear una implementacion nueva ni cambiar la URL `/exec`.
+### Uso habitual (dentro de la carpeta de cada proyecto)
+
+- `npm run push`: copia la ultima version del `.js` correspondiente del repo y la sube al proyecto
+  de Apps Script con `clasp push`, sin crear una implementacion nueva ni cambiar la URL `/exec`.
 - `npm run deploy`: hace lo anterior y ademas actualiza la implementacion guardada en
-  `deployment-id.txt`, para que la URL `/exec` ya sirva el codigo nuevo.
+  `deployment-id.txt`, para que la URL `/exec` ya sirva el codigo nuevo. Si `deployment-id.txt` no
+  existe, la crea (ver la limitacion de acceso anonimo explicada arriba).
 
-`apps-script/.clasp.json`, `apps-script/deployment-id.txt` y las credenciales de `clasp login` no
-se suben a Git (ver `.gitignore`): son configuracion local de quien despliega, no del sitio.
+`.clasp.json`, `Code.js`/`Código.js`, `deployment-id.txt` y las credenciales de `clasp login` no se
+suben a Git (ver `.gitignore`): son configuracion local de quien despliega, no del sitio.
 
 ## Mensajero de correo (inscripciones@moscoevents.com)
 
-El backend de inscripciones se ejecuta con la cuenta `moscoeventes@gmail.com`, y `MailApp` no
-permite cambiar el remitente. Para que la copia al participante salga desde
-`inscripciones@moscoevents.com` hay un segundo proyecto de Apps Script, el mensajero
-(`google-apps-script-correo.js`), que pertenece a esa cuenta y se despliega como aplicacion web.
+Ademas del backend principal, hay un segundo proyecto de Apps Script, el mensajero
+(`google-apps-script-correo.js`), que tambien pertenece a `inscripciones@moscoevents.com` y se
+despliega como aplicacion web independiente. Desde la migracion es redundante en el dia a dia (el
+backend ya envia directamente como `inscripciones@moscoevents.com`), pero se deja activo como
+segunda via: si el backend fallara o se desplegara alguna vez desde otra cuenta, sigue enviando la
+copia al participante con la identidad correcta.
 
 - El backend le pasa el correo ya montado con `UrlFetchApp` (`CONFIG.MAIL_RELAY_URL`), junto con
   una clave compartida. El mensajero rechaza cualquier peticion sin esa clave y cualquier envio si
   no se esta ejecutando con `inscripciones@moscoevents.com`.
-- Si el mensajero falla o no esta configurado, el backend envia la copia desde Gmail como antes
-  (con respuesta a `inscripciones@`) y manda un aviso de error al organizador.
-- La clave vive solo en `apps-script/clave-mensajero.txt` (fuera de Git). Los dos `sync.js` la
-  insertan en el codigo al subirlo; en el repositorio solo queda el marcador `__CLAVE_MENSAJERO__`.
-  Si se cambia la clave, hay que volver a desplegar los dos proyectos.
-
-Despliegue del mensajero (carpeta `apps-script-correo/`, con el usuario de clasp `inscripciones`,
-creado con `clasp -u inscripciones login` iniciando sesion con `inscripciones@moscoevents.com`):
-
-- `npm run deploy`: sube el codigo y actualiza la implementacion guardada en
-  `apps-script-correo/deployment-id.txt` (la primera vez la crea y guarda su ID).
+- Si el mensajero falla o no esta configurado, el backend envia la copia el mismo (ya como
+  `inscripciones@moscoevents.com`) y manda un aviso de error al organizador.
+- La clave vive solo en `apps-script/clave-mensajero.txt` (fuera de Git, compartido con
+  `apps-script-inscripciones/` via su `sync.js`). Los `sync.js` la insertan en el codigo al
+  subirlo; en el repositorio solo queda el marcador `__CLAVE_MENSAJERO__`. Si se cambia la clave,
+  hay que volver a desplegar los proyectos que la usan.
 - Si se anade un permiso nuevo al mensajero, hay que abrir su proyecto en el editor con
   `inscripciones@moscoevents.com` y ejecutar `autorizar` una vez. Del mismo modo, en el backend,
   `probarMensajero` concede el permiso de `UrlFetchApp` y comprueba que el mensajero responde.

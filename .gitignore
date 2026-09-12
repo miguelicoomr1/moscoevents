@@ -19,6 +19,13 @@ apps-script-pagos/node_modules/
 apps-script-pagos/.clasp.json
 apps-script-pagos/Code.js
 
+# Backend de inscripciones migrado a inscripciones@moscoevents.com
+# (apps-script-inscripciones/): misma idea que arriba.
+apps-script-inscripciones/node_modules/
+apps-script-inscripciones/.clasp.json
+apps-script-inscripciones/Code.js
+apps-script-inscripciones/deployment-id.txt
+
 # Clave compartida entre los dos proyectos. ESTA si es secreta: nunca a Git.
 apps-script/clave-mensajero.txt
 
