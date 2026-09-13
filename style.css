@@ -679,6 +679,35 @@ body .card::after {
     text-align: center;
 }
 
+/* Aviso de normas propias de una partida: mismo aspecto que el de inscripcion
+   cerrada, pero resaltado porque la lectura es obligatoria. */
+.event-required-notice {
+    flex-basis: 100%;
+    margin: 0;
+    padding: 14px 18px;
+    border: 2px solid var(--field-signal-dark);
+    border-radius: 12px;
+    background: rgba(189, 61, 32, 0.12);
+    color: var(--field-signal-dark);
+    font-weight: 700;
+    text-align: center;
+}
+
+/* El mismo aviso dentro del formulario de inscripcion, con el enlace al PDF
+   en linea justo encima del recuadro de "he leido las normas". */
+.registration-event-rules {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    margin: 0 0 16px;
+}
+
+.registration-event-rules a {
+    color: inherit;
+    text-decoration: underline;
+}
+
 .event-empty {
     grid-column: 1 / -1;
     text-align: center;

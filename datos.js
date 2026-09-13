@@ -93,6 +93,9 @@
             seleccionBando: true,
             inscripcionUrl: "/registro.html?id=sabado-19-09-2026",
             normasUrl: INFO_NORMAS_URL,
+            // Normas propias de esta partida (CQB/TCCC), aparte del reglamento
+            // general: son de lectura obligatoria antes de jugar.
+            normasEventoUrl: "/normas-tcsim-19-09-2026.pdf",
             galeria: {
                 activa: true,
                 titulo: "GALERÍA",

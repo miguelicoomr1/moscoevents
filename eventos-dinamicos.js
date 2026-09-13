@@ -468,6 +468,13 @@
             acciones.appendChild(crearEnlaceRegistro(evento));
         }
 
+        // Las normas propias de la partida van antes que el reglamento general
+        // porque son las que el jugador tiene que leer si o si para ese evento.
+        if (evento.normasEventoUrl) {
+            acciones.appendChild(crearElemento("p", "event-required-notice", t("eventos.event_rules_notice")));
+            acciones.appendChild(crearBotonExterno(evento.normasEventoUrl, t("eventos.event_rules_button")));
+        }
+
         if (evento.normasUrl) {
             acciones.appendChild(crearBotonExterno(evento.normasUrl, t("eventos.rules_button")));
         }

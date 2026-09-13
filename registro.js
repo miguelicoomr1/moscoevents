@@ -18,6 +18,9 @@
     const sideSelect = form?.elements.bando;
     const rulesInput = form?.elements.normasLeidas;
     const rulesError = document.querySelector("[data-rules-error]");
+    const eventRulesNotice = document.querySelector("[data-registration-event-rules]");
+    const eventRulesText = document.querySelector("[data-registration-event-rules-text]");
+    const eventRulesLink = document.querySelector("[data-registration-event-rules-link]");
     const submitButton = form?.querySelector('button[type="submit"][data-registration-participant]');
     const result = document.getElementById("registration-result");
     const participantControls = document.querySelectorAll("[data-registration-participant]");
@@ -463,6 +466,27 @@
         }
     }
 
+    // Partidas con normas propias (ver normasEventoUrl en datos.js): el aviso
+    // va junto al recuadro de "he leido las normas" para que se vea antes de
+    // aceptar, no solo en la pagina del evento.
+    function syncEventRulesNotice() {
+        if (!eventRulesNotice || !eventRulesText || !eventRulesLink) {
+            return;
+        }
+
+        const url = selectedEvent?.normasEventoUrl;
+
+        eventRulesNotice.hidden = !url;
+
+        if (!url) {
+            return;
+        }
+
+        eventRulesText.textContent = t("eventos.event_rules_notice");
+        eventRulesLink.textContent = t("eventos.event_rules_button");
+        eventRulesLink.href = url;
+    }
+
     // Lo decide datos.js con la fecha y la hora de inicio de la partida: una
     // vez empezada deja de listarse y no admite mas inscripciones.
     function isUpcomingEvent(evento) {
@@ -797,6 +821,7 @@
         syncBlockedNotice();
         syncPasswordField();
         syncSideField();
+        syncEventRulesNotice();
         syncPaypalPayment();
     }
 
