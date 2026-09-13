@@ -1218,6 +1218,18 @@
         URL.revokeObjectURL(url);
     }
 
+    function renderNotice(titleText, messageText) {
+        const title = document.createElement("h2");
+        const message = document.createElement("p");
+
+        title.textContent = titleText;
+        message.textContent = messageText;
+        result.replaceChildren(title, message);
+        result.classList.remove("is-sending");
+        result.hidden = false;
+        result.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
     function renderSending(record) {
         const title = document.createElement("h2");
         const message = document.createElement("p");
@@ -1644,6 +1656,17 @@
                         result.classList.remove("is-sending");
                         setRegistrationFull(true);
                         waitlist.scrollIntoView({ behavior: "smooth", block: "start" });
+                    } else if (outcome?.code === "duplicate") {
+                        // Ya hay una inscripcion en esta partida con el mismo
+                        // nombre y telefono: el aviso generico de "esta
+                        // tardando" haria pensar que hay que reintentar.
+                        isSubmitting = false;
+                        forgetReference();
+                        renderNotice(
+                            t("registro.duplicate.title"),
+                            t("registro.duplicate.message")
+                        );
+                        updateSubmitAvailability();
                     } else if (outcome?.code === "rental_full") {
                         isSubmitting = false;
                         result.hidden = true;

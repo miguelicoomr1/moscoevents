@@ -25,6 +25,7 @@
     let currentLang = detectInitialLanguage();
 
     const LOCALE_MAP = { es: "es-ES", en: "en-GB", fr: "fr-FR", ca: "ca-ES" };
+    const OG_LOCALES = { es: "es_ES", en: "en_GB", fr: "fr_FR", ca: "ca_ES" };
 
     function getLocale() {
         return LOCALE_MAP[currentLang] || LOCALE_MAP[DEFAULT_LANG];
@@ -71,10 +72,44 @@
             elemento.setAttribute("alt", t(elemento.getAttribute("data-i18n-attr-alt")));
         });
 
-        const tituloDoc = document.body?.getAttribute("data-i18n-doc-title");
-        if (tituloDoc) {
-            document.title = t(tituloDoc);
+        applyDocumentMeta();
+    }
+
+    function setMeta(selector, valor) {
+        const meta = document.querySelector(selector);
+
+        if (meta) {
+            meta.setAttribute("content", valor);
         }
+    }
+
+    // El titulo y la descripcion de la pagina tambien se traducen, no solo su
+    // contenido: antes el idioma cambiaba el texto de la web pero la pestana
+    // del navegador y la tarjeta que se ve al compartir el enlace seguian en
+    // espanol. En las paginas de evento y galeria estos valores los pisa
+    // despues eventos-dinamicos.js con los datos de la partida concreta.
+    function applyDocumentMeta() {
+        const tituloDoc = document.body?.getAttribute("data-i18n-doc-title");
+
+        if (tituloDoc) {
+            const titulo = t(tituloDoc);
+
+            document.title = titulo;
+            setMeta('meta[property="og:title"]', titulo);
+            setMeta('meta[name="twitter:title"]', titulo);
+        }
+
+        const descripcionDoc = document.body?.getAttribute("data-i18n-doc-description");
+
+        if (descripcionDoc) {
+            const descripcion = t(descripcionDoc);
+
+            setMeta('meta[name="description"]', descripcion);
+            setMeta('meta[property="og:description"]', descripcion);
+            setMeta('meta[name="twitter:description"]', descripcion);
+        }
+
+        setMeta('meta[property="og:locale"]', OG_LOCALES[currentLang] || OG_LOCALES[DEFAULT_LANG]);
     }
 
     function updateSwitcherUI() {
