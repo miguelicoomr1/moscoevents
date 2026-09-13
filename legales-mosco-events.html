@@ -199,6 +199,21 @@
       font-size: clamp(1rem, 2vw, 1.18rem);
     }
 
+    /* El hero lleva una fotografia de fondo, asi que este aviso necesita un
+       fondo opaco propio: con el rojizo translucido de --legal-warning-bg el
+       texto quedaba ilegible sobre la imagen. */
+    .me-legal__binding {
+      max-width: 720px;
+      margin: 20px 0 0;
+      padding: 13px 18px;
+      border-left: 3px solid var(--legal-warning);
+      border-radius: 4px;
+      background: #16110a;
+      color: var(--legal-warning);
+      font-size: 0.94rem;
+      line-height: 1.6;
+    }
+
     .me-legal__nav-wrap {
       position: sticky;
       z-index: 20;
@@ -598,7 +613,7 @@
   </style>
 
 <script src="/header.js?v=9"></script>
-<script src="/i18n-lang.js?v=13"></script>
+<script src="/i18n-lang.js?v=14"></script>
 <script src="/i18n.js?v=3"></script>
   <div class="me-legal" id="inicio-legal">
     <a class="me-legal__skip" href="#contenido-legal" data-i18n="legal.skip">Saltar al contenido legal</a>
@@ -608,6 +623,13 @@
         <p class="me-legal__eyebrow" data-i18n="legal.hero_eyebrow">Mosco Events</p>
         <h1 data-i18n="legal.hero_title">Información legal</h1>
         <p class="me-legal__lead" data-i18n="legal.hero_lead">Aviso legal, condiciones generales de contratación y política de privacidad aplicables a www.moscoevents.com.</p>
+
+        <!-- Solo se muestra en las versiones traducidas: el contrato se
+             formaliza en castellano (clausula 4 de las condiciones), asi que
+             la version espanola es la que prevalece ante una discrepancia. -->
+        <p class="me-legal__binding" data-legal-binding data-i18n="legal.binding_notice" hidden>
+          Esta es la versión original y jurídicamente vinculante de estos documentos.
+        </p>
       </div>
     </div>
 
@@ -1143,5 +1165,24 @@
       </div>
     </footer>
   </div>
+
+  <script>
+    // El aviso de version vinculante solo tiene sentido fuera del castellano,
+    // que es el idioma en el que se formaliza el contrato.
+    (function () {
+      const aviso = document.querySelector("[data-legal-binding]");
+
+      if (!aviso) {
+        return;
+      }
+
+      const sincronizar = () => {
+        aviso.hidden = (window.MoscoI18n?.getLanguage?.() || "es") === "es";
+      };
+
+      sincronizar();
+      window.addEventListener("mosco:langchange", sincronizar);
+    })();
+  </script>
 </body>
 </html>
