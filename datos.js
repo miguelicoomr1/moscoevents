@@ -1,10 +1,5 @@
 (function () {
     const INFO_NORMAS_URL = "/normas.html";
-    const WHATSAPP_COMUNIDAD_URL = "https://chat.whatsapp.com/JuC0zyC1NqU7v2ssUYmzIH";
-    // Aviso comun para partidas con inscripciones bloqueadas temporalmente.
-    const AVISO_INSCRIPCIONES_BLOQUEADAS =
-        "Actualmente no se puede realizar ninguna inscripción. " +
-        `Conforme esté arreglado se avisará por la <a href="${WHATSAPP_COMUNIDAD_URL}" target="_blank" rel="noopener noreferrer">comunidad de WhatsApp</a>.`;
 
     function crearGaleria({ carpeta, prefijo, extension, desde = 1, hasta = 0, excluir = [], relleno = 0 }) {
         const omitidos = new Set(excluir);
@@ -409,20 +404,21 @@
         return `https://paypal.me/${PAYPAL_HANDLE}/${cantidad}EUR`;
     }
 
-    // Hora a la que arranca la partida, sacada del propio horario
-    // ("16:30 - 21:00", "09:00 a 14:30"...). Es lo que marca el momento en
-    // que la partida deja de ser "proxima" y se cierran sus inscripciones.
+    // Horas que aparecen en el horario de la partida ("16:30 - 21:00",
+    // "09:00 a 14:30"...): la primera es el inicio y la segunda, el final.
+    function horasDelHorario(horario) {
+        return Array.from(String(horario || "").matchAll(/(\d{1,2})[:.](\d{2})/g))
+            .map((coincidencia) => ({
+                horas: Number(coincidencia[1]),
+                minutos: Number(coincidencia[2])
+            }))
+            .filter((hora) => hora.horas <= 23 && hora.minutos <= 59);
+    }
+
+    // La hora de inicio marca el momento en que la partida deja de ser
+    // "proxima" y se cierran sus inscripciones.
     function horaInicio(horario) {
-        const coincidencia = /(\d{1,2})[:.](\d{2})/.exec(String(horario || ""));
-
-        if (!coincidencia) {
-            return null;
-        }
-
-        const horas = Number(coincidencia[1]);
-        const minutos = Number(coincidencia[2]);
-
-        return horas <= 23 && minutos <= 59 ? { horas, minutos } : null;
+        return horasDelHorario(horario)[0] || null;
     }
 
     // Partidas sin horario (solo "duracion" o nada): se dan por empezadas al
@@ -442,6 +438,22 @@
             : new Date(anio, mes - 1, dia + 1, 0, 0, 0, 0);
     }
 
+    // Hora de fin de la partida, solo si el horario declara las dos. La usan
+    // los datos estructurados que lee Google (endDate).
+    function finalEvento(evento) {
+        const horas = horasDelHorario(evento.horario);
+        const partes = String(evento.fecha || "").split("-").map(Number);
+
+        if (horas.length < 2 || partes.length !== 3 || partes.some((parte) => !Number.isFinite(parte))) {
+            return null;
+        }
+
+        const [anio, mes, dia] = partes;
+        const fin = horas[1];
+
+        return new Date(anio, mes - 1, dia, fin.horas, fin.minutos, 0, 0);
+    }
+
     // Unica fuente de verdad de "proxima / anterior" en toda la web: la
     // fecha y hora de la partida. Antes cada evento llevaba un campo
     // "seccion" escrito a mano que habia que mover despues de cada partida,
@@ -454,6 +466,7 @@
 
     eventos.forEach((evento) => {
         evento.comienzo = comienzoEvento(evento);
+        evento.final = finalEvento(evento);
 
         // El importe numerico es la unica fuente de verdad del precio:
         // el texto y el enlace de PayPal se derivan de el.

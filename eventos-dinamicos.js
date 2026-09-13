@@ -555,6 +555,83 @@
         contenedor.dataset.galeriaEventoId = evento.id;
     }
 
+    // Datos estructurados de las partidas para Google. Sin esto, los
+    // resultados de busqueda no pueden mostrar fecha, lugar, precio ni
+    // disponibilidad de cada partida, que es justo lo que busca quien quiere
+    // apuntarse. Solo se publican las partidas que aun no han empezado.
+    function publicarDatosEstructurados() {
+        const proximos = ordenarPorFechaAscendente(eventos.filter(esProximo));
+
+        if (!proximos.length) {
+            return;
+        }
+
+        const origen = "https://www.moscoevents.com";
+        const eventosSchema = proximos.map((evento) => {
+            const schema = {
+                "@context": "https://schema.org",
+                "@type": "Event",
+                name: evento.titulo,
+                description: evento.resumen || evento.subtitulo || "",
+                startDate: evento.comienzo instanceof Date
+                    ? evento.comienzo.toISOString()
+                    : evento.fecha,
+                eventStatus: "https://schema.org/EventScheduled",
+                eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
+                url: new URL(evento.url, origen).toString(),
+                image: `${origen}/images/base%20web/og-image.jpg`,
+                location: {
+                    "@type": "Place",
+                    name: evento.ubicacion || "Laser Counter (Pedrola)",
+                    address: {
+                        "@type": "PostalAddress",
+                        addressLocality: "Pedrola",
+                        addressRegion: "Zaragoza",
+                        addressCountry: "ES"
+                    }
+                },
+                organizer: {
+                    "@type": "Organization",
+                    name: "Mosco Events",
+                    url: origen
+                }
+            };
+
+            if (evento.final instanceof Date) {
+                schema.endDate = evento.final.toISOString();
+            }
+
+            if (typeof evento.importe === "number") {
+                schema.offers = {
+                    "@type": "Offer",
+                    price: String(evento.importe),
+                    priceCurrency: "EUR",
+                    availability: "https://schema.org/InStock",
+                    url: new URL(evento.inscripcionUrl || "/registro.html", origen).toString()
+                };
+            }
+
+            if (typeof evento.participantes === "number") {
+                schema.maximumAttendeeCapacity = evento.participantes;
+            }
+
+            return schema;
+        });
+
+        const anterior = document.getElementById("mosco-eventos-schema");
+
+        if (anterior) {
+            anterior.remove();
+        }
+
+        const script = document.createElement("script");
+
+        script.type = "application/ld+json";
+        script.id = "mosco-eventos-schema";
+        script.textContent = JSON.stringify(eventosSchema);
+        document.head.appendChild(script);
+    }
+
     window.MoscoEventos = {
         eventos,
         obtenerPorId: (id) => eventosPorId.get(id),
@@ -574,6 +651,7 @@
 
     renderizarTodo();
     renderizarGaleriasAleatorias();
+    publicarDatosEstructurados();
 
     window.addEventListener("mosco:langchange", () => {
         renderizarTodo();

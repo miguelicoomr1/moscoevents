@@ -245,6 +245,34 @@ function setCurrentImage(index) {
     nextBtn?.toggleAttribute("hidden", !hasMultipleImages);
 }
 
+// Mantiene el tabulador dentro del modal mientras esta abierto, como pide
+// aria-modal. Se recalculan los controles en cada pulsacion porque las
+// flechas se ocultan cuando la galeria tiene una sola imagen.
+function trapFocus(event) {
+    const focusables = Array.from(
+        modal.querySelectorAll("button:not([hidden]), a[href]")
+    ).filter((element) => element.offsetParent !== null);
+
+    if (!focusables.length) {
+        return;
+    }
+
+    const first = focusables[0];
+    const last = focusables[focusables.length - 1];
+    const active = document.activeElement;
+
+    if (event.shiftKey && (active === first || !modal.contains(active))) {
+        event.preventDefault();
+        last.focus();
+        return;
+    }
+
+    if (!event.shiftKey && (active === last || !modal.contains(active))) {
+        event.preventDefault();
+        first.focus();
+    }
+}
+
 function openModal() {
     if (!modal) {
         return;
@@ -388,6 +416,12 @@ if (modal && modalImg) {
 
         if (event.key === "ArrowLeft") {
             showRelativeImage(-1);
+        }
+
+        // Sin esto el tabulador se escapaba por detras de la imagen ampliada,
+        // hacia los enlaces de la pagina, que quedan tapados por el modal.
+        if (event.key === "Tab") {
+            trapFocus(event);
         }
     });
 }
