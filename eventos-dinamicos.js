@@ -53,16 +53,14 @@
         return [...lista].sort((a, b) => b.fecha.localeCompare(a.fecha));
     }
 
+    // La clasifica datos.js a partir de la fecha y la hora de inicio de la
+    // partida, no de un campo escrito a mano.
+    function esProximo(evento) {
+        return Boolean(window.MOSCO_ES_PROXIMO?.(evento));
+    }
+
     function esSeccion(evento, seccion) {
-        if (evento.seccion) {
-            return evento.seccion === seccion;
-        }
-
-        const hoy = new Date();
-        const inicioHoy = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate());
-        const fechaEvento = new Date(`${evento.fecha}T00:00:00`);
-
-        return seccion === "proximos" ? fechaEvento >= inicioHoy : fechaEvento < inicioHoy;
+        return seccion === "proximos" ? esProximo(evento) : !esProximo(evento);
     }
 
     function crearEnlace(href, clase, texto) {
@@ -167,15 +165,39 @@
         return mezclada;
     }
 
+    function textoAlternativo(index, titulo) {
+        return titulo
+            ? t("common.photo_alt_with_title", { n: index + 1, title: titulo })
+            : t("common.photo_alt", { n: index + 1 });
+    }
+
+    // Reescribe los alt de las galerias ya pintadas al cambiar de idioma. Es
+    // lo unico que cambia de una imagen, y hacerlo asi evita tener que
+    // recrearlas: volver a crearlas las devolvia al placeholder de 1x1 sin
+    // que nadie volviera a lanzar la carga diferida de script.js, y la
+    // galeria entera se quedaba en blanco tras cambiar de idioma.
+    function actualizarTextosAlternativos() {
+        document.querySelectorAll(".gallery-grid img[data-galeria-indice]").forEach((imagen) => {
+            imagen.alt = textoAlternativo(
+                Number(imagen.dataset.galeriaIndice),
+                imagen.dataset.galeriaTitulo || ""
+            );
+        });
+    }
+
     function crearImagenGaleria(src, index, titulo) {
         const imagen = document.createElement("img");
         const miniatura = obtenerMiniatura(src);
         const ampliada = obtenerImagenAmpliada(src);
 
         imagen.className = "zoomable";
-        imagen.alt = titulo
-            ? t("common.photo_alt_with_title", { n: index + 1, title: titulo })
-            : t("common.photo_alt", { n: index + 1 });
+        imagen.alt = textoAlternativo(index, titulo);
+        imagen.dataset.galeriaIndice = String(index);
+
+        if (titulo) {
+            imagen.dataset.galeriaTitulo = titulo;
+        }
+
         imagen.loading = "lazy";
         imagen.decoding = "async";
         imagen.fetchPriority = "low";
@@ -519,9 +541,18 @@
             return;
         }
 
+        // Si estas mismas imagenes ya estan pintadas (por ejemplo al volver a
+        // renderizar tras cambiar de idioma), no se tocan: solo se refrescan
+        // sus alt. Recrearlas romperia la carga diferida que ya las gestiona.
+        if (contenedor.dataset.galeriaEventoId === evento.id) {
+            actualizarTextosAlternativos();
+            return;
+        }
+
         const nodos = imagenes.map((src, index) => crearImagenGaleria(src, index, evento.titulo));
 
         contenedor.replaceChildren(...nodos);
+        contenedor.dataset.galeriaEventoId = evento.id;
     }
 
     window.MoscoEventos = {
@@ -544,5 +575,10 @@
     renderizarTodo();
     renderizarGaleriasAleatorias();
 
-    window.addEventListener("mosco:langchange", renderizarTodo);
+    window.addEventListener("mosco:langchange", () => {
+        renderizarTodo();
+        // Las galerias aleatorias (portada, /Galeria/galeria.html) no se
+        // vuelven a sortear al cambiar de idioma, pero sus alt si se traducen.
+        actualizarTextosAlternativos();
+    });
 })();

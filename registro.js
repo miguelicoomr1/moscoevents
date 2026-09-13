@@ -102,8 +102,6 @@
     const params = new URLSearchParams(window.location.search);
     const eventos = Array.isArray(window.MOSCO_EVENTOS) ? window.MOSCO_EVENTOS : [];
     const selectedEventId = params.get("id");
-    const now = new Date();
-    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     let selectedEvent = null;
     let isSubmitting = false;
     let isSubmittingReservation = false;
@@ -455,14 +453,10 @@
         }
     }
 
+    // Lo decide datos.js con la fecha y la hora de inicio de la partida: una
+    // vez empezada deja de listarse y no admite mas inscripciones.
     function isUpcomingEvent(evento) {
-        if (evento.seccion) {
-            return evento.seccion === "proximos";
-        }
-
-        const eventDate = new Date(`${evento.fecha}T00:00:00`);
-
-        return eventDate >= today;
+        return Boolean(window.MOSCO_ES_PROXIMO?.(evento));
     }
 
     const upcomingEvents = eventos
@@ -860,6 +854,67 @@
         context.fillRect(0, 0, rect.width, rect.height);
     }
 
+    // Al girar el movil (o al cambiar el ancho por cualquier motivo) hay que
+    // rehacer el buffer del canvas, o el trazo queda deformado. prepareCanvas
+    // lo deja en blanco, asi que se vuelve a pintar encima la firma anterior
+    // escalada al tamano nuevo en vez de perderla sin avisar.
+    function resizeCanvas() {
+        const firmaPrevia = hasSignature ? signatureInput.value : "";
+
+        prepareCanvas();
+
+        if (!firmaPrevia) {
+            return;
+        }
+
+        const imagen = new Image();
+
+        imagen.addEventListener("load", () => {
+            const rect = canvas.getBoundingClientRect();
+
+            context.drawImage(imagen, 0, 0, rect.width, rect.height);
+            signatureInput.value = canvas.toDataURL("image/png");
+        }, { once: true });
+
+        imagen.src = firmaPrevia;
+    }
+
+    // Los navegadores moviles disparan "resize" al mostrar u ocultar la barra
+    // de direcciones, sin que cambie el ancho util. Repintar el canvas en cada
+    // uno de esos avisos degradaria la firma, asi que solo se rehace cuando el
+    // tamano real del recuadro ha cambiado de verdad.
+    function observarTamanoCanvas() {
+        let anchoPrevio = 0;
+        let altoPrevio = 0;
+        let pendiente = 0;
+
+        const comprobar = () => {
+            const rect = canvas.getBoundingClientRect();
+            const ancho = Math.round(rect.width);
+            const alto = Math.round(rect.height);
+
+            if (!ancho || !alto || (ancho === anchoPrevio && alto === altoPrevio)) {
+                return;
+            }
+
+            anchoPrevio = ancho;
+            altoPrevio = alto;
+            resizeCanvas();
+        };
+
+        const comprobarConRetraso = () => {
+            window.clearTimeout(pendiente);
+            pendiente = window.setTimeout(comprobar, 150);
+        };
+
+        const rect = canvas.getBoundingClientRect();
+        anchoPrevio = Math.round(rect.width);
+        altoPrevio = Math.round(rect.height);
+
+        window.addEventListener("resize", comprobarConRetraso);
+        window.addEventListener("orientationchange", comprobarConRetraso);
+    }
+
     function pointFromEvent(event) {
         const rect = canvas.getBoundingClientRect();
 
@@ -1244,6 +1299,7 @@
     updateSubmitAvailability();
     showSentNotice();
     prepareCanvas();
+    observarTamanoCanvas();
 
     const capacityRefreshInterval = window.setInterval(
         refreshSelectedEventCapacitySilently,
