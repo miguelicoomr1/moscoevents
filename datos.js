@@ -39,7 +39,6 @@
             contrasena: "AGM",
             inscripcionUrl: "/registro.html?id=miercoles-16-09-2026",
             normasUrl: INFO_NORMAS_URL,
-            seccion: "proximos",
             galeria: {
                 activa: true,
                 titulo: "GALERÍA",
@@ -69,7 +68,6 @@
             importe: 15,
             inscripcionUrl: "/registro.html?id=jueves-17-09-2026",
             normasUrl: INFO_NORMAS_URL,
-            seccion: "proximos",
             galeria: {
                 activa: true,
                 titulo: "GALERÍA",
@@ -100,7 +98,6 @@
             seleccionBando: true,
             inscripcionUrl: "/registro.html?id=sabado-19-09-2026",
             normasUrl: INFO_NORMAS_URL,
-            seccion: "proximos",
             galeria: {
                 activa: true,
                 titulo: "GALERÍA",
@@ -129,7 +126,6 @@
             horario: "09:00 a 14:30",
             importe: 18,
             normasUrl: INFO_NORMAS_URL,
-            seccion: "anteriores",
             galeria: {
                 activa: true,
                 titulo: "GALER\u00cdA",
@@ -162,7 +158,6 @@
             importe: 25,
             inscripcionUrl: "/registro.html?id=operacion-verano-2026",
             normasUrl: INFO_NORMAS_URL,
-            seccion: "anteriores",
             galeria: {
                 activa: true,
                 titulo: "GALER\u00cdA VERANO",
@@ -192,7 +187,6 @@
             importe: 18,
             inscripcionUrl: "/registro.html?id=domingo-02-08-2026",
             normasUrl: INFO_NORMAS_URL,
-            seccion: "anteriores",
             galeria: {
                 activa: true,
                 titulo: "GALER\u00cdA",
@@ -223,7 +217,6 @@
             importe: 15,
             inscripcionUrl: "/registro.html?id=jueves-30-07-2026",
             normasUrl: INFO_NORMAS_URL,
-            seccion: "anteriores",
             galeria: {
                 activa: true,
                 titulo: "GALER\u00cdA",
@@ -253,7 +246,6 @@
             importe: 13,
             inscripcionUrl: "/registro.html?id=jueves-23-07-2026",
             normasUrl: INFO_NORMAS_URL,
-            seccion: "anteriores",
             galeria: {
                 activa: true,
                 titulo: "GALER\u00cdA",
@@ -284,7 +276,6 @@
             importe: 13,
             inscripcionUrl: "/registro.html?id=jueves-16-07-2026",
             normasUrl: INFO_NORMAS_URL,
-            seccion: "anteriores",
             galeria: {
                 activa: true,
                 titulo: "GALER\u00cdA",
@@ -314,7 +305,6 @@
             importe: 12,
             inscripcionUrl: "/registro.html?id=jueves-09-07-2026",
             normasUrl: INFO_NORMAS_URL,
-            seccion: "anteriores",
             galeria: {
                 activa: true,
                 titulo: "GALER\u00cdA",
@@ -339,7 +329,6 @@
             subtitulo: "Evento oficial de Mosco Events",
             resumen: "Laser Counter - Pedrola.",
             ubicacion: "Laser Counter (Pedrola)",
-            seccion: "anteriores",
             galeria: {
                 activa: true,
                 titulo: "GALER\u00cdA",
@@ -364,7 +353,6 @@
             subtitulo: "Evento oficial de Mosco Events",
             resumen: "Laser Counter - Pedrola.",
             ubicacion: "Laser Counter (Pedrola)",
-            seccion: "anteriores",
             galeria: {
                 activa: true,
                 titulo: "GALER\u00cdA",
@@ -421,7 +409,52 @@
         return `https://paypal.me/${PAYPAL_HANDLE}/${cantidad}EUR`;
     }
 
+    // Hora a la que arranca la partida, sacada del propio horario
+    // ("16:30 - 21:00", "09:00 a 14:30"...). Es lo que marca el momento en
+    // que la partida deja de ser "proxima" y se cierran sus inscripciones.
+    function horaInicio(horario) {
+        const coincidencia = /(\d{1,2})[:.](\d{2})/.exec(String(horario || ""));
+
+        if (!coincidencia) {
+            return null;
+        }
+
+        const horas = Number(coincidencia[1]);
+        const minutos = Number(coincidencia[2]);
+
+        return horas <= 23 && minutos <= 59 ? { horas, minutos } : null;
+    }
+
+    // Partidas sin horario (solo "duracion" o nada): se dan por empezadas al
+    // terminar su dia, para no cerrarlas antes de tiempo por falta de datos.
+    function comienzoEvento(evento) {
+        const partes = String(evento.fecha || "").split("-").map(Number);
+
+        if (partes.length !== 3 || partes.some((parte) => !Number.isFinite(parte))) {
+            return null;
+        }
+
+        const [anio, mes, dia] = partes;
+        const inicio = horaInicio(evento.horario);
+
+        return inicio
+            ? new Date(anio, mes - 1, dia, inicio.horas, inicio.minutos, 0, 0)
+            : new Date(anio, mes - 1, dia + 1, 0, 0, 0, 0);
+    }
+
+    // Unica fuente de verdad de "proxima / anterior" en toda la web: la
+    // fecha y hora de la partida. Antes cada evento llevaba un campo
+    // "seccion" escrito a mano que habia que mover despues de cada partida,
+    // y mientras tanto la partida ya jugada seguia admitiendo inscripciones.
+    function esProximo(evento) {
+        const comienzo = evento?.comienzo;
+
+        return comienzo instanceof Date && comienzo.getTime() > Date.now();
+    }
+
     eventos.forEach((evento) => {
+        evento.comienzo = comienzoEvento(evento);
+
         // El importe numerico es la unica fuente de verdad del precio:
         // el texto y el enlace de PayPal se derivan de el.
         if (typeof evento.importe === "number") {
@@ -445,6 +478,7 @@
     });
 
     window.MOSCO_EVENTOS = eventos;
+    window.MOSCO_ES_PROXIMO = esProximo;
     window.MOSCO_PAYPAL_HANDLE = PAYPAL_HANDLE;
     window.MOSCO_FORMATEAR_IMPORTE = formatearImporte;
     window.MOSCO_ENLACE_PAYPAL = enlacePaypal;
