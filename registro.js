@@ -8,6 +8,7 @@
     const clearButton = document.getElementById("clear-signature");
     const signatureInput = document.getElementById("signature-data");
     const signatureError = document.querySelector("[data-signature-error]");
+    const typedSignature = document.getElementById("signature-typed");
     const eventSelect = document.getElementById("registration-event-select");
     const emptyMessage = document.querySelector("[data-registration-empty]");
     const passwordField = document.querySelector("[data-registration-password-field]");
@@ -926,6 +927,14 @@
 
     function startDrawing(event) {
         event.preventDefault();
+
+        // Las dos formas de firmar son excluyentes: al dibujar se descarta lo
+        // que hubiera escrito, y viceversa.
+        if (typedSignature && typedSignature.value) {
+            typedSignature.value = "";
+            prepareCanvas();
+        }
+
         isDrawing = true;
         hasSignature = true;
         lastPoint = pointFromEvent(event);
@@ -966,7 +975,52 @@
     function clearSignature() {
         hasSignature = false;
         signatureInput.value = "";
+
+        if (typedSignature) {
+            typedSignature.value = "";
+        }
+
         prepareCanvas();
+        updateSubmitAvailability();
+    }
+
+    // Firma escrita: dibuja el nombre en el mismo canvas para que el resto del
+    // sistema (hoja de calculo, correo, comprobante) siga recibiendo una
+    // imagen PNG igual que con la firma a mano. Sin esto, quien navega solo
+    // con teclado no podia completar la inscripcion: el canvas unicamente
+    // responde a eventos de puntero y la firma es obligatoria para enviar.
+    function applyTypedSignature() {
+        const nombre = String(typedSignature.value || "").trim();
+
+        prepareCanvas();
+
+        if (!nombre) {
+            hasSignature = false;
+            signatureInput.value = "";
+            updateSubmitAvailability();
+            return;
+        }
+
+        const rect = canvas.getBoundingClientRect();
+        // El tamano se ajusta al ancho disponible para que no se salga del
+        // recuadro por muy largo que sea el nombre.
+        let tamano = Math.min(rect.height * 0.42, 46);
+
+        context.fillStyle = "#f4efe4";
+        context.textAlign = "center";
+        context.textBaseline = "middle";
+
+        do {
+            context.font = `${tamano}px "Segoe Script", "Brush Script MT", cursive`;
+            tamano -= 2;
+        } while (tamano > 12 && context.measureText(nombre).width > rect.width - 32);
+
+        context.fillText(nombre, rect.width / 2, rect.height / 2);
+        context.fillStyle = "#0d100c";
+
+        hasSignature = true;
+        signatureInput.value = canvas.toDataURL("image/png");
+        signatureError.hidden = true;
         updateSubmitAvailability();
     }
 
@@ -1255,6 +1309,7 @@
     canvas.addEventListener("pointerup", stopDrawing);
     canvas.addEventListener("pointercancel", stopDrawing);
     clearButton?.addEventListener("click", clearSignature);
+    typedSignature?.addEventListener("input", applyTypedSignature);
     paymentMethodInputs.forEach((input) => {
         input.addEventListener("change", syncPaymentMethod);
     });
