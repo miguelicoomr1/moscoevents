@@ -1368,9 +1368,16 @@
     prepareCanvas();
     observarTamanoCanvas();
 
+    // Cada sondeo abre Drive y la hoja de calculo en Apps Script: medido, unos
+    // 2,6 s por llamada, con picos de 45 s. A 15 s eran 240 llamadas por hora y
+    // pestana abierta, y con varias personas en el formulario a la vez eso se
+    // come buena parte de la cuota diaria de ejecucion y compite con los envios
+    // reales de inscripcion. A 60 s son 60 llamadas por hora, y no se pierde
+    // nada: ademas se refresca al volver a la pestana (visibilitychange/focus)
+    // y el aforo se vuelve a comprobar de verdad al enviar el formulario.
     const capacityRefreshInterval = window.setInterval(
         refreshSelectedEventCapacitySilently,
-        15000
+        60000
     );
 
     document.addEventListener("visibilitychange", () => {
