@@ -4,23 +4,10 @@ const CONFIG = {
     SPREADSHEET_NAME: "Inscripciones Mosco Events",
     SPREADSHEET_ID: "1kfS5Ky3S9mTcE6Tp-PDCR3OzjLhf3l2u5KvWQznp4OM",
     SIGNATURES_FOLDER_NAME: "Firmas inscripciones",
-    EVENT_SHEET_NAMES: {
-        "sabado-29-08-2026": "29-08-2026"
-    },
     RESERVATIONS_SHEET_NAME: "Reservas",
-    // Partidas privadas que exigen contrasena para inscribirse o reservar.
-    // Debe coincidir con el campo "contrasena" del evento en datos.js.
-    EVENT_PASSWORDS: {
-        "miercoles-16-09-2026": "AGM"
-    },
-    // Partidas que piden elegir bando (OTAN/PMC) al inscribirse.
-    // Debe coincidir con el campo "seleccionBando" del evento en datos.js.
-    EVENTS_WITH_SIDE_SELECTION: [
-        "sabado-19-09-2026"
-    ],
     // Maximo de inscripciones con equipo de alquiler por partida.
     RENTAL_CAPACITY: 4,
-    // Maximo de inscripciones por bando en las partidas de EVENTS_WITH_SIDE_SELECTION
+    // Maximo de inscripciones por bando en las partidas con "bandos" en EVENTS
     // (la suma de los dos bandos debe coincidir con el aforo total de la partida).
     SIDE_CAPACITY: 13,
     // Valores exactos del campo "bando" (deben coincidir con las opciones
@@ -47,6 +34,52 @@ const CONFIG = {
     // (apps-script/clave-automatizacion.txt, fuera de Git) al subir el codigo.
     AUTOMATION_KEY: "__CLAVE_AUTOMATIZACION__"
 };
+
+// Catalogo de partidas del lado del servidor. Debe mantenerse en sintonia
+// con datos.js, que es lo que ve el navegador.
+//
+// Existe por dos motivos:
+//
+// 1. "hoja" fija el nombre de la pestana de Sheets POR ID DE EVENTO. Antes el
+//    nombre se derivaba del titulo que mandaba el navegador, asi que cambiar
+//    el titulo de una partida ya abierta creaba una pestana nueva vacia: el
+//    contador de plazas volvia a cero (se podia sobrevender) y las
+//    inscripciones quedaban partidas en dos pestanas. Los nombres de aqui son
+//    exactamente los que ya tienen las pestanas creadas, asi que este cambio
+//    no mueve nada de lo ya guardado.
+//
+// 2. "plazas" e "importe" dejan de venir del formulario. El aforo llegaba en
+//    el campo "Plazas" y el precio en "Importe del pago", asi que un POST
+//    hecho a mano podia declarar 999 plazas para colarse en una partida llena
+//    o pagar un euro. Ahora el navegador propone y este catalogo decide.
+//
+// Una partida que no aparezca aqui sigue funcionando como antes (sin limite
+// de aforo y sin comprobar el importe), para no romper eventos antiguos.
+const EVENTS = {
+    "miercoles-16-09-2026": { hoja: "Privada Miércoles Tarde", plazas: 26, importe: 15, contrasena: "AGM" },
+    "jueves-17-09-2026": { hoja: "Jueves 17 de Septiembre", plazas: 26, importe: 15 },
+    "sabado-19-09-2026": { hoja: "TCSIM Sábado Tarde 19 09 2026", plazas: 26, importe: 18, bandos: true },
+    "sabado-29-08-2026": { hoja: "29-08-2026", plazas: 26, importe: 18 },
+    "operacion-verano-2026": { hoja: "Operación Verano", plazas: 26, importe: 25 },
+    "domingo-02-08-2026": { hoja: "Domingo 2 de Agosto", plazas: 26, importe: 18 },
+    "jueves-30-07-2026": { hoja: "Jueves 30 de Julio", plazas: 20, importe: 15 },
+    "jueves-23-07-2026": { hoja: "Jueves 23 de Julio", plazas: 20, importe: 13 },
+    "jueves-16-07-2026": { hoja: "Jueves 16 de Julio", plazas: 20, importe: 13 },
+    "jueves-09-07-2026": { hoja: "Jueves 9 de Julio", plazas: 20, importe: 12 }
+};
+
+// Suplemento por alquilar equipo, y comision que PayPal cobra cuando el pago
+// llega como "Bienes y servicios". Ambos deben coincidir con RENTAL_SURCHARGE
+// y GOODS_SERVICES_FEE_RATE de registro.js: son los que hacen validos los
+// importes por encima del precio base de la partida.
+const RENTAL_SURCHARGE = 20;
+const GOODS_SERVICES_FEE_RATE = 0.0527;
+
+// Devuelve siempre un objeto para que quien lo llame no tenga que comprobar
+// nulos: una partida fuera del catalogo se comporta como una sin limites.
+function eventConfig_(eventId) {
+    return EVENTS[value_(eventId)] || {};
+}
 
 const HEADERS = [
     "Fecha registro",
@@ -114,6 +147,16 @@ function doPost(e) {
     try {
         lock.waitLock(30000);
 
+        // Campo trampa: esta oculto en el formulario, asi que solo lo rellenan
+        // los robots que envian el formulario sin verlo. Se responde como si
+        // todo hubiera ido bien para no darles pistas, pero no se guarda nada.
+        if (value_(payload._honey)) {
+            return respond_(
+                wantsJson, true, "Inscripcion recibida",
+                "La inscripcion se ha registrado correctamente. Se ha enviado una copia al correo indicado."
+            );
+        }
+
         if (value_(payload.tipoRegistro) === "Reserva") {
             return saveReservation_(payload, wantsJson);
         }
@@ -138,7 +181,7 @@ function doPost(e) {
             );
         }
 
-        const capacity = eventCapacity_(record.plazas);
+        const capacity = eventCapacity_(record.eventoId);
 
         if (isEventFull_(registrationCount_(sheet), capacity)) {
             return respond_(
@@ -266,14 +309,53 @@ function normalizeRegistration_(payload) {
 
 // Contrasena exigida para esta partida, o cadena vacia si es publica.
 function requiredEventPassword_(eventId) {
-    return value_(CONFIG.EVENT_PASSWORDS[value_(eventId)]);
+    return value_(eventConfig_(eventId).contrasena);
 }
 
-// Aforo real de la partida: el que manda el formulario segun datos.js.
-// Si el evento no define aforo (Plazas vacio), se considera sin limite:
-// esa partida nunca se marca como llena.
-function eventCapacity_(requested) {
-    return toPositiveInteger_(requested) || null;
+// Aforo real de la partida, sacado del catalogo EVENTS y no de lo que mande
+// el formulario. Una partida sin entrada en el catalogo se considera sin
+// limite: nunca se marca como llena.
+function eventCapacity_(eventId) {
+    return toPositiveInteger_(eventConfig_(eventId).plazas) || null;
+}
+
+// Importes que este backend acepta para una partida: el precio base y el
+// precio con alquiler, cada uno en su version normal y en la version
+// incrementada para absorber la comision de "Bienes y servicios" de PayPal.
+// El calculo replica el de registro.js (redondeo hacia arriba al centimo).
+function allowedAmounts_(eventId) {
+    const base = Number(eventConfig_(eventId).importe);
+
+    if (!Number.isFinite(base) || base <= 0) {
+        return [];
+    }
+
+    const netos = [base, base + RENTAL_SURCHARGE];
+
+    return netos.concat(
+        netos.map((neto) => Math.ceil((neto / (1 - GOODS_SERVICES_FEE_RATE)) * 100) / 100)
+    );
+}
+
+// El importe llega ya formateado ("18,00 €"). Se acepta si coincide con
+// alguno de los importes validos de la partida, con un margen de un centimo
+// para absorber diferencias de redondeo entre el navegador y este script.
+function isAllowedAmount_(eventId, importe) {
+    const permitidos = allowedAmounts_(eventId);
+
+    if (!permitidos.length) {
+        return true;
+    }
+
+    const enviado = Number(
+        value_(importe).replace(/[^\d,.-]/g, "").replace(/\.(?=\d{3}\b)/g, "").replace(",", ".")
+    );
+
+    if (!Number.isFinite(enviado)) {
+        return false;
+    }
+
+    return permitidos.some((valido) => Math.abs(valido - enviado) < 0.011);
 }
 
 function isEventFull_(count, capacity) {
@@ -293,12 +375,17 @@ function validateRegistration_(record) {
     if (!record.nombre) missing.push("Nombre");
     if (!record.equipo) missing.push("Equipo");
     if (!record.equipamiento) missing.push("Equipamiento");
-    if (CONFIG.EVENTS_WITH_SIDE_SELECTION.includes(record.eventoId) && !record.bando) missing.push("Bando");
+    if (requiresSideSelection_(record.eventoId) && !record.bando) missing.push("Bando");
     if (!record.telefono) missing.push("Telefono");
     if (!record.correo) missing.push("Correo electronico");
     if (!record.consentimientoImagenes) missing.push("Consentimiento imagenes");
     if (record.pagoMetodo !== "PayPal") missing.push("Metodo de pago PayPal");
     if (!record.pagoImporte) missing.push("Importe del pago");
+    // El importe lo calcula el navegador, asi que se contrasta contra los
+    // precios validos de la partida antes de dar la inscripcion por buena.
+    if (record.pagoImporte && !isAllowedAmount_(record.eventoId, record.pagoImporte)) {
+        missing.push("Importe del pago valido para esta partida");
+    }
     if (record.pagoConfirmado !== "Si") missing.push("Confirmacion de pago en PayPal");
     if (record.normasLeidas !== "Si") missing.push("Normas leidas");
     if (!record.firmaLegal) missing.push("Firma");
@@ -325,14 +412,14 @@ function capacityStatusResponse_(params) {
     if (eventName) {
         const folder = getOrCreateFolder_(CONFIG.DRIVE_FOLDER_NAME);
         const spreadsheet = getOrCreateSpreadsheet_(folder);
-        const sheet = spreadsheet.getSheetByName(eventSheetName_(eventName, eventId));
+        const sheet = findEventSheet_(spreadsheet, eventName, eventId);
 
         count = registrationCount_(sheet);
         rentalCount = rentalCount_(sheet);
         sides = sideCounts_(sheet);
     }
 
-    const capacity = eventCapacity_(params.capacity);
+    const capacity = eventCapacity_(eventId);
     const sideSelectionRequired = requiresSideSelection_(eventId);
     const payload = {
         eventId: eventId,
@@ -531,9 +618,9 @@ function rentalCount_(sheet) {
     return values.filter((row) => isRentalEquipment_(row[0])).length;
 }
 
-// El evento pide elegir bando (ver EVENTS_WITH_SIDE_SELECTION / seleccionBando en datos.js).
+// El evento pide elegir bando (ver "bandos" en EVENTS / seleccionBando en datos.js).
 function requiresSideSelection_(eventId) {
-    return CONFIG.EVENTS_WITH_SIDE_SELECTION.includes(value_(eventId));
+    return Boolean(eventConfig_(eventId).bandos);
 }
 
 // A que bando corresponde este valor exacto del campo "Bando", o null si no
@@ -616,11 +703,9 @@ function saveReservation_(payload, wantsJson) {
 
     const folder = getOrCreateFolder_(CONFIG.DRIVE_FOLDER_NAME);
     const spreadsheet = getOrCreateSpreadsheet_(folder);
-    const eventSheet = spreadsheet.getSheetByName(
-        eventSheetName_(reservation.evento, reservation.eventoId)
-    );
+    const eventSheet = findEventSheet_(spreadsheet, reservation.evento, reservation.eventoId);
 
-    const capacity = eventCapacity_(payload.plazas);
+    const capacity = eventCapacity_(reservation.eventoId);
 
     if (!isEventFull_(registrationCount_(eventSheet), capacity)) {
         throw new Error("La partida todavia tiene plazas disponibles.");
@@ -697,9 +782,24 @@ function getOrCreateSpreadsheet_(folder) {
 }
 
 function getOrCreateSheet_(spreadsheet, eventName, eventId) {
-    const name = eventSheetName_(eventName, eventId);
+    const canonico = eventSheetName_(eventName, eventId);
+    const sheet = findEventSheet_(spreadsheet, eventName, eventId);
 
-    return getOrCreateNamedSheet_(spreadsheet, name, HEADERS);
+    if (!sheet) {
+        return getOrCreateNamedSheet_(spreadsheet, canonico, HEADERS);
+    }
+
+    // La pestana existe pero todavia con el nombre viejo (el derivado del
+    // titulo). Se renombra una sola vez, al llegar la primera inscripcion
+    // despues de este cambio, para que a partir de ahi mande el ID.
+    if (sheet.getName() !== canonico) {
+        sheet.setName(canonico);
+    }
+
+    ensureHeaders_(sheet, HEADERS);
+    removeDefaultSheet_(spreadsheet);
+
+    return sheet;
 }
 
 function getOrCreateNamedSheet_(spreadsheet, name, headers) {
@@ -762,7 +862,9 @@ function buildSheetRow_(record, signatureUrl) {
         safeCell_(record.normasLeidas),
         safeCell_(record.textoLegalFirmado),
         safeCell_(signatureUrl),
-        safeCell_(record.plazas || ""),
+        // El aforo que se guarda es el del catalogo EVENTS, no el que venia
+        // en el formulario.
+        safeCell_(eventCapacity_(record.eventoId) || record.plazas || ""),
         safeCell_(record.pagoMetodo),
         safeCell_(record.pagoImporte),
         safeCell_(record.pagoDesglose),
@@ -1167,8 +1269,38 @@ function sheetName_(value) {
     return (name || "Sin evento").slice(0, 90);
 }
 
+// La pestana se elige por ID de evento siempre que la partida este en el
+// catalogo. El titulo que manda el navegador solo se usa como respaldo para
+// partidas viejas que no aparezcan en EVENTS.
 function eventSheetName_(eventName, eventId) {
-    return CONFIG.EVENT_SHEET_NAMES[value_(eventId)] || sheetName_(eventName);
+    return value_(eventConfig_(eventId).hoja) || sheetName_(eventName);
+}
+
+// Nombres bajo los que puede estar guardada la pestana de una partida: el
+// canonico del catalogo y el que generaba el esquema antiguo a partir del
+// titulo. Asi una pestana ya creada se sigue encontrando aunque el nombre
+// del catalogo no coincida exactamente con el que tiene hoy.
+function eventSheetNames_(eventName, eventId) {
+    const canonico = eventSheetName_(eventName, eventId);
+    const legado = sheetName_(eventName);
+
+    return canonico === legado ? [canonico] : [canonico, legado];
+}
+
+// Localiza la pestana de una partida sin crear nada, probando los dos
+// nombres posibles. Devuelve null si la partida no tiene pestana todavia.
+function findEventSheet_(spreadsheet, eventName, eventId) {
+    const nombres = eventSheetNames_(eventName, eventId);
+
+    for (let i = 0; i < nombres.length; i += 1) {
+        const sheet = spreadsheet.getSheetByName(nombres[i]);
+
+        if (sheet) {
+            return sheet;
+        }
+    }
+
+    return null;
 }
 
 function value_(value) {
