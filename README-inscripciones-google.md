@@ -36,6 +36,69 @@ El valor `SPREADSHEET_ID` de `google-apps-script-inscripciones.js` fija la hoja 
 
 Si `appsScriptUrl` esta vacio, la web conserva el envio anterior por FormSubmit como respaldo.
 
+## Cloudflare: la CSP tiene que dejar pasar Apps Script
+
+**Esto no vive en el repositorio y rompe las inscripciones sin dar ningun error visible.**
+
+`www.moscoevents.com` no lo sirve GitHub Pages directamente: delante hay Cloudflare, que
+inyecta cabeceras de respuesta que no estan en ningun fichero de este repositorio. Entre ellas
+va la `Content-Security-Policy`, y de ella depende que el navegador pueda hablar siquiera con
+el backend de Apps Script.
+
+Hasta el 2026-09-13 la politica era `script-src 'self'` y no declaraba `connect-src`. Eso
+bloqueaba las dos vias que usa `registro.js`:
+
+- El sondeo de aforo, que es un `<script>` JSONP a `script.google.com` (`script-src`).
+- El envio del formulario por `fetch` (`connect-src`, que al no estar declarado caia en
+  `default-src 'self'`).
+
+Las inscripciones seguian entrando solo porque `form-action` no estaba declarado, asi que el
+respaldo por navegacion real del formulario sobrevivia; pero el contador de plazas nunca
+funcionaba, una partida llena parecia abierta hasta despues de que el participante hubiera
+pagado en PayPal, y el comprobante se mostraba en una pagina pelada de Apps Script en vez de en
+la web.
+
+El fallo era invisible en local (el servidor de desarrollo no manda ninguna CSP) y con `curl`
+(que ignora la CSP por completo). **Solo se ve en un navegador real contra el dominio publicado.**
+
+### Donde se configura
+
+Dos sitios del panel de Cloudflare, ninguno de los dos versionado aqui:
+
+| Sitio | Que pone |
+| --- | --- |
+| Rules > Transform Rules > Modify Response Header, regla `security` | `Content-Security-Policy`, `Cross-Origin-Resource-Policy`, `Referrer-Policy`, `X-Content-Type-Options` |
+| Rules > Settings > Managed Transforms > "Add security headers" | Ponia `x-xss-protection`, `x-frame-options` y `expect-ct` (las tres obsoletas). Apagado el 2026-09-13 |
+
+### Reglas que hay que respetar
+
+- La CSP debe mantener `https://script.google.com https://script.googleusercontent.com` en
+  **`script-src` y en `connect-src`**. Hacen falta los dos dominios porque Apps Script redirige
+  `/exec` a `script.googleusercontent.com` para servir la respuesta.
+- **No anadir nunca una directiva `form-action`** sin incluir `https://script.google.com` y
+  `https://formsubmit.co`. Ahora mismo no existe, y es el ultimo camino que queda si `fetch`
+  falla.
+- Una `<meta>` CSP en el HTML solo puede restringir mas, nunca relajar la cabecera: no hay
+  arreglo posible desde el repositorio. Cualquier cambio se hace en el panel de Cloudflare.
+
+Valor vigente desde el 2026-09-13:
+
+```
+default-src 'self'; img-src 'self' data: https:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self' https://script.google.com https://script.googleusercontent.com; connect-src 'self' https://script.google.com https://script.googleusercontent.com; frame-ancestors 'none';
+```
+
+## Arranques en frio del backend
+
+Google apaga el proyecto de Apps Script tras unos minutos sin uso. Medido contra el despliegue
+real: con la instancia caliente el endpoint `action=status` responde en unos 2,4 s, pero en frio
+tarda mucho mas (12 s, 23 s y 26 s en distintos arranques). En un sitio de poco trafico la
+mayoria de visitas caen en el camino frio.
+
+Por eso el sondeo de aforo de `registro.js` espera 30 s y no 8, y por eso, si aun asi caduca, la
+pagina avisa de que no ha podido comprobar las plazas en vez de dar por hecho que hay sitio: el
+pago por PayPal se hace ANTES de enviar la inscripcion, asi que asumir en silencio que queda
+hueco puede costarle el dinero a alguien.
+
 ## Cuenta que ejecuta el backend: inscripciones@moscoevents.com
 
 Desde el 2026-09-12 el proyecto de Apps Script activo (`apps-script-inscripciones/`) pertenece y
