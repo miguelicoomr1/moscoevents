@@ -181,6 +181,15 @@ function doPost(e) {
             );
         }
 
+        if (participantExists_(sheet, record.nombre, record.telefono)) {
+            return respond_(
+                wantsJson, false, "Ya hay una inscripcion con estos datos",
+                "Ya figura una inscripcion en esta partida con ese nombre y ese telefono. "
+                    + "Si crees que es un error, escribe a Mosco Events.",
+                "duplicate"
+            );
+        }
+
         const capacity = eventCapacity_(record.eventoId);
 
         if (isEventFull_(registrationCount_(sheet), capacity)) {
@@ -593,6 +602,63 @@ function registrationCount_(sheet) {
     }
 
     return Math.max(0, sheet.getLastRow() - 1);
+}
+
+// Normaliza texto para compararlo: minusculas, sin acentos y sin espacios
+// de mas, para que "Martin Lopez" y "martín  lópez" cuenten como lo mismo.
+function normalizeForMatch_(value) {
+    return value_(value)
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[̀-ͯ]/g, "")
+        .replace(/\s+/g, " ")
+        .trim();
+}
+
+// Los telefonos se comparan solo por sus ultimos nueve digitos, para que
+// "600 11 22 33", "600112233" y "+34 600112233" sean el mismo numero.
+function normalizePhone_(value) {
+    const digitos = value_(value).replace(/\D/g, "");
+
+    return digitos.length > 9 ? digitos.slice(-9) : digitos;
+}
+
+// Impide que la misma persona figure dos veces en la misma partida. Se exige
+// que coincidan nombre Y telefono: con el correo bastaria para bloquear a
+// quien apunta a un amigo desde su propia cuenta, que es un caso legitimo.
+// La deduplicacion por referencia de mas arriba solo cubre reenvios del
+// mismo intento; esto cubre a quien rellena el formulario dos veces.
+function participantExists_(sheet, nombre, telefono) {
+    if (!sheet) {
+        return false;
+    }
+
+    const lastRow = sheet.getLastRow();
+
+    if (lastRow < 2) {
+        return false;
+    }
+
+    const buscadoNombre = normalizeForMatch_(nombre);
+    const buscadoTelefono = normalizePhone_(telefono);
+
+    if (!buscadoNombre || !buscadoTelefono) {
+        return false;
+    }
+
+    const nombres = sheet.getRange(2, HEADERS.indexOf("Nombre") + 1, lastRow - 1, 1).getValues();
+    const telefonos = sheet.getRange(2, HEADERS.indexOf("Telefono") + 1, lastRow - 1, 1).getValues();
+
+    for (let i = 0; i < nombres.length; i += 1) {
+        if (
+            normalizeForMatch_(nombres[i][0]) === buscadoNombre &&
+            normalizePhone_(telefonos[i][0]) === buscadoTelefono
+        ) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 // El equipamiento de alquiler siempre empieza por "Alquiler" (ver datos.js/registro.html).
