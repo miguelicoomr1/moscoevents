@@ -75,7 +75,7 @@
 <body data-registration-page data-i18n-doc-title="registro.doc_title" data-i18n-doc-description="registro.doc_description">
 
 <script src="/header.js?v=9"></script>
-<script src="/i18n-lang.js?v=14"></script>
+<script src="/i18n-lang.js?v=15"></script>
 <script src="/i18n.js?v=3"></script>
 
 <section class="hero registration-hero" aria-label="Inscripciones Mosco Events">
@@ -356,6 +356,15 @@
                                 <option value="OTAN (Camuflajes)" data-i18n="registro.form.side_otan">OTAN (Camuflajes)</option>
                                 <option value="PMC (Sin camuflajes)" data-i18n="registro.form.side_pmc">PMC (Sin camuflajes)</option>
                             </select>
+
+                            <p
+                                class="form-error"
+                                data-side-full-notice
+                                data-i18n="registro.form.side_full_notice"
+                                hidden
+                            >
+                                Ese bando est&aacute; completo. Elige el otro para inscribirte.
+                            </p>
                         </label>
 
                         <label class="form-field">
@@ -482,6 +491,15 @@
                                     Se a&ntilde;adir&aacute; la comisi&oacute;n de PayPal a tu pago para que sigamos recibiendo el importe &iacute;ntegro de la partida.
                                 </p>
                             </div>
+
+                            <p
+                                class="form-error"
+                                data-capacity-unknown-notice
+                                data-i18n="registro.form.capacity_unknown_notice"
+                                hidden
+                            >
+                                No hemos podido comprobar cu&aacute;ntas plazas quedan en esta partida. Antes de pagar, escr&iacute;benos por WhatsApp para confirmar que hay sitio.
+                            </p>
 
                             <a
                                 class="btn paypal-payment-button is-disabled"
@@ -617,7 +635,7 @@
 
 <script src="/datos.js?v=38"></script>
 <script src="/inscripciones-config.js?v=4"></script>
-<script src="/registro.js?v=42"></script>
+<script src="/registro.js?v=43"></script>
 
 </body>
 </html>

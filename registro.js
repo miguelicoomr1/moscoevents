@@ -24,6 +24,8 @@
     const waitlist = document.getElementById("registration-waitlist");
     const blockedNotice = document.getElementById("registration-blocked");
     const blockedMessage = document.querySelector("[data-registration-blocked-message]");
+    const capacityUnknownNotice = document.querySelector("[data-capacity-unknown-notice]");
+    const sideFullNotice = document.querySelector("[data-side-full-notice]");
     const reservationForm = document.getElementById("reservation-form");
     const reservationSubmit = document.getElementById("reservation-submit");
     const reservationName = reservationForm?.querySelector("[name='nombreReserva']");
@@ -111,6 +113,9 @@
     let capacityChecking = false;
     let capacityRequestId = 0;
     let silentCapacityChecking = false;
+    // Una vez guardada la reserva, el boton no vuelve a habilitarse: un
+    // segundo clic solo podia crear una fila duplicada en la hoja.
+    let reservationSaved = false;
     // URL de PayPal que el participante realmente abrio. Si el importe
     // cambia despues (otro evento, alquiler...) deja de coincidir y hay
     // que pulsar "PAGAR CON PAYPAL" otra vez antes de poder confirmar.
@@ -203,6 +208,10 @@
                 sideSelect.value = "";
                 updateSubmitAvailability();
             }
+        }
+
+        if (sideFullNotice) {
+            sideFullNotice.hidden = !selectedEventOtanFull && !selectedEventPmcFull;
         }
     }
 
@@ -541,7 +550,15 @@
         return new Promise((resolve) => {
             const callbackName = `moscoCapacity${Date.now()}${Math.random().toString(36).slice(2)}`;
             const script = document.createElement("script");
-            const timeout = window.setTimeout(() => finish(null), 8000);
+            // Con la instancia caliente el backend responde en ~2 s, pero
+            // Google apaga el proyecto tras unos minutos sin uso y en frio
+            // llega a tardar mas de 20 s (medido: 12 s, 12 s y 23 s en tres
+            // arranques). Con el limite anterior de 8 s la comprobacion
+            // caducaba en la mayoria de visitas de un sitio de poco trafico y
+            // la pagina daba por libre una partida que podia estar llena,
+            // dejando que alguien pagase en PayPal antes de que el backend la
+            // rechazara.
+            const timeout = window.setTimeout(() => finish(null), 30000);
             let completed = false;
 
             function finish(status) {
@@ -553,11 +570,18 @@
                 window.clearTimeout(timeout);
                 script.remove();
 
-                try {
-                    delete window[callbackName];
-                } catch (error) {
-                    window[callbackName] = undefined;
-                }
+                // El callback no se borra de inmediato: una respuesta que
+                // llegue despues del tiempo de espera buscaria la funcion y
+                // lanzaria un error en la consola. Se deja un hueco vacio y
+                // se limpia pasado un rato.
+                window[callbackName] = () => {};
+                window.setTimeout(() => {
+                    try {
+                        delete window[callbackName];
+                    } catch (error) {
+                        window[callbackName] = undefined;
+                    }
+                }, 60000);
 
                 resolve(status);
             }
@@ -568,11 +592,6 @@
                 url.searchParams.set("action", "status");
                 url.searchParams.set("eventId", evento.id);
                 url.searchParams.set("eventName", evento.titulo);
-
-                // Aforo real de esta partida (20, 26...), no un tope global.
-                if (evento.plazas) {
-                    url.searchParams.set("capacity", String(evento.plazas));
-                }
 
                 url.searchParams.set("callback", callbackName);
                 url.searchParams.set("_", String(Date.now()));
@@ -619,6 +638,16 @@
         }
     }
 
+    // Cuando el sondeo de aforo no llega a tiempo no se sabe si la partida
+    // esta llena. Antes se asumia en silencio que habia sitio; ahora se
+    // avisa, porque el pago se hace ANTES de enviar la inscripcion y el
+    // backend rechaza igualmente una partida completa.
+    function setCapacityUnknown(isUnknown) {
+        if (capacityUnknownNotice) {
+            capacityUnknownNotice.hidden = !isUnknown;
+        }
+    }
+
     function setRegistrationFull(isFull) {
         selectedEventFull = Boolean(isFull && selectedEvent);
 
@@ -633,7 +662,7 @@
         });
 
         reservationControls.forEach((control) => {
-            control.disabled = !selectedEventFull || selectedEventBlocked;
+            control.disabled = reservationSaved || !selectedEventFull || selectedEventBlocked;
         });
 
         waitlist.hidden = !selectedEventFull || selectedEventBlocked;
@@ -654,6 +683,7 @@
         setRegistrationFull(false);
         syncRentalAvailability(false);
         syncSideAvailability(false, false);
+        setCapacityUnknown(false);
 
         if (!evento) {
             capacityChecking = false;
@@ -671,6 +701,7 @@
         }
 
         capacityChecking = false;
+        setCapacityUnknown(Boolean(appsScriptUrl) && !status);
         setRegistrationFull(Boolean(status?.full));
         syncRentalAvailability(Boolean(status?.rentalFull));
         syncSideAvailability(Boolean(status?.otanFull), Boolean(status?.pmcFull));
@@ -697,7 +728,13 @@
         try {
             const status = await checkEventCapacity(eventAtRequest);
 
-            if (!status || selectedEvent?.id !== eventAtRequest.id) {
+            if (selectedEvent?.id !== eventAtRequest.id) {
+                return;
+            }
+
+            setCapacityUnknown(Boolean(appsScriptUrl) && !status);
+
+            if (!status) {
                 return;
             }
 
@@ -1059,13 +1096,25 @@
         }
     }
 
-    // Guardamos el registro completo para poder mostrar el comprobante y su
-    // descarga cuando el backend nos devuelva a esta pagina con ?enviado=1.
+    // Guardamos el registro para poder mostrar el comprobante y su descarga
+    // cuando el backend nos devuelva a esta pagina con ?enviado=1.
     function storeReference(reference, record) {
         try {
+            // La firma queda fuera de lo que se guarda en el navegador: es un
+            // dato personal y este almacen puede sobrevivir dos horas en un
+            // dispositivo compartido. El comprobante de la pagina si la
+            // muestra, y la imagen ya esta en Drive y en el correo de copia;
+            // solo el comprobante recuperado tras volver con ?enviado=1 sale
+            // sin ella.
+            const registro = record ? Object.assign({}, record) : null;
+
+            if (registro) {
+                delete registro.firmaLegal;
+            }
+
             window.localStorage.setItem(referenceStorageKey, JSON.stringify({
                 referencia: reference,
-                registro: record || null,
+                registro: registro,
                 expiresAt: Date.now() + referenceLifetime
             }));
         } catch (error) {
@@ -1354,6 +1403,7 @@
     });
     eventSelect.addEventListener("change", async () => {
         selectedEvent = upcomingEvents.find((evento) => evento.id === eventSelect.value) || null;
+        reservationSaved = false;
         updateEventSummary(selectedEvent);
         result.hidden = true;
         await refreshEventCapacity(selectedEvent);
@@ -1431,9 +1481,6 @@
         reservationData.set("nombreReserva", record.nombre);
         reservationData.set("telefonoReserva", record.telefono);
         reservationData.set("fechaHoraRegistro", reservationDate.value);
-        // Aforo real de esta partida: el backend lo necesita para no rechazar
-        // reservas de eventos con menos plazas que el tope global.
-        reservationData.set("plazas", String(reservationEvent.plazas || ""));
         reservationData.set("contrasenaEvento", String(passwordInput.value || ""));
         isSubmittingReservation = true;
         reservationSubmit.disabled = true;
@@ -1456,7 +1503,23 @@
                     const outcome = await submitWithFetch(submissionAction(), reservationData);
 
                     if (outcome?.ok) {
+                        reservationSaved = true;
                         renderReservationResult(record);
+                    } else if (outcome?.code === "not_full") {
+                        // Se ha liberado una plaza mientras rellenaba la
+                        // reserva: lo que toca es volver al formulario normal,
+                        // no reintentar la reserva.
+                        renderNotice(
+                            t("registro.reservation.not_full_title"),
+                            t("registro.reservation.not_full_message")
+                        );
+                        await refreshEventCapacity(reservationEvent);
+                    } else if (outcome?.code === "duplicate") {
+                        reservationSaved = true;
+                        renderNotice(
+                            t("registro.reservation.duplicate_title"),
+                            t("registro.reservation.duplicate_message")
+                        );
                     } else {
                         renderReservationError(t("registro.reservation.connection_error"));
                     }
@@ -1474,8 +1537,10 @@
             renderReservationError(t("registro.reservation.connection_error"));
         } finally {
             isSubmittingReservation = false;
-            reservationSubmit.disabled = false;
-            reservationSubmit.textContent = t("registro.reservation.submit_button");
+            reservationSubmit.disabled = reservationSaved;
+            reservationSubmit.textContent = reservationSaved
+                ? t("registro.reservation.saved_button")
+                : t("registro.reservation.submit_button");
             eventSelect.disabled = !upcomingEvents.length;
         }
     });
@@ -1544,6 +1609,8 @@
             await refreshEventCapacity(selectedEvent);
             return;
         }
+
+        setCapacityUnknown(Boolean(appsScriptUrl) && !capacityStatus);
 
         if (capacityStatus?.full) {
             setRegistrationFull(true);
@@ -1682,6 +1749,23 @@
                         updateSubmitAvailability();
                         equipmentSelect.scrollIntoView({ behavior: "smooth", block: "center" });
                         equipmentSelect.focus();
+                    } else if (outcome?.code === "side_full") {
+                        // El backend no dice que bando esta lleno, pero el
+                        // rechazado es el que se acaba de enviar. Se lee el
+                        // valor antes de marcarlo, porque syncSideAvailability
+                        // vacia el select al deshabilitar la opcion elegida.
+                        const enviado = String(sideSelect.value || "");
+
+                        isSubmitting = false;
+                        result.hidden = true;
+                        result.classList.remove("is-sending");
+                        syncSideAvailability(
+                            selectedEventOtanFull || Boolean(sideOtanOption && enviado === sideOtanOption.value),
+                            selectedEventPmcFull || Boolean(sidePmcOption && enviado === sidePmcOption.value)
+                        );
+                        updateSubmitAvailability();
+                        sideSelect.scrollIntoView({ behavior: "smooth", block: "center" });
+                        sideSelect.focus();
                     } else {
                         showSubmissionDelay();
                     }

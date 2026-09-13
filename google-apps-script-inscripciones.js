@@ -742,6 +742,40 @@ function referenceExists_(sheet, referencia) {
     return values.some((row) => String(row[0]).trim() === referencia);
 }
 
+// Impide que la misma persona figure dos veces en la lista de reservas de
+// la misma partida. Mismo criterio que participantExists_ usa para las
+// inscripciones: nombre Y telefono normalizados, dentro del mismo evento.
+function reservationExists_(sheet, eventoId, nombre, telefono) {
+    if (!sheet) {
+        return false;
+    }
+
+    const lastRow = sheet.getLastRow();
+
+    if (lastRow < 2) {
+        return false;
+    }
+
+    const buscadoEvento = value_(eventoId);
+    const buscadoNombre = normalizeForMatch_(nombre);
+    const buscadoTelefono = normalizePhone_(telefono);
+
+    if (!buscadoNombre || !buscadoTelefono) {
+        return false;
+    }
+
+    const eventoCol = RESERVATION_HEADERS.indexOf("Evento ID");
+    const nombreCol = RESERVATION_HEADERS.indexOf("Nombre");
+    const telefonoCol = RESERVATION_HEADERS.indexOf("Telefono");
+    const values = sheet.getRange(2, 1, lastRow - 1, RESERVATION_HEADERS.length).getValues();
+
+    return values.some((row) => (
+        value_(row[eventoCol]) === buscadoEvento &&
+        normalizeForMatch_(row[nombreCol]) === buscadoNombre &&
+        normalizePhone_(row[telefonoCol]) === buscadoTelefono
+    ));
+}
+
 function saveReservation_(payload, wantsJson) {
     const reservation = {
         fechaRegistro: new Date(),
@@ -773,8 +807,19 @@ function saveReservation_(payload, wantsJson) {
 
     const capacity = eventCapacity_(reservation.eventoId);
 
+    // Que la partida haya dejado de estar llena mientras se rellenaba la
+    // reserva es una carrera normal (alguien cancela, se corrige una fila),
+    // no un fallo del sistema. Antes se lanzaba una excepcion, que acababa
+    // en el catch de doPost enviando al organizador un aviso de error que no
+    // correspondia a ningun problema real, y el participante veia un mensaje
+    // generico que no le decia que hacer.
     if (!isEventFull_(registrationCount_(eventSheet), capacity)) {
-        throw new Error("La partida todavia tiene plazas disponibles.");
+        return respond_(
+            wantsJson, false, "La partida vuelve a tener plazas",
+            "Se ha liberado alguna plaza en esta partida, asi que ya no hace falta reserva. "
+                + "Vuelve al formulario para inscribirte directamente.",
+            "not_full"
+        );
     }
 
     const reservationSheet = getOrCreateNamedSheet_(
@@ -782,6 +827,17 @@ function saveReservation_(payload, wantsJson) {
         CONFIG.RESERVATIONS_SHEET_NAME,
         RESERVATION_HEADERS
     );
+
+    // Las inscripciones ya estaban protegidas contra el doble envio, pero las
+    // reservas no: un segundo clic escribia otra fila identica.
+    if (reservationExists_(reservationSheet, reservation.eventoId, reservation.nombre, reservation.telefono)) {
+        return respond_(
+            wantsJson, false, "Ya estas en la lista de reservas",
+            "Ya figura una reserva en esta partida con ese nombre y ese telefono. "
+                + "Si crees que es un error, escribe a Mosco Events.",
+            "duplicate"
+        );
+    }
 
     reservationSheet.appendRow([
         reservation.fechaRegistro,
@@ -1378,20 +1434,6 @@ function value_(value) {
 // rechazar una inscripcion ya pagada por un detalle de formato.
 function affirmative_(value) {
     return /^(si|sí|sim|yes|y|true|on|1)$/i.test(value_(value));
-}
-
-function paymentAmount_(value) {
-    const normalized = value_(value)
-        .replace(/\s/g, "")
-        .replace("€", "")
-        .replace(",", ".");
-    const amount = Number(normalized);
-
-    if (!Number.isFinite(amount) || amount < 0.01 || amount > 9999.99) {
-        return "";
-    }
-
-    return `${amount.toFixed(2)} €`;
 }
 
 function safeCell_(value) {
