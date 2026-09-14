@@ -19,6 +19,10 @@
     const eventos = [
         {
             id: "miercoles-16-09-2026",
+            // Foto de portada de la tarjeta del listado. Las partidas que aun
+            // no se han jugado no tienen galeria propia, asi que aqui va una
+            // foto de archivo a modo ilustrativo.
+            portada: "/images/02-08-2026/02082026 11.jpeg",
             titulo: "Privada Miércoles Tarde",
             tituloListado: "Privada Miércoles Tarde 16-09-2026",
             tituloCalendario: "Privada Miércoles Tarde 16-09-2026",
@@ -49,6 +53,10 @@
         },
         {
             id: "jueves-17-09-2026",
+            // Foto de portada de la tarjeta del listado. Las partidas que aun
+            // no se han jugado no tienen galeria propia, asi que aqui va una
+            // foto de archivo a modo ilustrativo.
+            portada: "/images/09-07-2026/2026-07-09 25.jpeg",
             titulo: "Jueves 17 de Septiembre",
             tituloListado: "Jueves Tarde 17-09-2026",
             tituloCalendario: "Partida 17-09-2026",
@@ -78,6 +86,10 @@
         },
         {
             id: "sabado-19-09-2026",
+            // Foto de portada de la tarjeta del listado. Las partidas que aun
+            // no se han jugado no tienen galeria propia, asi que aqui va una
+            // foto de archivo a modo ilustrativo.
+            portada: "/images/TCSIM/TCSIM 31.jpeg",
             titulo: "TCSIM Sábado Tarde 19/09/2026",
             tituloListado: "TCSIM Sábado Tarde 19/09/2026",
             tituloCalendario: "TCSIM Sábado Tarde 19/09/2026",

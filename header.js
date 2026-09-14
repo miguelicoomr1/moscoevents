@@ -98,6 +98,52 @@
         </header>
     `;
 
+    // Deja la URL en una forma comparable: sin %20, en minusculas y con la
+    // portada siempre como "/index.html".
+    const normalizarRuta = (ruta) => {
+        let limpia = ruta;
+
+        try {
+            limpia = decodeURIComponent(ruta);
+        } catch (error) {
+            // Ruta con un escape raro: se compara tal cual.
+        }
+
+        limpia = limpia.toLowerCase().replace(/\/+$/, "");
+
+        return limpia === "" ? "/index.html" : limpia;
+    };
+
+    // Paginas de detalle que no tienen enlace propio en el menu pero pertenecen
+    // a una seccion: la marca se lleva al enlace de esa seccion.
+    const SECCIONES = [
+        { prueba: (p) => p.startsWith("/proximos eventos/") || p === "/evento.html", destino: "/proximos eventos/proximos-eventos.html" },
+        { prueba: (p) => p.startsWith("/galeria/") || p === "/galeria-evento.html", destino: "/galeria/galeria.html" },
+        { prueba: (p) => p.startsWith("/eventos anteriores/"), destino: "/eventos anteriores/eventos-anteriores.html" },
+        { prueba: (p) => p.startsWith("/calendario/"), destino: "/calendario/calendario.html" }
+    ];
+
+    const marcarPaginaActual = (menu) => {
+        const actual = normalizarRuta(window.location.pathname);
+        const seccion = SECCIONES.find((entrada) => entrada.prueba(actual));
+        const objetivo = seccion ? seccion.destino : actual;
+
+        const enlace = Array.from(menu.querySelectorAll("a")).find(
+            (candidato) => normalizarRuta(new URL(candidato.href, window.location.origin).pathname) === objetivo
+        );
+
+        if (!enlace) {
+            return;
+        }
+
+        enlace.classList.add("is-current");
+        enlace.setAttribute("aria-current", "page");
+
+        // Si el enlace vive dentro de un desplegable, tambien se marca el boton
+        // que lo abre: si no, en escritorio no se veria nada.
+        enlace.closest(".dropdown")?.classList.add("has-current");
+    };
+
     const mountHeader = () => {
         if (document.getElementById("top")) {
             return;
@@ -152,6 +198,8 @@
                 button.setAttribute("aria-expanded", String(isOpen));
             });
         });
+
+        marcarPaginaActual(menu);
 
         menu.querySelectorAll("a").forEach((link) => {
             link.addEventListener("click", () => {

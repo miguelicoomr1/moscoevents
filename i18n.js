@@ -7,6 +7,44 @@
         return window.MOSCO_I18N_DICT || {};
     }
 
+    // Version de los diccionarios. Hay que subirla al tocar los i18n-lang.*.js,
+    // igual que el ?v= de los demas ficheros.
+    const DICT_VERSION = "1";
+
+    // El HTML solo carga i18n-lang.es.js, que ademas hace de idioma de respaldo
+    // de t(). Los otros tres se piden aparte y solo si alguien los usa: asi una
+    // visita en castellano (la mayoria) descarga 73 KB en vez de los 304 KB que
+    // pesaba el fichero unico con los cuatro idiomas dentro.
+    const cargas = new Map();
+
+    function cargarDiccionario(lang) {
+        if (dict()[lang]) {
+            return Promise.resolve();
+        }
+
+        if (cargas.has(lang)) {
+            return cargas.get(lang);
+        }
+
+        const carga = new Promise((resolve) => {
+            const script = document.createElement("script");
+
+            script.src = `/i18n-lang.${lang}.js?v=${DICT_VERSION}`;
+            script.async = true;
+
+            // Si el diccionario no llega (sin conexion, 404...) no se bloquea
+            // nada: t() sigue respondiendo con el castellano de respaldo.
+            script.onload = () => resolve();
+            script.onerror = () => resolve();
+
+            document.head.appendChild(script);
+        });
+
+        cargas.set(lang, carga);
+
+        return carga;
+    }
+
     function detectInitialLanguage() {
         try {
             const saved = window.localStorage.getItem(STORAGE_KEY);
@@ -136,9 +174,19 @@
         }
 
         document.documentElement.lang = lang;
-        applyStaticTranslations();
         updateSwitcherUI();
-        window.dispatchEvent(new CustomEvent("mosco:langchange", { detail: { lang } }));
+
+        // El diccionario puede no estar todavia en memoria. Se traduce cuando
+        // llega; si ya estaba, la promesa resuelve en el mismo tick y no se
+        // nota diferencia con el comportamiento anterior.
+        cargarDiccionario(lang).then(() => {
+            if (currentLang !== lang) {
+                return;
+            }
+
+            applyStaticTranslations();
+            window.dispatchEvent(new CustomEvent("mosco:langchange", { detail: { lang } }));
+        });
     }
 
     function bindSwitcher() {
@@ -160,6 +208,17 @@
     function init() {
         applyStaticTranslations();
         updateSwitcherUI();
+
+        // El HTML ya viene escrito en castellano, asi que si el idioma guardado
+        // es otro hay que traducir en cuanto llegue su diccionario.
+        if (currentLang !== DEFAULT_LANG) {
+            cargarDiccionario(currentLang).then(() => {
+                applyStaticTranslations();
+                window.dispatchEvent(
+                    new CustomEvent("mosco:langchange", { detail: { lang: currentLang } })
+                );
+            });
+        }
     }
 
     if (document.readyState === "loading") {

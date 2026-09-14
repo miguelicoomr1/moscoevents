@@ -90,13 +90,163 @@
         return evento.botonEvento || t("eventos.view_event_button", { fecha: evento.fechaCorta });
     }
 
-    function crearTarjetaEvento(evento) {
-        const tarjeta = crearElemento("div", "card");
-        const titulo = crearElemento("h2", "", evento.tituloListado || evento.titulo);
-        const resumen = crearElemento("p", "", evento.resumen || t("eventos.default_summary"));
-        const enlace = crearEnlace(evento.url, "btn", textoBotonEvento(evento));
+    // Imagen de cabecera de la tarjeta: la portada declarada en datos.js y, si
+    // no hay, la primera foto de la galeria del evento. Las partidas que aun no
+    // se han jugado no tienen galeria, asi que ahi la portada es obligatoria
+    // para que la tarjeta salga con foto.
+    function portadaEvento(evento) {
+        return evento.portada || evento.galeria?.imagenes?.[0] || null;
+    }
 
-        tarjeta.append(titulo, resumen, enlace);
+    function crearPortadaTarjeta(evento) {
+        const origen = portadaEvento(evento);
+
+        if (!origen) {
+            return null;
+        }
+
+        const media = crearElemento("div", "event-card__media");
+        const imagen = document.createElement("img");
+
+        imagen.src = obtenerMiniatura(origen);
+        imagen.srcset = `${obtenerMiniatura(origen)} 390w, ${obtenerImagenAmpliada(origen)} 675w`;
+        imagen.sizes = "(min-width: 900px) 590px, 100vw";
+        imagen.loading = "lazy";
+        imagen.decoding = "async";
+        imagen.width = 675;
+        imagen.height = 380;
+
+        // La foto es decorativa: el titulo de la partida va justo debajo y
+        // repetirlo en el alt solo molesta a quien usa lector de pantalla.
+        imagen.alt = "";
+
+        media.append(imagen, crearChipFecha(evento));
+
+        const estado = crearEstadoTarjeta(evento);
+
+        if (estado) {
+            media.appendChild(estado);
+        }
+
+        return media;
+    }
+
+    function crearChipFecha(evento) {
+        const chip = crearElemento("div", "event-card__date");
+        const fecha = evento.fecha ? new Date(`${evento.fecha}T00:00:00`) : null;
+
+        if (!fecha || Number.isNaN(fecha.getTime())) {
+            chip.appendChild(crearElemento("span", "", evento.fechaCorta || ""));
+            return chip;
+        }
+
+        const locale = window.MoscoI18n?.getLocale() || "es-ES";
+        const mes = new Intl.DateTimeFormat(locale, { month: "short" }).format(fecha);
+
+        chip.append(
+            crearElemento("b", "", String(fecha.getDate())),
+            crearElemento("span", "", mes.replace(".", "").toUpperCase())
+        );
+
+        return chip;
+    }
+
+    // Solo se marca lo que se sabe de verdad. El aforo real se comprueba en el
+    // formulario de inscripcion contra el backend, asi que aqui no se promete
+    // ningun numero de plazas libres.
+    function crearEstadoTarjeta(evento) {
+        if (evento.inscripcionesCerradas) {
+            return crearElemento("div", "event-card__state is-closed", t("eventos.state_closed"));
+        }
+
+        return null;
+    }
+
+    // Deja solo letras y numeros para poder comparar "Laser Counter - Pedrola."
+    // con "Laser Counter (Pedrola)".
+    function clavePlana(texto) {
+        return String(texto || "")
+            .toLowerCase()
+            .normalize("NFD")
+            .replace(/[̀-ͯ]/g, "")
+            .replace(/[^a-z0-9]/g, "");
+    }
+
+    function repiteUbicacion(resumen, ubicacion) {
+        const a = clavePlana(resumen);
+        const b = clavePlana(ubicacion);
+
+        return Boolean(a && b && a === b);
+    }
+
+    function crearDatosTarjeta(evento) {
+        // En una partida ya jugada no quedan "plazas": son los participantes
+        // que hubo.
+        const claveAforo = esProximo(evento) ? "eventos.meta_slots" : "eventos.meta_participants";
+
+        const valores = [
+            evento.ubicacion,
+            evento.horario,
+            typeof evento.importe === "number" ? window.MOSCO_FORMATEAR_IMPORTE?.(evento.importe) : null,
+            evento.plazas ? t(claveAforo, { plazas: evento.plazas }) : null
+        ].filter(Boolean);
+
+        if (!valores.length) {
+            return null;
+        }
+
+        const lista = crearElemento("ul", "event-card__meta");
+
+        valores.forEach((valor) => {
+            lista.appendChild(crearElemento("li", "", valor));
+        });
+
+        return lista;
+    }
+
+    function crearTarjetaEvento(evento) {
+        const tarjeta = crearElemento("article", "card event-card");
+        const portada = crearPortadaTarjeta(evento);
+
+        if (portada) {
+            tarjeta.appendChild(portada);
+            tarjeta.classList.add("has-media");
+        }
+
+        const cuerpo = crearElemento("div", "event-card__body");
+
+        cuerpo.appendChild(crearElemento("h2", "", evento.tituloListado || evento.titulo));
+
+        const resumen = evento.resumen || t("eventos.default_summary");
+
+        // Varias partidas tienen como resumen la propia ubicacion ("Laser
+        // Counter - Pedrola."), que ahora ya sale como dato de la tarjeta.
+        // Repetirla dos lineas mas arriba no aporta nada.
+        if (!repiteUbicacion(resumen, evento.ubicacion)) {
+            cuerpo.appendChild(crearElemento("p", "", resumen));
+        }
+
+        const datos = crearDatosTarjeta(evento);
+
+        if (datos) {
+            cuerpo.appendChild(datos);
+        }
+
+        const acciones = crearElemento("div", "event-card__actions");
+
+        // En las partidas que aun se pueden jugar la accion principal es
+        // inscribirse; en las pasadas no hay inscripcion que ofrecer.
+        if (esProximo(evento) && !evento.inscripcionesCerradas) {
+            acciones.append(
+                crearEnlaceRegistro(evento),
+                crearEnlace(evento.url, "btn btn-ghost", textoBotonEvento(evento))
+            );
+        } else {
+            acciones.appendChild(crearEnlace(evento.url, "btn", textoBotonEvento(evento)));
+        }
+
+        cuerpo.appendChild(acciones);
+        tarjeta.appendChild(cuerpo);
 
         return tarjeta;
     }

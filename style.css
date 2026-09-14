@@ -192,15 +192,28 @@ header .dropbtn:focus-visible {
     transform: translateY(-1px);
 }
 
-header nav > a:first-child {
+/* Pagina actual. Antes esto colgaba de nav > a:first-child, asi que "Inicio"
+   salia marcado en todas las paginas. Ahora la marca la pone header.js sobre
+   el enlace que de verdad corresponde a la URL abierta. */
+header nav a.is-current,
+header nav .dropdown.has-current > .dropbtn {
     color: #fff;
     background: var(--field-ink);
 }
 
-header nav > a:first-child:hover,
-header nav > a:first-child:focus-visible {
+header nav a.is-current:hover,
+header nav a.is-current:focus-visible,
+header nav .dropdown.has-current > .dropbtn:hover,
+header nav .dropdown.has-current > .dropbtn:focus-visible {
     color: var(--field-ink);
     background: var(--field-signal);
+}
+
+/* Dentro del desplegable el enlace activo se marca en plano, sin pildora
+   negra: la pildora ya la lleva el boton del desplegable. */
+header .dropdown-content a.is-current {
+    color: var(--field-ink);
+    background: var(--field-lime);
 }
 
 header .dropdown {
@@ -2618,4 +2631,244 @@ body .me-legal .me-legal__footer {
     border-radius: 999px;
     font-size: 1.1rem;
     line-height: 1;
+}
+
+
+/* =========================
+   PORTADA COMPACTA DE PAGINAS INTERIORES
+
+   La portada de la home ocupa casi toda la pantalla a proposito. En el resto
+   de paginas eso obligaba a bajar una pantalla entera de foto antes de ver el
+   primer evento o el formulario, asi que ahi la banda es mucho mas baja.
+   Va al final del fichero y con "body .hero.page-hero" para ganar a las reglas
+   de "body .hero" que viven dentro de los media queries de mas arriba.
+========================= */
+
+body .hero.page-hero {
+    min-height: min(420px, 56svh);
+    padding: 132px max(6vw, 28px) 52px;
+}
+
+body .hero.page-hero h1 {
+    font-size: clamp(2.6rem, 6.4vw, 5.4rem) !important;
+}
+
+.page-hero .hero-content::before {
+    width: 64px;
+    height: 7px;
+    margin-bottom: 18px;
+}
+
+.page-hero p {
+    margin-top: 14px;
+}
+
+@media (max-width: 900px) {
+    body .hero.page-hero {
+        min-height: 46svh;
+        padding: 104px 24px 34px;
+    }
+
+    body .hero.page-hero h1 {
+        font-size: clamp(2.4rem, 11vw, 3.6rem) !important;
+    }
+}
+
+@media (max-width: 640px) {
+    body .hero.page-hero {
+        min-height: 42svh;
+        padding: 96px 18px 28px;
+    }
+}
+
+
+/* =========================
+   TARJETA DE EVENTO
+
+   Antes la tarjeta solo daba titulo, resumen y un boton. Fecha, horario,
+   precio y aforo ya estaban en datos.js sin usarse, y las partidas jugadas
+   tienen fotos que tampoco se aprovechaban.
+========================= */
+
+.event-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding: 0;
+}
+
+/* Con foto, el aire lo pone el cuerpo de la tarjeta: si no, la imagen
+   quedaria flotando dentro de un marco de 52px. */
+.event-card.has-media {
+    padding: 0;
+}
+
+.event-card__media {
+    position: relative;
+    overflow: hidden;
+
+    aspect-ratio: 16 / 9;
+
+    background: var(--field-paper-warm);
+    border-radius: var(--field-radius-lg) var(--field-radius-lg) 0 0;
+}
+
+.event-card__media img {
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+}
+
+.event-card__date {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+
+    display: grid;
+    place-items: center;
+
+    width: 62px;
+    padding: 9px 0;
+
+    color: #fff;
+    font-family: "Oswald", sans-serif;
+    line-height: 1;
+
+    background: var(--field-ink);
+    border-radius: 14px;
+}
+
+.event-card__date b {
+    font-size: 1.62rem;
+    font-weight: 700;
+}
+
+.event-card__date span {
+    margin-top: 4px;
+
+    color: var(--field-lime);
+    font-size: 0.7rem;
+    letter-spacing: 2px;
+}
+
+.event-card__state {
+    position: absolute;
+    top: 17px;
+    right: 14px;
+
+    padding: 7px 13px;
+
+    color: #fff;
+    font-family: "Oswald", sans-serif;
+    font-size: 0.74rem;
+    letter-spacing: 1.5px;
+
+    border-radius: 999px;
+}
+
+.event-card__state.is-closed {
+    background: var(--field-signal-dark);
+}
+
+.event-card__body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 14px;
+
+    padding: clamp(24px, 3.4vw, 32px);
+}
+
+/* La pastilla lima de .card::before solo tiene sentido cuando no hay foto:
+   con imagen de cabecera queda pegada al borde inferior de la misma. */
+body .event-card.has-media::before {
+    display: none !important;
+}
+
+body .event-card:not(.has-media) .event-card__body {
+    padding-top: 0;
+}
+
+body .event-card::before {
+    margin-bottom: 0 !important;
+}
+
+body .event-card:not(.has-media)::before {
+    margin: clamp(24px, 3.4vw, 32px) clamp(24px, 3.4vw, 32px) 0 !important;
+}
+
+.event-card__body h2 {
+    margin: 0;
+
+    font-family: "Oswald", sans-serif;
+    font-size: clamp(1.42rem, 2.3vw, 1.95rem);
+    line-height: 1.08;
+}
+
+.event-card__body > p {
+    margin: 0;
+
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.event-card__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+
+    margin: 0;
+    padding: 0;
+
+    list-style: none;
+}
+
+.event-card__meta li {
+    padding: 6px 12px;
+
+    color: var(--text-soft);
+    font-size: 0.88rem;
+    font-weight: 600;
+
+    background: var(--field-paper);
+    border: 1px solid var(--field-line);
+    border-radius: 999px;
+}
+
+.event-card__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+
+    margin-top: auto;
+    padding-top: 6px;
+}
+
+.event-card__actions .btn {
+    margin: 0;
+}
+
+/* Accion secundaria: mismo tamano que la principal pero sin peso de color,
+   para que "inscribirse" siga siendo lo que se ve primero. */
+.btn.btn-ghost {
+    color: var(--field-ink);
+    background: transparent;
+    border: 1px solid var(--field-line-strong);
+}
+
+.btn.btn-ghost:hover,
+.btn.btn-ghost:focus-visible {
+    color: var(--field-ink);
+    background: var(--field-paper-warm);
+    border-color: var(--field-ink);
+}
+
+@media (max-width: 640px) {
+    .event-card__actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
 }

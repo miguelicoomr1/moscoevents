@@ -39,3 +39,8 @@ apps-script-correo-gmail/node_modules/
 apps-script-correo-gmail/.clasp.json
 apps-script-correo-gmail/Code.js
 apps-script-correo-gmail/deployment-id.txt
+
+# Fotos originales de cada partida (images/<fecha>/, images/TCSIM/, images/evento/).
+# Nunca se sirven: la web solo pide images/optimized/ y images/thumbs/, que si
+# van a Git. Los masteres se guardan fuera del repositorio, en
+# ..\moscoevents-originales\images\.
