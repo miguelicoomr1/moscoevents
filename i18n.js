@@ -9,7 +9,7 @@
 
     // Version de los diccionarios. Hay que subirla al tocar los i18n-lang.*.js,
     // igual que el ?v= de los demas ficheros.
-    const DICT_VERSION = "1";
+    const DICT_VERSION = "2";
 
     // El HTML solo carga i18n-lang.es.js, que ademas hace de idioma de respaldo
     // de t(). Los otros tres se piden aparte y solo si alguien los usa: asi una
