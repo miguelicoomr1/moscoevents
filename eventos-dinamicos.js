@@ -114,7 +114,7 @@
         imagen.loading = "lazy";
         imagen.decoding = "async";
         imagen.width = 675;
-        imagen.height = 380;
+        imagen.height = 506;
 
         // La foto es decorativa: el titulo de la partida va justo debajo y
         // repetirlo en el alt solo molesta a quien usa lector de pantalla.

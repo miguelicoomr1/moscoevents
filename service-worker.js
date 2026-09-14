@@ -16,7 +16,7 @@
 // Ahora hay dos cachés con cometidos separados y el numero de version del
 // nombre se sube a mano cuando cambia lo que se precarga.
 
-const VERSION = "v3";
+const VERSION = "v4";
 const SHELL_CACHE = `mosco-shell-${VERSION}`;
 const PAGES_CACHE = `mosco-pages-${VERSION}`;
 const CACHES_PROPIAS = [SHELL_CACHE, PAGES_CACHE];

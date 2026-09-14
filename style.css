@@ -2872,3 +2872,67 @@ body .event-card:not(.has-media)::before {
         align-items: stretch;
     }
 }
+
+
+/* =========================
+   RETOQUES FINOS
+   Repaso contra las Web Interface Guidelines.
+========================= */
+
+/* Sin esto el titulo de la tarjeta partia la fecha por la mitad: "16-" en una
+   linea y "09-2026" en la siguiente. El navegador reparte mejor las lineas.
+   En textos muy largos (los documentos legales) lo ignora solo. */
+h1,
+h2,
+h3 {
+    text-wrap: balance;
+}
+
+/* Las fotos de las partidas son verticales y el recorte 16:9 cortaba cabezas
+   y pies. En 4:3 entra la figura completa. */
+.event-card__media {
+    aspect-ratio: 4 / 3;
+}
+
+/* Acercamiento lento de la foto al pasar por encima, ademas de la elevacion
+   que ya tenia la tarjeta. */
+.event-card__media img {
+    transition: transform 0.6s cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+
+.event-card:hover .event-card__media img {
+    transform: scale(1.12);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .event-card__media img {
+        transition: none;
+    }
+
+    .event-card:hover .event-card__media img {
+        transform: none;
+    }
+}
+
+/* En Android el navegador pinta un recuadro gris encima de lo que tocas. Se
+   quita para que quede solo el color del boton. touch-action ademas elimina
+   el retardo de 300 ms que el navegador espera por si era un doble toque.
+   El modal y el canvas de firma llevan touch-action: none a proposito y no
+   entran aqui. */
+a,
+button,
+.btn,
+label,
+summary,
+input[type="checkbox"],
+input[type="radio"] {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+
+/* Este boton anulaba su propio anillo de foco y solo cambiaba de color, asi
+   que con teclado no se veia donde estabas. */
+.gallery-download:focus-visible {
+    outline: 2px solid var(--field-lime);
+    outline-offset: 3px;
+}
