@@ -176,3 +176,40 @@ copia al participante con la identidad correcta.
 - Si se anade un permiso nuevo al mensajero, hay que abrir su proyecto en el editor con
   `inscripciones@moscoevents.com` y ejecutar `autorizar` una vez. Del mismo modo, en el backend,
   `probarMensajero` concede el permiso de `UrlFetchApp` y comprueba que el mensajero responde.
+
+## Mensajero de respaldo (moscoeventes@gmail.com)
+
+El 2026-09-13 se descubrio que `inscripciones@moscoevents.com` **no entrega correo fuera del
+dominio**: los avisos internos al organizador llegan, pero la copia al participante no sale de
+Google (comprobado con Gmail y con un servidor de diagnostico que acepta cualquier mensaje). Se
+anadieron el SPF y el DMARC que faltaban en el DNS y el bloqueo siguio, asi que la causa esta en
+la configuracion de Workspace, no en la autenticacion del dominio.
+
+Como red de seguridad existe `apps-script-correo-gmail/`: el mismo `google-apps-script-correo.js`,
+desplegado en un proyecto aparte de `moscoeventes@gmail.com`, cuenta que si entrega fuera. Por eso
+`SENDER_EMAIL` ya no esta fijo en el codigo: cada `sync.js` sustituye el marcador
+`__CUENTA_REMITENTE__` por la cuenta que le toca, y el mensajero sigue rechazando cualquier envio
+si no lo ejecuta esa cuenta.
+
+| Carpeta | Cuenta | Perfil de clasp | Uso |
+| --- | --- | --- | --- |
+| `apps-script-correo/` | `inscripciones@moscoevents.com` | `-u inscripciones` | El normal |
+| `apps-script-correo-gmail/` | `moscoeventes@gmail.com` | por defecto (sin `-u`) | Respaldo |
+
+Para activar el respaldo hay que cambiar `CONFIG.MAIL_RELAY_URL` en
+`google-apps-script-inscripciones.js` por la URL `/exec` de este proyecto y volver a desplegar el
+backend (`cd apps-script-inscripciones && npm run deploy`). Para volver atras, se restaura la URL
+del mensajero del dominio y se despliega otra vez: el backend no distingue entre uno y otro.
+
+Los dos pasos manuales que clasp no puede hacer, con el proyecto abierto en el editor web y la
+sesion iniciada como `moscoeventes@gmail.com`:
+
+1. Ejecutar la funcion `autorizar` una vez, para conceder el permiso de envio de `MailApp`.
+2. `Implementar > Gestionar implementaciones > editar (lapiz) > Quien tiene acceso: Cualquier
+   usuario > Implementar`. Una implementacion creada solo con `clasp` responde "Acceso denegado"
+   aunque el manifest pida `ANYONE_ANONYMOUS` (la misma limitacion descrita mas arriba, que
+   resulta no ser exclusiva de las cuentas de Workspace).
+
+Mientras el bloqueo del dominio siga sin resolverse, conviene revisar el estado real del envio en
+`admin.google.com > Informes > Registro de correo electronico`, que dice de cada mensaje si se
+entrego, se rechazo o lo bloqueo una politica.

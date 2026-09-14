@@ -1,7 +1,7 @@
 // Copia el mensajero versionado en el repo (fuente de verdad) al fichero
 // que clasp sube a Google Apps Script, insertando la clave compartida y la
-// cuenta desde la que saldran los correos (este proyecto es el del dominio;
-// el gemelo de apps-script-correo-gmail/ pone la cuenta de Gmail).
+// cuenta desde la que saldran los correos (este proyecto es el de respaldo;
+// el gemelo de apps-script-correo/ pone la cuenta del dominio).
 const fs = require("fs");
 const path = require("path");
 
@@ -11,7 +11,7 @@ const target = path.join(__dirname, "Code.js");
 const keyFile = path.join(__dirname, "..", "apps-script", "clave-mensajero.txt");
 const keyPlaceholder = "\"__CLAVE_MENSAJERO__\"";
 const senderPlaceholder = "\"__CUENTA_REMITENTE__\"";
-const senderEmail = "inscripciones@moscoevents.com";
+const senderEmail = "moscoeventes@gmail.com";
 
 if (!fs.existsSync(keyFile)) {
     console.error("Falta apps-script/clave-mensajero.txt: sin clave el mensajero rechazaria todos los envios.");

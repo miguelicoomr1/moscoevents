@@ -1,15 +1,19 @@
 // Mensajero de correo de Mosco Events.
 //
-// Este proyecto de Apps Script pertenece a la cuenta inscripciones@moscoevents.com
-// y se despliega como aplicacion web ejecutada con esa cuenta, asi que los
-// correos que envia MailApp salen desde inscripciones@moscoevents.com.
+// Este fichero es la fuente de verdad de DOS proyectos de Apps Script, cada
+// uno desplegado con una cuenta distinta (ver apps-script-correo/ y
+// apps-script-correo-gmail/). El sync.js de cada carpeta sustituye los dos
+// marcadores de abajo antes de subir el codigo, asi que el mensajero solo
+// acepta envios si lo ejecuta la cuenta para la que se preparo.
 //
 // Lo llama el backend de inscripciones (google-apps-script-inscripciones.js)
 // con una clave compartida; sin la clave no envia nada. Si este mensajero
 // falla, el backend envia la copia al participante desde su propia cuenta,
 // como antes, para que nadie se quede sin su comprobante.
 const CONFIG = {
-    SENDER_EMAIL: "inscripciones@moscoevents.com",
+    // apps-script-correo*/sync.js sustituye el marcador por la cuenta que
+    // toca al subir el codigo.
+    SENDER_EMAIL: "__CUENTA_REMITENTE__",
     // apps-script-correo/sync.js sustituye el marcador por la clave real
     // (apps-script/clave-mensajero.txt, fuera de Git) al subir el codigo.
     RELAY_KEY: "__CLAVE_MENSAJERO__",
@@ -34,8 +38,9 @@ function doPost(e) {
     }
 
     // Si el proyecto se hubiera creado con otra cuenta, los correos no
-    // saldrian desde inscripciones@; se rechaza para que el backend use
-    // su envio de respaldo y el fallo se note en la prueba.
+    // saldrian desde la cuenta prevista; se rechaza para que el backend use
+    // su envio de respaldo y el fallo se note en la prueba. Tambien salta si
+    // sync.js no sustituyo el marcador de la cuenta.
     const account = senderAccount_();
 
     if (account !== CONFIG.SENDER_EMAIL) {
