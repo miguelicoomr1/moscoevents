@@ -22,9 +22,16 @@ const CONFIG = {
     WHATSAPP_NUMBER: "34698125932",
     WHATSAPP_DISPLAY: "+34 698 125 932",
     // Mensajero (google-apps-script-correo.js) que envia la copia al
-    // participante desde inscripciones@moscoevents.com. Si falla o no esta
-    // configurado, la copia sale con MailApp desde esta cuenta, como antes.
-    MAIL_RELAY_URL: "https://script.google.com/macros/s/AKfycbzDjCW9byTSTRbH-PWr2OAbbnPmLtURwuKXMMNCriN1GTaVf3rsMAGoPf-D1WQpEVdbag/exec",
+    // participante. Si falla o no esta configurado, la copia sale con MailApp
+    // desde esta cuenta, como antes.
+    //
+    // Apunta al mensajero de respaldo (apps-script-correo-gmail/, cuenta
+    // moscoeventes@gmail.com) porque inscripciones@moscoevents.com no entrega
+    // correo fuera del dominio: los avisos internos llegan, pero la copia al
+    // participante no sale de Google. Cuando se desatasque ese bloqueo, basta
+    // con volver a poner aqui la URL del mensajero del dominio y redesplegar:
+    // https://script.google.com/macros/s/AKfycbzDjCW9byTSTRbH-PWr2OAbbnPmLtURwuKXMMNCriN1GTaVf3rsMAGoPf-D1WQpEVdbag/exec
+    MAIL_RELAY_URL: "https://script.google.com/macros/s/AKfycbyLhOtDeNqtp3jsKcin7z8O6MjuUhKAuOavwh3QfdNrCAQZGBmKJeFwwod9PYUSBaEKwA/exec",
     // apps-script/sync.js sustituye el marcador por la clave real
     // (apps-script/clave-mensajero.txt, fuera de Git) al subir el codigo.
     MAIL_RELAY_KEY: "__CLAVE_MENSAJERO__",
