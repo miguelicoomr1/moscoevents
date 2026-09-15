@@ -446,7 +446,7 @@
         }
     }
 
-    // Solo algunas partidas (p. ej. la TCSIM del 19-09-2026) piden elegir bando.
+    // Solo algunas partidas (las que marcan seleccionBando en datos.js) piden elegir bando.
     function requiresSide(evento) {
         return Boolean(evento?.seleccionBando);
     }

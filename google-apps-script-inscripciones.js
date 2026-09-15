@@ -65,7 +65,6 @@ const CONFIG = {
 const EVENTS = {
     "miercoles-16-09-2026": { hoja: "Privada Miércoles Tarde", plazas: 26, importe: 15, contrasena: "AGM" },
     "jueves-17-09-2026": { hoja: "Jueves 17 de Septiembre", plazas: 26, importe: 15 },
-    "sabado-19-09-2026": { hoja: "TCSIM Sábado Tarde 19 09 2026", plazas: 26, importe: 18, bandos: true },
     "sabado-29-08-2026": { hoja: "29-08-2026", plazas: 26, importe: 18 },
     "operacion-verano-2026": { hoja: "Operación Verano", plazas: 26, importe: 25 },
     "domingo-02-08-2026": { hoja: "Domingo 2 de Agosto", plazas: 26, importe: 18 },

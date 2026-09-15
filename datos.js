@@ -85,43 +85,6 @@
             }
         },
         {
-            id: "sabado-19-09-2026",
-            // Foto de portada de la tarjeta del listado. Las partidas que aun
-            // no se han jugado no tienen galeria propia, asi que aqui va una
-            // foto de archivo a modo ilustrativo.
-            portada: "/images/TCSIM/TCSIM 31.jpeg",
-            titulo: "TCSIM Sábado Tarde 19/09/2026",
-            tituloListado: "TCSIM Sábado Tarde 19/09/2026",
-            tituloCalendario: "TCSIM Sábado Tarde 19/09/2026",
-            fecha: "2026-09-19",
-            fechaTexto: "19 de Septiembre de 2026",
-            fechaCorta: "19/09/2026",
-            subtitulo: "Partida tipo TCSIM, con sistema de curaciones reales y explosivos. Se recomienda protección auditiva; las granadas están permitidas.",
-            resumen: "Partida tipo TCSIM con sistema de curaciones reales y explosivos. Se recomienda protección auditiva; las granadas están permitidas. Laser Counter - Pedrola.",
-            ubicacion: "Laser Counter (Pedrola)",
-            participantes: 26,
-            horario: "16:00 - 20:30",
-            importe: 18,
-            seleccionBando: true,
-            inscripcionUrl: "/registro.html?id=sabado-19-09-2026",
-            normasUrl: INFO_NORMAS_URL,
-            // Normas propias de esta partida (CQB/TCCC), aparte del reglamento
-            // general: son de lectura obligatoria antes de jugar.
-            normasEventoUrl: "/normas-tcsim-19-09-2026.pdf",
-            galeria: {
-                activa: true,
-                titulo: "GALERÍA",
-                descripcion: "Fotografías de Mosco Events en la PARTIDA del 19-09-2026",
-                botonListado: "FOTOS EVENTO 19-09-2026 →",
-                mensajeVacio: "aún no hay fotos",
-                imagenes: crearGaleria({
-                    carpeta: "/images/19-09-2026",
-                    prefijo: "19092026 ",
-                    extension: "jpeg"
-                })
-            }
-        },
-        {
             id: "sabado-29-08-2026",
             titulo: "S\u00e1bado 29 de agosto de 2026",
             tituloListado: "S\u00e1bado 29-08-2026",
