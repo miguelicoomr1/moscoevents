@@ -44,3 +44,6 @@ apps-script-correo-gmail/deployment-id.txt
 # Nunca se sirven: la web solo pide images/optimized/ y images/thumbs/, que si
 # van a Git. Los masteres se guardan fuera del repositorio, en
 # ..\moscoevents-originales\images\.
+
+# Paginas de trabajo que no deben publicarse (comparativas de diseno, pruebas)
+propuestas-estetica.html
