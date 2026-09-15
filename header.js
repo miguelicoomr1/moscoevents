@@ -98,6 +98,108 @@
         </header>
     `;
 
+    // El pie de pagina se monta desde aqui, igual que la cabecera: son 28
+    // paginas HTML y antes cada una llevaba su propio <footer> con un
+    // copyright y nada mas. Ahora hay un solo sitio que tocar y todas las
+    // paginas tienen salida hacia normas, legales, calendario y contacto,
+    // que es justo lo que se busca al llegar al final.
+    const footerHtml = `
+        <footer class="site-footer">
+            <div class="site-footer-inner">
+
+                <div class="site-footer-brand">
+                    <img
+                        src="/images/base%20web/logo-header.webp"
+                        alt="Mosco Events"
+                        width="64"
+                        height="64"
+                        loading="lazy"
+                    >
+
+                    <p data-i18n="footer.tagline">
+                        Airsoft, TCSIM y simulación táctica en Pedrola, Zaragoza.
+                    </p>
+
+                    <div class="site-footer-social">
+                        <a
+                            href="https://wa.me/34698125932"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >WhatsApp</a>
+
+                        <a
+                            href="https://www.instagram.com/mosco.events/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >Instagram</a>
+                    </div>
+                </div>
+
+                <nav class="site-footer-col" aria-labelledby="site-footer-partidas">
+                    <h2 id="site-footer-partidas" data-i18n="footer.col_partidas">Partidas</h2>
+
+                    <ul>
+                        <li><a href="/Proximos%20Eventos/proximos-eventos.html" data-i18n="footer.proximos">Próximas partidas</a></li>
+                        <li><a href="/Calendario/calendario.html" data-i18n="footer.calendario">Calendario</a></li>
+                        <li><a href="/registro.html" data-i18n="footer.inscripciones">Inscripciones</a></li>
+                        <li><a href="/Eventos%20anteriores/eventos-anteriores.html" data-i18n="footer.anteriores">Eventos anteriores</a></li>
+                        <li><a href="/Galeria/galeria.html" data-i18n="footer.galeria">Galería</a></li>
+                    </ul>
+                </nav>
+
+                <nav class="site-footer-col" aria-labelledby="site-footer-info">
+                    <h2 id="site-footer-info" data-i18n="footer.col_info">Información</h2>
+
+                    <ul>
+                        <li><a href="/normas.html" data-i18n="footer.normas">Normas</a></li>
+                        <li><a href="/contacto.html" data-i18n="footer.contacto">Contacto</a></li>
+                        <li><a href="/legales-mosco-events.html" data-i18n="footer.legal">Aviso legal y privacidad</a></li>
+                        <li><a href="mailto:info@moscoevents.com">info@moscoevents.com</a></li>
+                    </ul>
+                </nav>
+
+            </div>
+
+            <div class="site-footer-bottom">
+                <span data-i18n="footer.ubicacion">Laser Counter · Pedrola (Zaragoza)</span>
+
+                <p>
+                    © <span id="footer-year">2026</span> Mosco Events ·
+                    <span data-i18n="footer.rights">Todos los derechos reservados</span>
+                </p>
+            </div>
+        </footer>
+    `;
+
+    const mountFooter = () => {
+        if (document.querySelector(".site-footer")) {
+            return;
+        }
+
+        const wrapper = document.createElement("div");
+        wrapper.innerHTML = footerHtml.trim();
+        const nuevo = wrapper.firstElementChild;
+
+        // Las paginas traen su <footer> antiguo escrito a mano: se sustituye.
+        // Las que no lo tengan reciben el pie al final del body.
+        const anterior = document.querySelector("body > footer");
+
+        if (anterior) {
+            anterior.replaceWith(nuevo);
+        } else {
+            document.body.appendChild(nuevo);
+        }
+
+        // script.js tambien pone el ano en #footer-year, pero se ejecuta antes
+        // de que este pie exista (el suyo corre al final del body y este se
+        // monta en DOMContentLoaded), asi que lo escribimos aqui.
+        const ano = nuevo.querySelector("#footer-year");
+
+        if (ano) {
+            ano.textContent = String(new Date().getFullYear());
+        }
+    };
+
     // Deja la URL en una forma comparable: sin %20, en minusculas y con la
     // portada siempre como "/index.html".
     const normalizarRuta = (ruta) => {
@@ -217,6 +319,17 @@
         mountHeader();
     } else {
         document.addEventListener("DOMContentLoaded", mountHeader);
+    }
+
+    // El pie, al contrario que la cabecera, no puede montarse en cuanto existe
+    // el body: este script se carga al principio del body y en ese momento el
+    // <main> y el <footer> de la pagina todavia no se han leido, asi que el
+    // pie acabaria colocado por delante de la portada. Se espera al documento
+    // completo.
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", mountFooter);
+    } else {
+        mountFooter();
     }
 
     if ("serviceWorker" in navigator) {

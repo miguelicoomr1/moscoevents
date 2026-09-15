@@ -102,11 +102,14 @@ header {
     padding: 8px 12px 8px 18px;
     transform: translateX(-50%);
 
-    color: var(--field-ink);
-    background: rgba(243, 241, 233, 0.46);
-    border: 1px solid rgba(255, 255, 255, 0.38);
+    /* Barra en tinta, no en cristal claro. La version clara funcionaba sobre
+       la foto del hero, pero al pasar por la galeria y por contacto (fondos
+       negros) se convertia en una losa blanquecina que partia la pagina. */
+    color: var(--field-paper);
+    background: rgba(12, 14, 11, 0.74);
+    border: 1px solid rgba(243, 241, 233, 0.16);
     border-radius: 18px;
-    box-shadow: 0 16px 48px rgba(11, 13, 10, 0.16);
+    box-shadow: 0 16px 48px rgba(7, 8, 6, 0.38);
     backdrop-filter: blur(24px) saturate(145%);
 
     z-index: 99999;
@@ -135,9 +138,9 @@ header {
     width: 44px;
     height: 44px;
 
-    color: #ffffff;
-    background: var(--field-ink);
-    border: 0;
+    color: var(--field-paper);
+    background: rgba(243, 241, 233, 0.12);
+    border: 1px solid rgba(243, 241, 233, 0.22);
     border-radius: 12px;
 
     font-size: 28px;
@@ -166,7 +169,7 @@ header .dropbtn {
 
     padding: 0 14px;
 
-    color: var(--field-ink-soft);
+    color: rgba(243, 241, 233, 0.84);
     text-decoration: none;
     border-radius: 12px;
 
@@ -198,7 +201,7 @@ header .dropbtn:focus-visible {
 header nav a.is-current,
 header nav .dropdown.has-current > .dropbtn {
     color: #fff;
-    background: var(--field-ink);
+    background: var(--field-signal);
 }
 
 header nav a.is-current:hover,
@@ -206,7 +209,7 @@ header nav a.is-current:focus-visible,
 header nav .dropdown.has-current > .dropbtn:hover,
 header nav .dropdown.has-current > .dropbtn:focus-visible {
     color: var(--field-ink);
-    background: var(--field-signal);
+    background: var(--field-lime);
 }
 
 /* Dentro del desplegable el enlace activo se marca en plano, sin pildora
@@ -237,11 +240,11 @@ header .dropdown-content {
     min-width: 250px;
     padding: 8px;
 
-    background: rgba(255, 253, 247, 0.98);
-    border: 1px solid var(--field-line);
+    background: rgba(14, 16, 12, 0.97);
+    border: 1px solid rgba(243, 241, 233, 0.16);
     border-radius: 16px;
 
-    box-shadow: var(--field-shadow);
+    box-shadow: 0 20px 52px rgba(7, 8, 6, 0.46);
     transform: translateY(8px);
     transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
 
@@ -257,7 +260,7 @@ header .dropdown-content a {
     display: block;
     padding: 12px 14px;
 
-    color: var(--field-ink-soft);
+    color: rgba(243, 241, 233, 0.84);
     text-decoration: none;
     border-radius: 10px;
 }
@@ -277,8 +280,8 @@ header .dropdown.open .dropdown-content {
 }
 
 header .dropdown-content a.is-active-lang {
-    color: var(--mc-sand);
-    background: rgba(215, 192, 139, 0.1);
+    color: var(--field-lime);
+    background: rgba(215, 238, 98, 0.12);
 }
 
 
@@ -772,11 +775,14 @@ body .stats > div {
    GALLERY
 ========================= */
 
+/* Rejilla pareja. Antes esto era un mosaico de celdas con spans distintos
+   (nth-child 7n+1, 7n+4...) y las columnas quedaban descolgadas en cuanto el
+   numero de fotos no cuadraba con el patron: huecos y escalones al final.
+   Ahora todas las fotos ocupan una celda y se recortan a 4:3, asi que la
+   galeria se lee como un muro parejo con cualquier cantidad de fotos. */
 .gallery-grid {
     display: grid;
-    grid-template-columns: repeat(12, minmax(0, 1fr));
-    grid-auto-flow: dense;
-    grid-auto-rows: 150px;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
     gap: 12px;
 
     max-width: 1380px;
@@ -787,12 +793,10 @@ body .stats > div {
 .gallery-grid img,
 .gallery-grid video {
     display: block;
-    grid-column: span 4;
-    grid-row: span 2;
 
     width: 100%;
-    height: 100%;
-    aspect-ratio: auto;
+    height: auto;
+    aspect-ratio: 4 / 3;
 
     object-fit: cover;
 
@@ -806,22 +810,6 @@ body .stats > div {
     contain-intrinsic-size: 300px 225px;
 
     transition: transform 0.22s ease, filter 0.22s ease, opacity 0.25s ease;
-}
-
-.gallery-grid img:nth-child(7n + 1),
-.gallery-grid video:nth-child(7n + 1) {
-    grid-column: span 6;
-    grid-row: span 3;
-}
-
-.gallery-grid img:nth-child(7n + 4),
-.gallery-grid video:nth-child(7n + 4) {
-    grid-column: span 5;
-}
-
-.gallery-grid img:nth-child(7n + 6),
-.gallery-grid video:nth-child(7n + 6) {
-    grid-column: span 3;
 }
 
 .gallery-grid img:hover,
@@ -1055,8 +1043,11 @@ body .stats > div {
     font-weight: 600;
 }
 
+/* El primer boton arrancaba con un margen igual al del contenedor, asi que en
+   pantallas anchas quedaba sangrado dos veces y no cuadraba con el titulo ni
+   con los datos de contacto. La seccion ya trae su propio margen. */
 .contacto > a:first-of-type {
-    margin-left: max(6vw, calc((100vw - var(--field-content)) / 2));
+    margin-left: 0;
 }
 
 .contacto .instagram {
@@ -1069,25 +1060,67 @@ body .stats > div {
     margin: 16px 8px 0;
 }
 
+/* Bajo los dos botones de contacto: donde se juega, el correo y el aforo.
+   Antes esta seccion eran dos botones flotando en un rectangulo negro muy
+   alto y quien llegaba desde Instagram no sabia ni donde se juega. */
+.contacto-datos {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
 
-/* =========================
-   MISSION STRIP
-========================= */
+    width: min(var(--field-content), 100%);
+    margin: 40px auto 0;
+    padding: 0;
 
-body .mission-strip {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 16px !important;
-
-    padding: 22px max(6vw, 24px) !important;
-
-    color: var(--field-ink) !important;
-    background: var(--field-lime) !important;
-    border: 0 !important;
-
-    font-weight: 700;
+    list-style: none;
 }
+
+.contacto-datos li {
+    padding: 16px 18px;
+
+    background: rgba(243, 241, 233, 0.04);
+    border: 1px solid rgba(243, 241, 233, 0.18);
+    border-radius: var(--field-radius);
+}
+
+.contacto-datos-clave {
+    display: block;
+
+    color: var(--field-lime);
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+}
+
+.contacto-datos-valor {
+    display: block;
+    margin-top: 6px;
+
+    color: rgba(255, 255, 255, 0.86);
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+a.contacto-datos-valor:hover,
+a.contacto-datos-valor:focus-visible {
+    color: var(--field-lime);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+}
+
+@media (max-width: 900px) {
+
+    .contacto-datos {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+/* La franja lima de "TACTICAL SIMULATION · IMMERSIVE EXPERIENCE" se ha
+   retirado: era decorativa, estaba en ingles dentro de la version castellana
+   y ocupaba el sitio donde ahora va el pie de pagina con enlaces. */
 
 
 /* =========================
@@ -1729,6 +1762,172 @@ footer {
     text-align: center;
 }
 
+/* Pie de pagina del sitio. Lo monta header.js en todas las paginas: antes
+   cada una terminaba en un copyright suelto y no habia forma de llegar a
+   normas, legales o calendario desde el final de la pagina, que es donde se
+   buscan. */
+.site-footer {
+    padding: 56px max(6vw, 24px) 26px;
+
+    color: rgba(243, 241, 233, 0.72);
+    background: #070806;
+    border-top: 1px solid rgba(243, 241, 233, 0.1);
+
+    text-align: left;
+}
+
+.site-footer-inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 1fr);
+    gap: 40px;
+
+    max-width: var(--field-content);
+    margin: 0 auto;
+}
+
+.site-footer-brand img {
+    display: block;
+    width: 64px;
+    height: 64px;
+    object-fit: contain;
+}
+
+.site-footer-brand p {
+    max-width: 34ch;
+    margin: 14px 0 0;
+
+    color: rgba(243, 241, 233, 0.6);
+    font-size: 0.96rem;
+}
+
+.site-footer-social {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+
+    margin-top: 18px;
+}
+
+.site-footer-social a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 40px;
+
+    padding: 0 16px;
+
+    color: var(--field-paper);
+    background: rgba(243, 241, 233, 0.08);
+    border: 1px solid rgba(243, 241, 233, 0.16);
+    border-radius: 999px;
+
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-decoration: none;
+
+    transition: color 0.18s ease, background 0.18s ease, border-color 0.18s ease;
+}
+
+.site-footer-social a:hover,
+.site-footer-social a:focus-visible {
+    color: var(--field-ink);
+    background: var(--field-lime);
+    border-color: var(--field-lime);
+}
+
+/* Los titulos del pie son etiquetas de columna, no titulares de seccion: se
+   les quita el tamano y la barra naranja que lleva cualquier h2 de la web. */
+.site-footer-col h2 {
+    width: auto;
+    margin: 0 0 14px;
+
+    line-height: 1.2;
+    letter-spacing: 0.14em !important;
+
+    color: var(--field-lime);
+    font-family: "Rajdhani", sans-serif;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+}
+
+.site-footer-col h2::after {
+    display: none;
+}
+
+.site-footer-col ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.site-footer-col li {
+    margin-bottom: 2px;
+}
+
+.site-footer-col a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 40px;
+
+    color: rgba(243, 241, 233, 0.72);
+    text-decoration: none;
+
+    font-size: 0.94rem;
+
+    transition: color 0.18s ease;
+}
+
+.site-footer-col a:hover,
+.site-footer-col a:focus-visible {
+    color: var(--field-lime);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+}
+
+.site-footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+
+    max-width: var(--field-content);
+    margin: 42px auto 0;
+    padding-top: 20px;
+
+    border-top: 1px solid rgba(243, 241, 233, 0.12);
+
+    color: rgba(243, 241, 233, 0.46);
+    font-size: 0.84rem;
+}
+
+.site-footer-bottom p {
+    margin: 0;
+}
+
+@media (max-width: 900px) {
+
+    .site-footer {
+        padding: 44px max(6vw, 20px) 22px;
+    }
+
+    .site-footer-inner {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 28px;
+    }
+
+    .site-footer-brand {
+        grid-column: 1 / -1;
+    }
+
+    .site-footer-bottom {
+        margin-top: 32px;
+    }
+}
+
 
 /* =========================
    COUNTDOWN
@@ -1901,62 +2100,17 @@ footer {
 
 
 /* =========================
-   DESKTOP GALLERY MOSAIC
+   DESKTOP GALLERY
 ========================= */
 
-@media (min-width: 900px) {
+/* En pantallas grandes la rejilla se queda en tres columnas: con auto-fill
+   sueltas salian cuatro y cinco, y las caras de las fotos se veian demasiado
+   pequenas. */
+@media (min-width: 1100px) {
 
     .gallery-grid {
-        grid-template-columns: repeat(12, 1fr);
-        grid-auto-flow: dense;
-        grid-auto-rows: 156px;
-    }
-
-    .gallery-grid img,
-    .gallery-grid video {
-        height: 100%;
-        aspect-ratio: auto;
-    }
-
-    .gallery-grid img:nth-child(6n + 1),
-    .gallery-grid video:nth-child(6n + 1) {
-        grid-column: span 4;
-        grid-row: span 2;
-    }
-
-    .gallery-grid img:nth-child(6n + 2),
-    .gallery-grid video:nth-child(6n + 2) {
-        grid-column: span 4;
-        grid-row: span 1;
-    }
-
-    .gallery-grid img:nth-child(6n + 3),
-    .gallery-grid video:nth-child(6n + 3) {
-        grid-column: span 4;
-        grid-row: span 2;
-    }
-
-    .gallery-grid img:nth-child(6n + 4),
-    .gallery-grid video:nth-child(6n + 4) {
-        grid-column: span 3;
-    }
-
-    .gallery-grid img:nth-child(6n + 5),
-    .gallery-grid video:nth-child(6n + 5) {
-        grid-column: span 5;
-    }
-
-    .gallery-grid img:nth-child(6n),
-    .gallery-grid video:nth-child(6n) {
-        grid-column: span 4;
-    }
-
-}
-
-@media (min-width: 1200px) {
-
-    .gallery-grid {
-        grid-auto-rows: 174px;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 14px;
     }
 }
 
@@ -1979,19 +2133,7 @@ footer {
     }
 
     .gallery-grid {
-        grid-template-columns: repeat(6, minmax(0, 1fr));
-    }
-
-    .gallery-grid img,
-    .gallery-grid video,
-    .gallery-grid img:nth-child(7n + 1),
-    .gallery-grid video:nth-child(7n + 1),
-    .gallery-grid img:nth-child(7n + 4),
-    .gallery-grid video:nth-child(7n + 4),
-    .gallery-grid img:nth-child(7n + 6),
-    .gallery-grid video:nth-child(7n + 6) {
-        grid-column: span 3;
-        grid-row: span 2;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
 
@@ -2009,7 +2151,7 @@ footer {
 
         padding: 6px 8px 6px 12px;
 
-        background: rgba(243, 241, 233, 0.58);
+        background: rgba(12, 14, 11, 0.82);
         border-radius: 15px;
     }
 
@@ -2043,10 +2185,10 @@ footer {
         align-items: stretch;
         gap: 4px;
 
-        background: rgba(255, 253, 247, 0.98);
-        border: 1px solid var(--field-line);
+        background: rgba(14, 16, 12, 0.97);
+        border: 1px solid rgba(243, 241, 233, 0.16);
         border-radius: 16px;
-        box-shadow: var(--shadow);
+        box-shadow: 0 20px 52px rgba(7, 8, 6, 0.46);
     }
 
     header nav.active {
@@ -2060,7 +2202,7 @@ footer {
 
         padding: 8px 10px;
 
-        color: var(--field-ink-soft);
+        color: rgba(243, 241, 233, 0.84);
         font-size: 0.84rem;
         text-align: center;
     }
@@ -2082,7 +2224,7 @@ footer {
         margin-top: 4px;
         padding: 4px;
 
-        background: var(--field-paper-warm);
+        background: rgba(243, 241, 233, 0.07);
         border: 0;
         transform: none;
 
