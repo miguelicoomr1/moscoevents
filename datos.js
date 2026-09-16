@@ -52,39 +52,6 @@
             }
         },
         {
-            id: "jueves-17-09-2026",
-            // Foto de portada de la tarjeta del listado. Las partidas que aun
-            // no se han jugado no tienen galeria propia, asi que aqui va una
-            // foto de archivo a modo ilustrativo.
-            portada: "/images/09-07-2026/2026-07-09 25.jpeg",
-            titulo: "Jueves 17 de Septiembre",
-            tituloListado: "Jueves Tarde 17-09-2026",
-            tituloCalendario: "Partida 17-09-2026",
-            fecha: "2026-09-17",
-            fechaTexto: "17 de Septiembre de 2026",
-            fechaCorta: "17/09/2026",
-            subtitulo: "Evento oficial de Mosco Events",
-            resumen: "Laser Counter - Pedrola.",
-            ubicacion: "Laser Counter (Pedrola)",
-            participantes: 26,
-            horario: "16:30 - 21:00",
-            importe: 15,
-            inscripcionUrl: "/registro.html?id=jueves-17-09-2026",
-            normasUrl: INFO_NORMAS_URL,
-            galeria: {
-                activa: true,
-                titulo: "GALERÍA",
-                descripcion: "Fotografías de Mosco Events en la PARTIDA del 17-09-2026",
-                botonListado: "FOTOS EVENTO 17-09-2026 →",
-                mensajeVacio: "aún no hay fotos",
-                imagenes: crearGaleria({
-                    carpeta: "/images/17-09-2026",
-                    prefijo: "17092026 ",
-                    extension: "jpeg"
-                })
-            }
-        },
-        {
             id: "sabado-29-08-2026",
             titulo: "S\u00e1bado 29 de agosto de 2026",
             tituloListado: "S\u00e1bado 29-08-2026",
