@@ -161,7 +161,7 @@
             </div>
 
             <div class="site-footer-bottom">
-                <span data-i18n="footer.ubicacion">Laser Counter · Pedrola (Zaragoza)</span>
+                <a class="site-footer-credit" href="https://miguelicoomr1.github.io/portfolio/" target="_blank" rel="noopener noreferrer">Diseñado y desarrollado por MiguelicooMR1</a>
 
                 <p>
                     © <span id="footer-year">2026</span> Mosco Events ·

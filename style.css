@@ -1908,6 +1908,18 @@ footer {
     margin: 0;
 }
 
+.site-footer-credit {
+    color: inherit;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 4px;
+}
+
+.site-footer-credit:hover,
+.site-footer-credit:focus-visible {
+    color: var(--field-lime);
+}
+
 @media (max-width: 900px) {
 
     .site-footer {
