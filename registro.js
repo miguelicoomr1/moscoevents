@@ -591,7 +591,16 @@
         }
     }
 
-    function checkEventCapacity(evento) {
+    // Google tarda de forma muy irregular en contestar (de 1 s a mas de 40 s
+    // en el mismo rato), asi que si el primer intento caduca se prueba una
+    // segunda vez: lo normal es que otra instancia ya este despierta.
+    async function checkEventCapacity(evento) {
+        const status = await checkEventCapacityOnce(evento);
+
+        return status || checkEventCapacityOnce(evento);
+    }
+
+    function checkEventCapacityOnce(evento) {
         if (!evento || !appsScriptUrl) {
             return Promise.resolve(null);
         }
@@ -602,12 +611,12 @@
             // Con la instancia caliente el backend responde en ~2 s, pero
             // Google apaga el proyecto tras unos minutos sin uso y en frio
             // llega a tardar mas de 20 s (medido: 12 s, 12 s y 23 s en tres
-            // arranques). Con el limite anterior de 8 s la comprobacion
+            // arranques, y hasta 44 s en una tanda posterior). Con el limite anterior de 8 s la comprobacion
             // caducaba en la mayoria de visitas de un sitio de poco trafico y
             // la pagina daba por libre una partida que podia estar llena,
             // dejando que alguien pagase en PayPal antes de que el backend la
             // rechazara.
-            const timeout = window.setTimeout(() => finish(null), 30000);
+            const timeout = window.setTimeout(() => finish(null), 40000);
             let completed = false;
 
             function finish(status) {

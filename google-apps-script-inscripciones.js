@@ -1087,6 +1087,26 @@ function callMailRelay_(payload) {
     }
 }
 
+// Apps Script apaga el proyecto tras un rato sin uso y la primera consulta de
+// plazas despues tarda decenas de segundos. Este mantenimiento lo despierta
+// cada 5 minutos haciendo el mismo trabajo que esa consulta (abrir la carpeta
+// y la hoja de calculo), para que las visitas encuentren la instancia caliente.
+function mantenerCaliente() {
+    getOrCreateSpreadsheet_(getOrCreateFolder_(CONFIG.DRIVE_FOLDER_NAME));
+}
+
+// Ejecutar una vez desde el editor de Apps Script (pide un permiso nuevo):
+// crea el disparador que llama a mantenerCaliente() cada 5 minutos. Se puede
+// volver a ejecutar sin miedo: borra antes los disparadores anteriores.
+function instalarMantenimiento() {
+    ScriptApp.getProjectTriggers()
+        .filter((trigger) => trigger.getHandlerFunction() === "mantenerCaliente")
+        .forEach((trigger) => ScriptApp.deleteTrigger(trigger));
+
+    ScriptApp.newTrigger("mantenerCaliente").timeBased().everyMinutes(5).create();
+    console.log("Disparador de mantenimiento creado: cada 5 minutos.");
+}
+
 // Ejecutar una vez desde el editor de Apps Script: concede el permiso para
 // llamar al mensajero y comprueba que responde con la cuenta correcta.
 function probarMensajero() {
