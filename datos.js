@@ -18,6 +18,39 @@
 
     const eventos = [
         {
+            id: "sabado-03-10-2026",
+            // Foto de portada de la tarjeta del listado. Las partidas que aun
+            // no se han jugado no tienen galeria propia, asi que aqui va una
+            // foto de archivo a modo ilustrativo.
+            portada: "/images/02-08-2026/02082026 11.jpeg",
+            titulo: "Sábado 3 de Octubre",
+            tituloListado: "Sábado Mañana 03-10-2026",
+            tituloCalendario: "Partida 03-10-2026",
+            fecha: "2026-10-03",
+            fechaTexto: "3 de Octubre de 2026",
+            fechaCorta: "03/10/2026",
+            subtitulo: "Evento oficial de Mosco Events",
+            resumen: "Laser Counter - Pedrola.",
+            ubicacion: "Laser Counter (Pedrola)",
+            participantes: 26,
+            horario: "09:00 - 14:30",
+            importe: 18,
+            inscripcionUrl: "/registro.html?id=sabado-03-10-2026",
+            normasUrl: INFO_NORMAS_URL,
+            galeria: {
+                activa: true,
+                titulo: "GALERÍA",
+                descripcion: "Fotografías de Mosco Events en la PARTIDA del 03-10-2026",
+                botonListado: "FOTOS EVENTO 03-10-2026 →",
+                mensajeVacio: "aún no hay fotos",
+                imagenes: crearGaleria({
+                    carpeta: "/images/03-10-2026",
+                    prefijo: "03102026 ",
+                    extension: "jpeg"
+                })
+            }
+        },
+        {
             id: "miercoles-16-09-2026",
             // Foto de portada de la tarjeta del listado. Las partidas que aun
             // no se han jugado no tienen galeria propia, asi que aqui va una

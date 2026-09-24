@@ -63,6 +63,7 @@ const CONFIG = {
 // Una partida que no aparezca aqui sigue funcionando como antes (sin limite
 // de aforo y sin comprobar el importe), para no romper eventos antiguos.
 const EVENTS = {
+    "sabado-03-10-2026": { hoja: "Sábado 3 de Octubre", plazas: 26, importe: 18 },
     "miercoles-16-09-2026": { hoja: "Privada Miércoles Tarde", plazas: 26, importe: 15, contrasena: "AGM" },
     "sabado-29-08-2026": { hoja: "29-08-2026", plazas: 26, importe: 18 },
     "operacion-verano-2026": { hoja: "Operación Verano", plazas: 26, importe: 25 },
