@@ -40,6 +40,7 @@
         "registro.payment.event_blocked": "INSCRIPTIONS INDISPONIBLES",
         "registro.payment.checking": "VÉRIFICATION DE LA DISPONIBILITÉ…",
         "registro.payment.pay_with_paypal": "PAYER {{amount}} AVEC PAYPAL",
+        "registro.payment.cash_note": "Payez maintenant un acompte de {{reserve}} par PayPal. Les {{cash}} restants se règlent en espèces sur le terrain.",
         "registro.payment.price_pending": "PRIX À CONFIRMER",
         "registro.payment.status_confirmed": "Confirmé par le participant (en attente de vérification manuelle sur PayPal)",
         "registro.payment.status_pending_paypal": "En attente de confirmation du paiement sur PayPal",

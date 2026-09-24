@@ -40,6 +40,7 @@
         "registro.payment.event_blocked": "REGISTRATION UNAVAILABLE",
         "registro.payment.checking": "CHECKING AVAILABILITY…",
         "registro.payment.pay_with_paypal": "PAY {{amount}} WITH PAYPAL",
+        "registro.payment.cash_note": "Pay a {{reserve}} deposit by PayPal now. The remaining {{cash}} is paid in cash at the field.",
         "registro.payment.price_pending": "PRICE TO BE CONFIRMED",
         "registro.payment.status_confirmed": "Confirmed by the participant (pending manual verification on PayPal)",
         "registro.payment.status_pending_paypal": "Pending payment confirmation on PayPal",

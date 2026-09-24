@@ -38,6 +38,8 @@
     const reservationEventName = document.querySelector("[data-reservation-event-name]");
     const reservationDate = document.querySelector("[data-reservation-date]");
     const paymentButton = document.getElementById("paypal-payment-button");
+    const cashNote = document.querySelector("[data-cash-note]");
+    const paymentIntro = document.querySelector(".registration-payment-intro");
     const paymentButtonLabel = paymentButton?.querySelector("[data-paypal-button-label]");
     const paymentMethodInputs = Array.from(form?.querySelectorAll("[name='Metodo de pago']") || []);
     const paypalPaymentInput = form?.querySelector("[name='Metodo de pago'][value='PayPal']");
@@ -236,7 +238,13 @@
             return 0;
         }
 
-        return selectedEvent.importe + rentalSurcharge();
+        // Si la partida solo pide una reserva por PayPal, el resto se paga
+        // en efectivo en el campo y no pasa por aqui.
+        const online = typeof selectedEvent.reservaPaypal === "number"
+            ? selectedEvent.reservaPaypal
+            : selectedEvent.importe;
+
+        return online + rentalSurcharge();
     }
 
     // Si se paga como "Bienes y servicios", se pide un importe mayor para
@@ -280,7 +288,9 @@
         const breakdownParts = [];
 
         if (selectedEvent) {
-            breakdownParts.push(`${formatPaymentAmount(selectedEvent.importe)} partida`);
+            breakdownParts.push(typeof selectedEvent.reservaPaypal === "number"
+                ? `${formatPaymentAmount(selectedEvent.reservaPaypal)} reserva (${formatPaymentAmount(selectedEvent.efectivo)} en efectivo en el campo)`
+                : `${formatPaymentAmount(selectedEvent.importe)} partida`);
         }
 
         if (surcharge) {
@@ -334,6 +344,21 @@
 
     function syncPaypalPayment() {
         const hasEvent = Boolean(selectedEvent);
+        const cashAmount = hasEvent && typeof selectedEvent.reservaPaypal === "number" ? selectedEvent.efectivo : 0;
+
+        if (cashNote) {
+            cashNote.hidden = !cashAmount;
+            cashNote.textContent = cashAmount
+                ? t("registro.payment.cash_note", {
+                    reserve: formatPaymentAmount(selectedEvent.reservaPaypal),
+                    cash: formatPaymentAmount(cashAmount)
+                })
+                : "";
+        }
+
+        if (paymentIntro) {
+            paymentIntro.hidden = Boolean(cashAmount);
+        }
         const isReady = hasEvent && !capacityChecking && !selectedEventFull && !selectedEventBlocked;
 
         paymentButton.classList.toggle("is-disabled", !isReady);

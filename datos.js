@@ -35,6 +35,9 @@
             participantes: 26,
             horario: "09:00 - 14:30",
             importe: 18,
+            // Del importe total, solo esta parte se paga por PayPal al
+            // reservar; el resto se abona en efectivo en el campo.
+            reservaPaypal: 8,
             inscripcionUrl: "/registro.html?id=sabado-03-10-2026",
             normasUrl: INFO_NORMAS_URL,
             galeria: {
@@ -451,8 +454,17 @@
         // El importe numerico es la unica fuente de verdad del precio:
         // el texto y el enlace de PayPal se derivan de el.
         if (typeof evento.importe === "number") {
-            evento.precio = evento.precio || `${formatearImporte(evento.importe)} por PayPal`;
-            evento.pagoUrl = evento.pagoUrl || enlacePaypal(evento.importe);
+            if (typeof evento.reservaPaypal === "number") {
+                const efectivo = evento.importe - evento.reservaPaypal;
+
+                evento.efectivo = efectivo;
+                evento.precio = evento.precio
+                    || `${formatearImporte(evento.importe)} (${formatearImporte(evento.reservaPaypal)} de reserva por PayPal + ${formatearImporte(efectivo)} en efectivo en el campo)`;
+                evento.pagoUrl = evento.pagoUrl || enlacePaypal(evento.reservaPaypal);
+            } else {
+                evento.precio = evento.precio || `${formatearImporte(evento.importe)} por PayPal`;
+                evento.pagoUrl = evento.pagoUrl || enlacePaypal(evento.importe);
+            }
         }
 
         // Aforo de la partida: lo usa el registro para comprobar plazas.

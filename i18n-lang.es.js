@@ -40,6 +40,7 @@
         "registro.payment.event_blocked": "INSCRIPCIONES NO DISPONIBLES",
         "registro.payment.checking": "COMPROBANDO DISPONIBILIDAD…",
         "registro.payment.pay_with_paypal": "PAGAR {{amount}} CON PAYPAL",
+        "registro.payment.cash_note": "Reserva de {{reserve}} por PayPal ahora. Los {{cash}} restantes se pagan en efectivo en el campo.",
         "registro.payment.price_pending": "PRECIO POR CONFIRMAR",
         "registro.payment.status_confirmed": "Confirmado por el participante (pendiente de verificación manual en PayPal)",
         "registro.payment.status_pending_paypal": "Pendiente de confirmar el pago en PayPal",

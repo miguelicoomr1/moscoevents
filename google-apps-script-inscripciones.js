@@ -63,7 +63,7 @@ const CONFIG = {
 // Una partida que no aparezca aqui sigue funcionando como antes (sin limite
 // de aforo y sin comprobar el importe), para no romper eventos antiguos.
 const EVENTS = {
-    "sabado-03-10-2026": { hoja: "Sábado 3 de Octubre", plazas: 26, importe: 18 },
+    "sabado-03-10-2026": { hoja: "Sábado 3 de Octubre", plazas: 26, importe: 18, reservaPaypal: 8 },
     "miercoles-16-09-2026": { hoja: "Privada Miércoles Tarde", plazas: 26, importe: 15, contrasena: "AGM" },
     "sabado-29-08-2026": { hoja: "29-08-2026", plazas: 26, importe: 18 },
     "operacion-verano-2026": { hoja: "Operación Verano", plazas: 26, importe: 25 },
@@ -339,7 +339,9 @@ function eventCapacity_(eventId) {
 // incrementada para absorber la comision de "Bienes y servicios" de PayPal.
 // El calculo replica el de registro.js (redondeo hacia arriba al centimo).
 function allowedAmounts_(eventId) {
-    const base = Number(eventConfig_(eventId).importe);
+    const config = eventConfig_(eventId);
+    // Con reserva por PayPal, solo esa parte llega al formulario de pago.
+    const base = Number(config.reservaPaypal !== undefined ? config.reservaPaypal : config.importe);
 
     if (!Number.isFinite(base) || base <= 0) {
         return [];

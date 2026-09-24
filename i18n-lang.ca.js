@@ -40,6 +40,7 @@
         "registro.payment.event_blocked": "INSCRIPCIONS NO DISPONIBLES",
         "registro.payment.checking": "COMPROVANT DISPONIBILITAT…",
         "registro.payment.pay_with_paypal": "PAGAR {{amount}} AMB PAYPAL",
+        "registro.payment.cash_note": "Reserva de {{reserve}} per PayPal ara. Els {{cash}} restants es paguen en efectiu al camp.",
         "registro.payment.price_pending": "PREU PER CONFIRMAR",
         "registro.payment.status_confirmed": "Confirmat pel participant (pendent de verificació manual a PayPal)",
         "registro.payment.status_pending_paypal": "Pendent de confirmar el pagament a PayPal",
