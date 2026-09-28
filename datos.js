@@ -23,14 +23,14 @@
             // no se han jugado no tienen galeria propia, asi que aqui va una
             // foto de archivo a modo ilustrativo.
             portada: "/images/02-08-2026/02082026 11.jpeg",
-            titulo: "Sábado 3 de Octubre",
-            tituloListado: "Sábado Mañana 03-10-2026",
-            tituloCalendario: "Partida 03-10-2026",
+            titulo: "TCSIM Sábado 3 de Octubre",
+            tituloListado: "TCSIM Sábado Mañana 03-10-2026",
+            tituloCalendario: "TCSIM 03-10-2026",
             fecha: "2026-10-03",
             fechaTexto: "3 de Octubre de 2026",
             fechaCorta: "03/10/2026",
             subtitulo: "Evento oficial de Mosco Events",
-            resumen: "Laser Counter - Pedrola.",
+            resumen: "TCSIM - Laser Counter - Pedrola.",
             ubicacion: "Laser Counter (Pedrola)",
             participantes: 26,
             horario: "09:00 - 14:30",
@@ -40,6 +40,11 @@
             reservaPaypal: 8,
             inscripcionUrl: "/registro.html?id=sabado-03-10-2026",
             normasUrl: INFO_NORMAS_URL,
+            // Partida TCSIM: pide elegir bando (ver seleccionBando en
+            // registro.js/google-apps-script-inscripciones.js) y enlaza al
+            // apartado de normas especificas de TCSIM.
+            seleccionBando: true,
+            normasEventoUrl: INFO_NORMAS_URL + "#tcsim",
             galeria: {
                 activa: true,
                 titulo: "GALERÍA",
