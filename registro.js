@@ -145,6 +145,9 @@
     const sidePmcOptionDefaultLabel = sidePmcOption?.textContent || "";
     let selectedEventOtanFull = false;
     let selectedEventPmcFull = false;
+    // Mientras no llega el aforo no se sabe que bando esta lleno: las dos
+    // opciones quedan deshabilitadas para no poder elegir uno ya completo.
+    let sideChecking = false;
 
     function formatPaymentAmount(amount) {
         return new Intl.NumberFormat(window.MoscoI18n?.getLocale() || "es-ES", {
@@ -192,7 +195,7 @@
         selectedEventPmcFull = Boolean(pmcFull);
 
         if (sideOtanOption) {
-            sideOtanOption.disabled = selectedEventOtanFull;
+            sideOtanOption.disabled = selectedEventOtanFull || sideChecking;
             sideOtanOption.textContent = selectedEventOtanFull
                 ? t("registro.form.side_otan_full")
                 : (sideOtanOptionDefaultLabel || t("registro.form.side_otan"));
@@ -204,7 +207,7 @@
         }
 
         if (sidePmcOption) {
-            sidePmcOption.disabled = selectedEventPmcFull;
+            sidePmcOption.disabled = selectedEventPmcFull || sideChecking;
             sidePmcOption.textContent = selectedEventPmcFull
                 ? t("registro.form.side_pmc_full")
                 : (sidePmcOptionDefaultLabel || t("registro.form.side_pmc"));
@@ -738,6 +741,7 @@
     async function refreshEventCapacity(evento) {
         const requestId = ++capacityRequestId;
 
+        sideChecking = Boolean(appsScriptUrl) && requiresSide(evento);
         setRegistrationFull(false);
         syncRentalAvailability(false);
         syncSideAvailability(false, false);
@@ -759,6 +763,7 @@
         }
 
         capacityChecking = false;
+        sideChecking = false;
         setCapacityUnknown(Boolean(appsScriptUrl) && !status);
         setRegistrationFull(Boolean(status?.full));
         syncRentalAvailability(Boolean(status?.rentalFull));
