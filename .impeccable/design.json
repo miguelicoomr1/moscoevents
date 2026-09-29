@@ -1,0 +1,242 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-14T00:00:00.000Z",
+  "title": "Design System: Mosco Events",
+  "extensions": {
+    "colorMeta": {
+      "field-signal": {
+        "role": "primary",
+        "displayName": "Naranja Señal",
+        "canonical": "#f25c35",
+        "tonalRamp": ["#2c0d05", "#54180a", "#7c2410", "#a43017", "#cc4423", "#f25c35", "#f68a6d", "#fbc4b4"]
+      },
+      "field-signal-dark": {
+        "role": "primary",
+        "displayName": "Naranja Señal Oscuro",
+        "canonical": "#bd3d20",
+        "tonalRamp": ["#240c05", "#41160a", "#5e1f0f", "#7b2914", "#9d3319", "#bd3d20", "#d8704f", "#eeb09a"]
+      },
+      "field-lime": {
+        "role": "primary",
+        "displayName": "Lima Marcaje",
+        "canonical": "#d7ee62",
+        "tonalRamp": ["#25300a", "#3c4d12", "#54691a", "#6c8622", "#a3c13c", "#d7ee62", "#e6f597", "#f3fbcc"]
+      },
+      "field-olive": {
+        "role": "secondary",
+        "displayName": "Oliva de Campo",
+        "canonical": "#59644e",
+        "tonalRamp": ["#16190f", "#242a20", "#333a2c", "#434c39", "#59644e", "#7b876d", "#a3ad96", "#cfd5c5"]
+      },
+      "field-ink": {
+        "role": "neutral",
+        "displayName": "Tinta de Campo",
+        "canonical": "#151713",
+        "tonalRamp": ["#070806", "#0d0f0b", "#151713", "#292d26", "#4e554c", "#72786f", "#a8ada3", "#d5d8d0"]
+      },
+      "field-ink-soft": {
+        "role": "neutral",
+        "displayName": "Tinta Suave",
+        "canonical": "#292d26",
+        "tonalRamp": ["#0a0b09", "#151713", "#1f2219", "#292d26", "#434839", "#6a7062", "#9ba193", "#cfd3c8"]
+      },
+      "field-paper": {
+        "role": "neutral",
+        "displayName": "Papel de Campo",
+        "canonical": "#f3f1e9",
+        "tonalRamp": ["#2a2923", "#454338", "#605d4e", "#807c6b", "#a9a596", "#d0ccbe", "#e9e4d8", "#f3f1e9"]
+      },
+      "field-paper-warm": {
+        "role": "neutral",
+        "displayName": "Papel Cálido",
+        "canonical": "#e9e4d8",
+        "tonalRamp": ["#26241c", "#3e3b2e", "#565141", "#756f59", "#9d9680", "#c5bfab", "#e9e4d8", "#f6f3ec"]
+      },
+      "field-surface": {
+        "role": "neutral",
+        "displayName": "Superficie",
+        "canonical": "#fffdf7",
+        "tonalRamp": ["#2b2a23", "#46443a", "#615e50", "#82806f", "#aaa795", "#d3d0c0", "#f0eddf", "#fffdf7"]
+      },
+      "surface-strong": {
+        "role": "neutral",
+        "displayName": "Papel Cansado",
+        "canonical": "#dfdbcf",
+        "tonalRamp": ["#24231d", "#3a382f", "#514e41", "#6d6957", "#948f77", "#bcb7a3", "#dfdbcf", "#f1efe7"]
+      },
+      "text-soft": {
+        "role": "neutral",
+        "displayName": "Texto Apagado",
+        "canonical": "#4e554c",
+        "tonalRamp": ["#131513", "#1f221e", "#2c302b", "#3a3f38", "#4e554c", "#727a6f", "#9fa69b", "#cdd1c9"]
+      },
+      "text-muted": {
+        "role": "neutral",
+        "displayName": "Texto Mudo",
+        "canonical": "#72786f",
+        "tonalRamp": ["#1b1d1a", "#2b2e29", "#3c4039", "#4f544b", "#72786f", "#959a92", "#b9bdb5", "#dddfda"]
+      },
+      "field-line": {
+        "role": "neutral",
+        "displayName": "Línea",
+        "canonical": "rgba(21, 23, 19, 0.16)"
+      },
+      "field-line-strong": {
+        "role": "neutral",
+        "displayName": "Línea Marcada",
+        "canonical": "rgba(21, 23, 19, 0.34)"
+      },
+      "night-floor": {
+        "role": "neutral",
+        "displayName": "Suelo de Noche",
+        "canonical": "#070806",
+        "tonalRamp": ["#070806", "#0d0f0b", "#151713", "#22251e", "#373b31", "#5a5f51", "#8e9385", "#c9ccc2"]
+      }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Solo el h1 del hero, blanco sobre fotografía." },
+      "headline": { "displayName": "Headline", "purpose": "h2 de sección, seguido de su regla naranja de 72×7px." },
+      "title": { "displayName": "Title", "purpose": "Títulos de tarjeta de evento y legend del formulario." },
+      "body": { "displayName": "Body", "purpose": "Párrafo del sistema. Nunca por debajo de peso 600." },
+      "label": { "displayName": "Label", "purpose": "Navegación, botones, kickers y dt de ficha. Única capa con interletrado positivo." }
+    },
+    "shadows": [
+      { "name": "hoja", "value": "0 12px 34px rgba(30, 32, 26, 0.1)", "purpose": "Reposo de tarjetas, paneles de formulario y tejas de datos." },
+      { "name": "hoja-levantada", "value": "0 24px 70px rgba(30, 32, 26, 0.14)", "purpose": "Hover de tarjeta y reposo de los desplegables de navegación." },
+      { "name": "cabecera", "value": "0 16px 48px rgba(11, 13, 10, 0.16)", "purpose": "La barra flotante de cristal esmerilado." },
+      { "name": "accion", "value": "0 12px 28px rgba(189, 61, 32, 0.22)", "purpose": "Reposo del botón primario. Única sombra teñida: lleva el color del propio botón." },
+      { "name": "accion-hover", "value": "0 16px 34px rgba(189, 61, 32, 0.3)", "purpose": "Hover del botón primario." },
+      { "name": "modal", "value": "0 30px 90px rgba(0, 0, 0, 0.52)", "purpose": "Solo la imagen ampliada sobre fondo oscurecido." }
+    ],
+    "motion": [
+      { "name": "ease-estado", "value": "0.18s ease", "purpose": "Transición por defecto de botones y enlaces de navegación (transform, box-shadow, background, color)." },
+      { "name": "ease-hoja", "value": "0.22s ease", "purpose": "Elevación de tarjeta en hover (transform, border-color, box-shadow)." },
+      { "name": "ease-capa", "value": "0.2s ease", "purpose": "Aparición de desplegables de navegación (opacity, transform, visibility)." },
+      { "name": "ease-expresivo", "value": "cubic-bezier(0.2, 0.7, 0.3, 1)", "purpose": "Curva de salida suave para el movimiento destacado del sistema." }
+    ],
+    "breakpoints": [
+      { "name": "movil", "value": "640px" },
+      { "name": "tablet", "value": "900px" },
+      { "name": "laptop", "value": "1040px" },
+      { "name": "escritorio", "value": "1200px" },
+      { "name": "contenido", "value": "1240px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Botón Primario",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Acción del sistema: píldora naranja táctil de 54px, con sombra teñida de su propio color.",
+      "html": "<a class=\"ds-btn-primary\" href=\"#\">VER PRÓXIMAS PARTIDAS</a>",
+      "css": ".ds-btn-primary { display: inline-flex; justify-content: center; align-items: center; min-height: 54px; padding: 14px 24px; color: #fff; background: var(--field-signal, #f25c35); border: 1px solid var(--field-signal, #f25c35); border-radius: 999px; box-shadow: 0 12px 28px rgba(189, 61, 32, 0.22); text-decoration: none; font-family: \"Rajdhani\", sans-serif; font-size: 0.92rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer; transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease, color 0.18s ease; } .ds-btn-primary:hover { background: var(--field-signal-dark, #bd3d20); border-color: var(--field-signal-dark, #bd3d20); box-shadow: 0 16px 34px rgba(189, 61, 32, 0.3); transform: translateY(-3px); } .ds-btn-primary:focus-visible { outline: 2px solid var(--field-signal, #f25c35); outline-offset: 3px; } .ds-btn-primary:active { transform: translateY(-1px); }"
+    },
+    {
+      "name": "Botón sobre Escena",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Variante del hero: superficie translúcida sobre fotografía, para acciones secundarias.",
+      "html": "<a class=\"ds-btn-scene\" href=\"#\">INSTAGRAM OFICIAL</a>",
+      "css": ".ds-btn-scene { display: inline-flex; justify-content: center; align-items: center; min-height: 54px; padding: 14px 24px; color: #fff; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.38); border-radius: 999px; backdrop-filter: blur(12px); text-decoration: none; font-family: \"Rajdhani\", sans-serif; font-size: 0.92rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; transition: transform 0.18s ease, background 0.18s ease; } .ds-btn-scene:hover { background: rgba(255, 255, 255, 0.2); transform: translateY(-3px); } .ds-btn-scene:focus-visible { outline: 2px solid var(--field-signal, #f25c35); outline-offset: 3px; }"
+    },
+    {
+      "name": "Enlace de Navegación",
+      "kind": "nav",
+      "refersTo": "nav-link",
+      "description": "Enlace de la barra flotante: resaltado lima al pasar el cursor, la firma de la navegación.",
+      "html": "<nav class=\"ds-nav\"><a class=\"ds-nav-link\" href=\"#\">INICIO</a><a class=\"ds-nav-link\" href=\"#\">PRÓXIMOS EVENTOS</a><a class=\"ds-nav-link\" href=\"#\">GALERÍA</a></nav>",
+      "css": ".ds-nav { display: inline-flex; align-items: center; gap: 4px; padding: 8px 12px; background: rgba(243, 241, 233, 0.46); border: 1px solid rgba(255, 255, 255, 0.38); border-radius: 18px; box-shadow: 0 16px 48px rgba(11, 13, 10, 0.16); backdrop-filter: blur(24px) saturate(145%); } .ds-nav-link { display: inline-flex; align-items: center; min-height: 44px; padding: 0 14px; color: var(--field-ink-soft, #292d26); text-decoration: none; border-radius: 12px; font-family: \"Rajdhani\", sans-serif; font-size: 0.86rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; transition: color 0.18s ease, background 0.18s ease, transform 0.18s ease; } .ds-nav-link:hover, .ds-nav-link:focus-visible { color: var(--field-ink, #151713); background: var(--field-lime, #d7ee62); transform: translateY(-1px); outline: none; }"
+    },
+    {
+      "name": "Tarjeta de Evento",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "Hoja de papel apoyada, abierta con su píldora lima y sellada con la trama diagonal naranja en la esquina.",
+      "html": "<article class=\"ds-card\"><h3 class=\"ds-card-title\">TCSIM SÁBADO TARDE</h3><p class=\"ds-card-text\">Partida tipo TCSIM con sistema de curaciones reales y explosivos. Laser Counter — Pedrola.</p></article>",
+      "css": ".ds-card { position: relative; overflow: hidden; isolation: isolate; padding: clamp(28px, 5vw, 52px); color: var(--field-ink, #151713); background: rgba(255, 253, 247, 0.94); border: 1px solid rgba(21, 23, 19, 0.16); border-radius: 32px; text-align: left; box-shadow: 0 12px 34px rgba(30, 32, 26, 0.1); transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease; } .ds-card::before { content: \"\"; display: block; width: 54px; height: 8px; margin: 0 0 26px; background: var(--field-lime, #d7ee62); border-radius: 999px; } .ds-card::after { content: \"\"; position: absolute; top: -70px; right: -70px; z-index: -1; width: 210px; height: 210px; background: repeating-linear-gradient(135deg, rgba(242, 92, 53, 0.1) 0 12px, transparent 12px 24px); border-radius: 50%; pointer-events: none; } .ds-card:hover { border-color: rgba(21, 23, 19, 0.34); box-shadow: 0 24px 70px rgba(30, 32, 26, 0.14); transform: translateY(-4px); } .ds-card-title { margin: 0 0 22px; font-family: \"Oswald\", sans-serif; font-size: clamp(1.7rem, 3vw, 2.45rem); font-weight: 700; line-height: 1.05; text-transform: uppercase; } .ds-card-text { margin: 10px 0; color: var(--text-soft, #4e554c); font-family: \"Rajdhani\", sans-serif; font-size: 1.1rem; font-weight: 600; line-height: 1.6; }"
+    },
+    {
+      "name": "Campo de Formulario",
+      "kind": "input",
+      "refersTo": "input-field",
+      "description": "Campo del formulario de inscripción: papel hundido, trazo marcado y anillo de foco naranja visible.",
+      "html": "<label class=\"ds-field\"><span>Nombre y apellidos</span><input class=\"ds-field-input\" type=\"text\" placeholder=\"Nombre\"></label>",
+      "css": ".ds-field { display: grid; gap: 8px; font-family: \"Rajdhani\", sans-serif; } .ds-field > span { color: var(--field-ink, #151713); font-weight: 700; } .ds-field-input { width: 100%; min-height: 52px; padding: 12px 14px; color: var(--field-ink, #151713); background: var(--field-paper, #f3f1e9); border: 1px solid rgba(21, 23, 19, 0.34); border-radius: 12px; font: inherit; font-weight: 600; } .ds-field-input::placeholder { color: var(--text-muted, #72786f); } .ds-field-input:focus { outline: 2px solid var(--field-signal, #f25c35); outline-offset: 3px; }"
+    },
+    {
+      "name": "Encabezado de Sección",
+      "kind": "custom",
+      "refersTo": "headline",
+      "description": "La puntuación del documento: titular Oswald comprimido más su píldora naranja de apertura.",
+      "html": "<h2 class=\"ds-section-heading\">PRÓXIMAS PARTIDAS</h2>",
+      "css": ".ds-section-heading { margin: 0 0 50px; color: var(--field-ink, #151713); font-family: \"Oswald\", sans-serif; font-size: clamp(2.7rem, 6vw, 5.5rem); font-weight: 700; line-height: 0.94; letter-spacing: -0.045em; text-align: left; text-transform: uppercase; } .ds-section-heading::after { content: \"\"; display: block; width: 72px; height: 7px; margin: 20px 0 0; background: var(--field-signal, #f25c35); border-radius: 999px; }"
+    },
+    {
+      "name": "Teja de Datos",
+      "kind": "custom",
+      "refersTo": "stat-tile",
+      "description": "Dato duro sobre la franja oscura: el único lugar donde la lima aparece en tamaño grande.",
+      "html": "<div class=\"ds-stat-strip\"><div class=\"ds-stat\"><span>26</span>PLAZAS</div><div class=\"ds-stat\"><span>18€</span>INSCRIPCIÓN</div></div>",
+      "css": ".ds-stat-strip { display: flex; justify-content: center; flex-wrap: wrap; gap: 22px; padding: 40px 24px; background: var(--field-ink, #151713); text-align: center; } .ds-stat { min-width: 190px; padding: 24px 30px; color: #fff; background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.14); border-radius: 20px; box-shadow: 0 12px 34px rgba(30, 32, 26, 0.1); font-family: \"Rajdhani\", sans-serif; font-size: 0.86rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; } .ds-stat span { display: block; color: var(--field-lime, #d7ee62); font-family: \"Oswald\", sans-serif; font-size: 4rem; font-weight: 700; line-height: 1; }"
+    },
+    {
+      "name": "Insignia de Hero",
+      "kind": "chip",
+      "refersTo": "label",
+      "description": "Etiqueta translúcida sobre fotografía: contexto de la partida antes del titular.",
+      "html": "<span class=\"ds-badge\">PARTIDAS PRIVADAS · LIMITED SLOTS</span>",
+      "css": ".ds-badge { display: inline-flex; align-items: center; padding: 8px 14px; color: rgba(255, 255, 255, 0.92); background: rgba(0, 0, 0, 0.35); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 999px; font-family: \"Rajdhani\", sans-serif; font-size: 0.76rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; }"
+    },
+    {
+      "name": "Bloque de Consentimiento",
+      "kind": "input",
+      "refersTo": "input-field",
+      "description": "Casilla legal del formulario: recuadro de papel con destino táctil generoso para el pulgar.",
+      "html": "<label class=\"ds-consent\"><input type=\"checkbox\"><span>He leído y acepto las normas de la partida.</span></label>",
+      "css": ".ds-consent { display: flex; align-items: flex-start; gap: 12px; padding: 14px; background: var(--field-paper, #f3f1e9); border: 1px solid rgba(21, 23, 19, 0.16); border-radius: 14px; color: var(--field-ink, #151713); font-family: \"Rajdhani\", sans-serif; font-weight: 600; line-height: 1.6; cursor: pointer; } .ds-consent input { flex: 0 0 auto; width: 20px; height: 20px; margin-top: 2px; accent-color: var(--field-signal, #f25c35); } .ds-consent:hover { border-color: rgba(21, 23, 19, 0.34); } .ds-consent input:focus-visible { outline: 2px solid var(--field-signal, #f25c35); outline-offset: 3px; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "El Parte de Operaciones",
+    "overview": "Este sistema es un informe de campo, no un folleto. La página se lee como un parte operativo mecanografiado sobre papel cálido (#f3f1e9) y anotado a mano con un rotulador naranja fluorescente: titulares condensados en mayúsculas apretadas, reglas gruesas de color que abren cada bloque, y datos duros — fecha, hora, plazas, importe — expuestos sin adorno. La información gana siempre a la decoración porque quien lee está decidiendo si se apunta a una partida.\n\nEl contraste papel/noche es deliberado y estructural. El hero, la franja de datos y el pie caen a tinta casi negra con fotografía real de partida debajo; todo lo demás vive sobre papel. Ese salto marca el ritmo del documento: la portada es la escena, el cuerpo es el parte. La rejilla de 56px superpuesta al hero y el remate naranja de 8px en su base son la firma del sistema — la cuadrícula del mapa y el subrayado del anotador.\n\nLa tipografía sostiene el carácter: Oswald condensada, en mayúsculas, con interletrado negativo agresivo (hasta -0.055em) y line-height por debajo de 1 para que los titulares se compacten como un sello. Rajdhani en peso 600 lleva el texto corrido con su propia rigidez técnica. Los acentos — Naranja Señal y Lima Marcaje — aparecen en dosis pequeñas y siempre con función: señalar acción o abrir sección.",
+    "keyCharacteristics": [
+      "Papel cálido como suelo por defecto; el oscuro es un recurso de escena, no el tema.",
+      "Titulares condensados, en mayúsculas, con interletrado negativo y líneas apretadas.",
+      "Reglas de color de 7–8px como puntuación estructural: abren h2, tarjetas y hero.",
+      "Acentos escasos y funcionales; nunca superficie amplia.",
+      "Sombras difusas y anchas: hojas de papel apoyadas, no cajas flotando.",
+      "Fotografía documental propia de cada partida como único registro de imagen."
+    ],
+    "rules": [
+      { "name": "La Regla del Marcador", "body": "Naranja Señal y Lima Marcaje son rotuladores, no pintura. Cada uno ocupa como mucho un 5% de la superficie visible: una píldora, una regla de 7px, una cifra. En cuanto un acento se convierte en fondo de un bloque entero, ha dejado de señalar y el parte se ha vuelto cartel.", "section": "colors" },
+      { "name": "La Regla del Reparto", "body": "El naranja señala acción; la lima señala estado o apertura. Un enlace que no lleva a ninguna parte nunca es naranja, y una regla de apertura de sección nunca es lima si la sección es accionable.", "section": "colors" },
+      { "name": "La Regla del Papel por Defecto", "body": "El oscuro es escena, no tema. Se reserva al hero (sobre fotografía), a la franja de datos y al pie. Una sección de contenido nueva nace sobre papel; volcarla a oscuro requiere una razón narrativa, no una preferencia.", "section": "colors" },
+      { "name": "La Regla de las Dos Voces", "body": "Oswald titula, Rajdhani informa. Ninguna superficie nueva carga una tercera familia, ni siquiera para código, cifras o citas. Si un texto no encaja en ninguna de las dos, el problema es la jerarquía, no la fuente.", "section": "typography" },
+      { "name": "La Regla de la Compresión", "body": "Todo lo que va en Oswald va en mayúsculas, con interletrado negativo y line-height por debajo de 1.05. Un titular Oswald con interletrado neutro y línea holgada deja de pertenecer a este sistema.", "section": "typography" },
+      { "name": "La Regla del Margen Izquierdo", "body": "El documento tiene un margen y todo cuelga de él. Centrar un titular, una regla o un bloque de contenido largo rompe la lectura de parte.", "section": "layout" },
+      { "name": "La Regla de la Luz Ambiente", "body": "Ninguna sombra del sistema tiene desplazamiento lateral ni opacidad por encima del 22% sobre papel. Una sombra dura y corta convierte la hoja en una caja y saca la página del parte operativo.", "section": "elevation" },
+      { "name": "La Regla de la Marca de Apertura", "body": "Todo bloque de primer nivel se abre con una marca de color: h2 con su píldora naranja de 72×7px, tarjeta con su píldora lima de 54×8px, hero con su píldora naranja de 88×8px. Es la puntuación del documento; un bloque nuevo sin marca de apertura se lee como continuación del anterior.", "section": "shapes" }
+    ],
+    "dos": [
+      "Do abrir todo bloque de primer nivel con su marca de color: píldora naranja de 72×7px bajo un h2, píldora lima de 54×8px en una tarjeta.",
+      "Do alinear a la izquierda por defecto y colgar titular, marca y contenido del mismo eje.",
+      "Do componer los titulares en Oswald mayúsculas con interletrado negativo (−0.045em a −0.055em) y line-height por debajo de 1.05.",
+      "Do mantener el cuerpo en Rajdhani 600 o superior; en 400 la familia pierde cuerpo sobre papel cálido.",
+      "Do dar 44px de alto mínimo a todo destino táctil, y 52–54px en el formulario de inscripción, que se completa con el pulgar.",
+      "Do teñir la sombra de un botón con su propio color (rgba(189, 61, 32, …)), como hace el botón primario.",
+      "Do usar fotografía propia de una partida jugada para cualquier imagen nueva.",
+      "Do respetar prefers-reduced-motion y las consultas de puntero grueso ya presentes en el sistema."
+    ],
+    "donts": [
+      "Don't usar Naranja Señal o Lima Marcaje como fondo de un bloque entero ni como relleno decorativo; son marcadores, no pintura.",
+      "Don't cruzar los roles de acento: naranja es acción, lima es estado o apertura.",
+      "Don't cargar una tercera familia tipográfica. Oswald y Rajdhani son el sistema cerrado, también para cifras, código o citas.",
+      "Don't añadir !important nuevo. El CSS arrastra muchos por capas históricas; el trabajo futuro no suma más y los retira del bloque que toque.",
+      "Don't volcar una sección de contenido a fondo oscuro sin una razón narrativa: el oscuro es escena (hero, franja de datos, pie), no tema.",
+      "Don't usar sombras duras, cortas o con desplazamiento lateral sobre papel; el vocabulario es luz ambiente difusa.",
+      "Don't suprimir ni debilitar el anillo de foco naranja de 2px con 3px de separación.",
+      "Don't usar stock ni ilustración genérica en ningún punto del sitio.",
+      "Don't centrar titulares, reglas de apertura o bloques de texto largo."
+    ]
+  }
+}

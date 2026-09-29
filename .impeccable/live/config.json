@@ -1,0 +1,7 @@
+{
+  "files": ["**/*.html"],
+  "exclude": ["outputs/**", ".claude/**", "apps-script*/**"],
+  "insertBefore": "</body>",
+  "commentSyntax": "html",
+  "cspChecked": true
+}
