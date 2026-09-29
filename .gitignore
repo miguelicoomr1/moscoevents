@@ -47,3 +47,4 @@ apps-script-correo-gmail/deployment-id.txt
 
 # Paginas de trabajo que no deben publicarse (comparativas de diseno, pruebas)
 propuestas-estetica.html
+.playwright-mcp/
