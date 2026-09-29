@@ -220,6 +220,10 @@
 
         if (sideFullNotice) {
             sideFullNotice.hidden = !selectedEventOtanFull && !selectedEventPmcFull;
+            sideFullNotice.textContent = [
+                selectedEventOtanFull ? t("registro.form.side_otan_full_notice") : "",
+                selectedEventPmcFull ? t("registro.form.side_pmc_full_notice") : ""
+            ].filter(Boolean).join(". ");
         }
     }
 
@@ -1867,6 +1871,7 @@
         });
 
         updateEventSummary(selectedEvent);
+        syncSideAvailability(selectedEventOtanFull, selectedEventPmcFull);
         updateSubmitAvailability();
     });
 })();
