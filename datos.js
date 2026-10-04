@@ -54,7 +54,8 @@
                 imagenes: crearGaleria({
                     carpeta: "/images/03-10-2026",
                     prefijo: "03102026 ",
-                    extension: "jpeg"
+                    extension: "jpeg",
+                    hasta: 29
                 })
             }
         },
@@ -363,6 +364,7 @@
     };
 
     const PAGINAS_GALERIA = {
+        "sabado-03-10-2026": "/Galeria/galeria-sabado03102026.html",
         "miercoles-16-09-2026": "/Galeria/galeria-miercoles16092026.html",
         "sabado-29-08-2026": "/Galeria/galeria-sabado29082026.html",
         "operacion-verano-2026": "/Galeria/galeria-verano.html",
