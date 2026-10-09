@@ -524,6 +524,9 @@
             crearDetalle(t("eventos.detail.participants"), evento.participantes),
             crearDetalle(t("eventos.detail.schedule"), evento.horario),
             crearDetalle(t("eventos.detail.duration"), evento.duracion),
+            // Datos propios de la partida (modalidad, bandos...) que no tienen
+            // campo fijo: cada uno es [etiqueta, valor] en datos.js.
+            ...(evento.detallesExtra || []).map(([etiqueta, valor]) => crearDetalle(etiqueta, valor)),
             crearDetalle(t("eventos.detail.prizes"), evento.premios),
             crearDetallePago(evento)
         ].filter(Boolean);
@@ -605,6 +608,14 @@
 
         const tarjeta = crearElemento("div", "card");
         const acciones = crearElemento("div", "event-actions");
+
+        // Equipo obligatorio de la partida (ver avisoRegistro en datos.js): el
+        // mismo recuadro rojo que se ve arriba del formulario de inscripcion.
+        if (evento.avisoRegistro) {
+            const aviso = crearElemento("p", "registration-top-notice", evento.avisoRegistro);
+            aviso.setAttribute("role", "alert");
+            tarjeta.appendChild(aviso);
+        }
 
         detallesEvento(evento).forEach((detalle) => tarjeta.appendChild(detalle));
 

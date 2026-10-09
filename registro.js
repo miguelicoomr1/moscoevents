@@ -18,7 +18,8 @@
     const sideSelect = form?.elements.bando;
     const rulesInput = form?.elements.normasLeidas;
     const rulesError = document.querySelector("[data-rules-error]");
-    const eventRulesNotice = document.querySelector("[data-registration-event-rules]");
+    const topNotice = document.querySelector("[data-registration-top-notice]");
+    const eventRulesNotice =document.querySelector("[data-registration-event-rules]");
     const eventRulesText = document.querySelector("[data-registration-event-rules-text]");
     const eventRulesLink = document.querySelector("[data-registration-event-rules-link]");
     const submitButton = form?.querySelector('button[type="submit"][data-registration-participant]');
@@ -519,6 +520,33 @@
         eventRulesLink.href = url;
     }
 
+    // Recuadro rojo con el equipo obligatorio, en la parte superior del
+    // formulario (ver avisoRegistro en datos.js).
+    function syncTopNotice() {
+        if (!topNotice) {
+            return;
+        }
+
+        const texto = selectedEvent?.avisoRegistro || "";
+
+        topNotice.hidden = !texto;
+        topNotice.textContent = texto;
+
+        // Enlace directo a las normas propias de la partida, para que se
+        // vean antes de rellenar el formulario y no solo junto al checkbox.
+        const url = selectedEvent?.normasEventoUrl;
+
+        if (texto && url) {
+            const enlace = document.createElement("a");
+
+            enlace.href = url;
+            enlace.target = "_blank";
+            enlace.rel = "noopener noreferrer";
+            enlace.textContent = t("eventos.event_rules_button");
+            topNotice.append(document.createElement("br"), enlace);
+        }
+    }
+
     // Lo decide datos.js con la fecha y la hora de inicio de la partida: una
     // vez empezada deja de listarse y no admite mas inscripciones.
     function isUpcomingEvent(evento) {
@@ -865,6 +893,7 @@
         syncPasswordField();
         syncSideField();
         syncEventRulesNotice();
+        syncTopNotice();
         syncPaypalPayment();
     }
 

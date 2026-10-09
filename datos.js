@@ -18,6 +18,49 @@
 
     const eventos = [
         {
+            id: "sabado-17-10-2026",
+            // Foto de portada de la tarjeta del listado. Las partidas que aun
+            // no se han jugado no tienen galeria propia, asi que aqui va una
+            // foto de archivo a modo ilustrativo.
+            portada: "/images/02-08-2026/02082026 11.jpeg",
+            titulo: "TOTAL WAR Sábado 17 de Octubre",
+            tituloListado: "TOTAL WAR Sábado Seminocturna 17-10-2026",
+            tituloCalendario: "TOTAL WAR 17-10-2026",
+            fecha: "2026-10-17",
+            fechaTexto: "17 de Octubre de 2026",
+            fechaCorta: "17/10/2026",
+            subtitulo: "Evento oficial de Mosco Events",
+            resumen: "TOTAL WAR - Seminocturna - Trazador o linterna obligatorio - Laser Counter - Pedrola.",
+            ubicacion: "Laser Counter (Pedrola)",
+            participantes: 26,
+            horario: "16:00 - 21:00",
+            importe: 20,
+            // Del importe total, solo esta parte se paga por PayPal al
+            // reservar; el resto se abona en efectivo en el campo.
+            reservaPaypal: 10,
+            detallesExtra: [
+                ["Modalidad", "Seminocturna. Trazador o linterna obligatorio."],
+                ["Bandos", "OTAN (13 plazas) y PMC (13 plazas)"]
+            ],
+            // Recuadro rojo en la parte superior del formulario de inscripcion
+            // (ver data-registration-top-notice en registro.html).
+            avisoRegistro: "Gafas con homologación, protección auditiva obligatoria (da igual de qué tipo), protección facial/bucal obligatoria y luz de muerto azul, roja o verde obligatoria.",
+            inscripcionUrl: "/registro.html?id=sabado-17-10-2026",
+            normasUrl: INFO_NORMAS_URL,
+            // Pide elegir bando (OTAN/PMC, 13 plazas cada uno; ver
+            // SIDE_CAPACITY en google-apps-script-inscripciones.js).
+            seleccionBando: true,
+            normasEventoUrl: INFO_NORMAS_URL + "#total-war",
+            galeria: {
+                activa: true,
+                titulo: "GALERÍA",
+                descripcion: "Fotografías de Mosco Events en la PARTIDA del 17-10-2026",
+                botonListado: "FOTOS EVENTO 17-10-2026 →",
+                mensajeVacio: "aún no hay fotos",
+                imagenes: []
+            }
+        },
+        {
             id: "sabado-03-10-2026",
             // Foto de portada de la tarjeta del listado. Las partidas que aun
             // no se han jugado no tienen galeria propia, asi que aqui va una

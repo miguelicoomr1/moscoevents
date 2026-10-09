@@ -724,6 +724,35 @@ body .card::after {
     text-decoration: underline;
 }
 
+/* Recuadro rojo de equipo obligatorio, arriba del formulario de inscripcion. */
+.registration-top-notice {
+    margin: 0 0 20px;
+    padding: 16px 20px;
+    border: 2px solid #b3201a;
+    border-radius: 12px;
+    background: #d62d20;
+    color: #fff;
+    font-weight: 700;
+    text-align: center;
+}
+
+.card p.registration-top-notice {
+    margin: 0 0 20px;
+    color: #fff;
+    font-size: 1rem;
+}
+
+.registration-top-notice a {
+    display: inline-block;
+    margin-top: 8px;
+    color: inherit;
+    text-decoration: underline;
+}
+
+.registration-top-notice[hidden] {
+    display: none;
+}
+
 .event-empty {
     grid-column: 1 / -1;
     text-align: center;
