@@ -19,6 +19,10 @@
     const eventos = [
         {
             id: "domingo-18-10-2026",
+            // Foto de portada de la tarjeta del listado. Las partidas que aun
+            // no se han jugado no tienen galeria propia, asi que aqui va una
+            // foto de archivo a modo ilustrativo.
+            portada: "/images/02-08-2026/02082026 11.jpeg",
             titulo: "Domingo 18 de Octubre",
             tituloListado: "Domingo 18-10-2026",
             tituloCalendario: "Partida 18-10-2026",
