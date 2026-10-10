@@ -18,6 +18,34 @@
 
     const eventos = [
         {
+            id: "domingo-18-10-2026",
+            titulo: "Domingo 18 de Octubre",
+            tituloListado: "Domingo 18-10-2026",
+            tituloCalendario: "Partida 18-10-2026",
+            fecha: "2026-10-18",
+            fechaTexto: "18 de Octubre de 2026",
+            fechaCorta: "18/10/2026",
+            subtitulo: "Evento oficial de Mosco Events",
+            resumen: "Laser Counter - Pedrola.",
+            ubicacion: "Laser Counter (Pedrola)",
+            participantes: 26,
+            horario: "09:00 - 14:00",
+            importe: 18,
+            // Del importe total, solo esta parte se paga por PayPal al
+            // reservar; el resto se abona en efectivo en el campo.
+            reservaPaypal: 8,
+            inscripcionUrl: "/registro.html?id=domingo-18-10-2026",
+            normasUrl: INFO_NORMAS_URL,
+            galeria: {
+                activa: true,
+                titulo: "GALERÍA",
+                descripcion: "Fotografías de Mosco Events en la PARTIDA del 18-10-2026",
+                botonListado: "FOTOS EVENTO 18-10-2026 →",
+                mensajeVacio: "aún no hay fotos",
+                imagenes: []
+            }
+        },
+        {
             id: "sabado-17-10-2026",
             // Foto de portada de la tarjeta del listado. Las partidas que aun
             // no se han jugado no tienen galeria propia, asi que aqui va una
