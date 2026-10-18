@@ -57,7 +57,12 @@
                 descripcion: "Fotografías de Mosco Events en la PARTIDA del 17-10-2026",
                 botonListado: "FOTOS EVENTO 17-10-2026 →",
                 mensajeVacio: "aún no hay fotos",
-                imagenes: []
+                imagenes: crearGaleria({
+                    carpeta: "/images/optimized/17-10-2026",
+                    prefijo: "TotalWar_",
+                    extension: "webp",
+                    hasta: 33
+                })
             }
         },
         {
